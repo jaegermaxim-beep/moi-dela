@@ -178,6 +178,16 @@ transform-box:fill-box;transform-origin:center center}
 @keyframes beak-inside{from{opacity:.15}to{opacity:1}}
 @keyframes mouse-tail{from{transform:rotate(-20deg)}to{transform:rotate(26deg)}}
 @keyframes dino-foot{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-14px) rotate(6deg)}}
+.surprise-layer[data-animal="dino"] .animal-tail{animation:slow-tail-swirl .65s ease-in-out infinite alternate}
+.surprise-layer[data-animal="dino"] .animal-eyes{animation:kitten-blink 1.9s ease-in-out infinite}
+.surprise-layer[data-animal="dino"] .animal-paw-left{animation:paw-hello .5s ease-in-out infinite alternate}
+.surprise-layer[data-animal="dino"] .animal-paw-right{animation:paw-hello .5s ease-in-out -.25s infinite alternate}
+.surprise-layer[data-animal="dino"] .animal-prop{font-size:63px;left:66%;bottom:17%}
+.surprise-layer[data-animal="dog"] .animal-voice{background:#fff7e0}
+.surprise-layer[data-animal="cleo"] .animal-voice{background:#ffe3ec}
+.surprise-layer[data-animal="chick"] .animal-voice{background:#fff1ab}
+.surprise-layer[data-animal="cow"] .animal-voice{background:#eeffdb}
+
 @media(prefers-reduced-motion:reduce){
 .surprise-layer .hop-rabbit{animation:none!important;left:50%!important;bottom:30%;transform:translateX(-50%)!important}
 .surprise-layer svg .animal-ear-left,.surprise-layer svg .animal-ear-right,.surprise-layer svg .animal-tail,.surprise-layer svg .animal-head,.surprise-layer svg .animal-wing-left,.surprise-layer svg .animal-wing-right,.surprise-layer svg .animal-foot-left,.surprise-layer svg .animal-foot-right,.surprise-layer svg .animal-eyes,.surprise-layer svg .animal-beak,.surprise-layer svg .animal-nose,.surprise-layer svg .animal-mouth,.surprise-layer svg .animal-whiskers,.surprise-layer svg .animal-chew{animation:none!important}
