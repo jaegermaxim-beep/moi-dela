@@ -1,5 +1,5 @@
-const CACHE="nikole-books-v5";
-const ASSETS=["./index.html","./v23.html","./v24.html","./manifest.webmanifest","./icon.svg"];
+const CACHE="nikole-books-v6";
+const ASSETS=["./index.html","./v23.html","./v24.html","./v26.html","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
 });
