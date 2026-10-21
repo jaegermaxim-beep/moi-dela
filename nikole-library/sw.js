@@ -1,5 +1,5 @@
-/* Nicole stories offline shell v5.0 — calm stories and manual parent-led reading */
-const CACHE="nikole-books-v18";
+/* Nicole stories offline shell v5.1 — early calm finish and screen-free caregiver route */
+const CACHE="nikole-books-v19";
 const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
