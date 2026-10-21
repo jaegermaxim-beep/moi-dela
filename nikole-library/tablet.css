@@ -109,6 +109,7 @@
 @media (min-width: 860px) and (orientation: landscape) and (min-height: 500px) {
   /* No unnecessary content stretching: a picture book on a single spread. */
   .reader {
+    display:grid;
     width:100%;
     max-width:1450px;
     min-height:0;
@@ -161,6 +162,7 @@
   .reader .story-name {max-width:65%;font-size:20px}
   /* Same picture + parent text structure for short calming stories. */
   .calm-screen:not(.calm-end):not(.calm-support) {
+    display:grid;
     width:100%;
     max-width:1320px;
     height:100dvh;min-height:0;
