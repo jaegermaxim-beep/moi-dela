@@ -1,0 +1,73 @@
+{
+  "dataset": "100% synthetic, not bank or customer data",
+  "seed": 20261021,
+  "records_total": 16500,
+  "train_records": 13111,
+  "test_records": 3389,
+  "train_day_cutoff": 140,
+  "forest_mae_min": 31.645047137982182,
+  "baseline_mae_min": 44.20118701681912,
+  "forest_rmse_min": 42.111530729013644,
+  "baseline_rmse_min": 56.28932381530445,
+  "r2_holdout": 0.653266599128494,
+  "mae_improvement_pct": 28.406793405930852,
+  "optimistic_error_rate": 0.4724107406314547,
+  "optimistic_error_mae_min": 15.688464262374477,
+  "feature_importance": [
+    {
+      "name": "historical_median_delay",
+      "importance": 0.7906369534549629
+    },
+    {
+      "name": "rail::Fedwire",
+      "importance": 0.05490118468569115
+    },
+    {
+      "name": "booking_minute",
+      "importance": 0.04956344715317658
+    },
+    {
+      "name": "market_pressure",
+      "importance": 0.03765340809237075
+    },
+    {
+      "name": "log10_amount_musd",
+      "importance": 0.0346239683364926
+    },
+    {
+      "name": "product::Securities",
+      "importance": 0.011717577411790641
+    },
+    {
+      "name": "weekday",
+      "importance": 0.010867808632086353
+    },
+    {
+      "name": "counterparty::Counterparty E",
+      "importance": 0.0013609206634124331
+    },
+    {
+      "name": "counterparty::Counterparty F",
+      "importance": 0.0013439698643993331
+    },
+    {
+      "name": "counterparty::Counterparty C",
+      "importance": 0.0013239218571916402
+    },
+    {
+      "name": "product::Repo",
+      "importance": 0.0008933546621218331
+    },
+    {
+      "name": "product::FX",
+      "importance": 0.0008467628811058414
+    }
+  ],
+  "split_policy": "Chronological 80% train / 20% test by synthetic day. The baseline medians are fit using train days only.",
+  "limitations": [
+    "No real transactional timestamps or payment network observations",
+    "No production calibration, compliance, or predictive accuracy claims",
+    "Point estimate only: no probabilistic arrival confidence",
+    "Client-side in-browser model is demonstrative only"
+  ]
+}
