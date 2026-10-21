@@ -70,7 +70,10 @@
 .summer-card{background:linear-gradient(112deg,#ffe4d1 0%,#ffe4bf 33%,#f6cde0 68%,#f3e4e9 100%)}
 .summer-card:after{content:"🌼";position:absolute;right:15%;bottom:-10px;font-size:25px;opacity:.28;pointer-events:none}
 @media(max-width:390px){.parent-book .action{padding:0 8px;font-size:11px}.parent-book{gap:8px}}
-.bonus-art{font-size:clamp(64px,22vw,110px);line-height:1;filter:drop-shadow(0 6px 8px #45305415)}.main-animal .bonus-art{font-size:clamp(135px,50vw,230px)}</style>
+.bonus-art{font-size:clamp(64px,22vw,110px);line-height:1;filter:drop-shadow(0 6px 8px #45305415)}.main-animal .bonus-art{font-size:clamp(135px,50vw,230px)}
+/* Local first-page book cover: only visible after the full story has been imported. */
+.book:not(.big) .art .import-cover{width:100%;height:100%;max-height:100%;object-fit:contain;border-radius:14px;filter:drop-shadow(0 4px 7px #4d355522)}
+</style>
 </head>
 <body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><input class="file-hidden" id="fileInput" type="file" accept="image/*" multiple><input class="file-hidden" id="nicolePhotoInput" type="file" accept="image/*" multiple><input class="file-hidden" id="zipInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><script>
 (function() {
@@ -90,7 +93,7 @@ var STORIES=[
 {id:"seva",bonus:true,name:"Зайчик Сева",short:"Зайчик Сева",emoji:"🐇",card:"#e1ede5",text:Array(10).fill("Листаем сказку вместе.")}
 ];
 var privatePhotos=[],photoIsSet=false,selectedPhoto=0,embeddedText={};try{embeddedText=JSON.parse(localStorage.getItem("nikole-embedded-text")||"{}")||{}}catch(e){}try{selectedPhoto=Math.max(0,Number(localStorage.getItem("nikole-personal-current")||0)||0)}catch(e){}
-var unlockedBonus={};
+var unlockedBonus={},importedCovers={},coverObjectUrls=[];
 var db=null,screen="home",id=null,page=0,sleep=false,images={},urls=[],toastTimer=null,parentTimer=null,importId=null;
 var favorites={};try{favorites=JSON.parse(localStorage.getItem("nikole-storybook-favorites")||"{}")||{}}catch(e){}
 var root=document.getElementById("app"),toast=document.getElementById("toast");
@@ -137,7 +140,19 @@ function deleteBook(sid){return saveBook(sid,[])}
 function unloadImages(){urls.forEach(function(x){URL.revokeObjectURL(x)});urls=[];images={}}
 async function loadBook(sid){unloadImages();var records=await loadAll();records.forEach(function(r){if(r.key.indexOf(sid+":")===0 && r.blob){var num=Number(r.key.split(":")[1]);if(num>=0&&num<=9){var u=URL.createObjectURL(r.blob);images[num]=u;urls.push(u)}}})}
 function getCount(sid,recs){return recs.filter(function(r){return r.key.indexOf(sid+":")===0}).length}
-async function refreshBonus(){var recs=await loadAll();unlockedBonus={};STORIES.filter(function(x){return x.bonus}).forEach(function(x){unlockedBonus[x.id]=getCount(x.id,recs)===10})}
+async function refreshBonus(){
+var recs=await loadAll();
+coverObjectUrls.forEach(function(url){URL.revokeObjectURL(url)});
+coverObjectUrls=[];importedCovers={};unlockedBonus={};
+STORIES.filter(function(book){return book.bonus}).forEach(function(book){
+var allPages=recs.filter(function(r){return r.key.indexOf(book.id+":")===0&&r.blob});
+unlockedBonus[book.id]=allPages.length===10;
+if(unlockedBonus[book.id]){
+var first=allPages.find(function(r){return r.key===book.id+":0"});
+if(first){var cover=URL.createObjectURL(first.blob);coverObjectUrls.push(cover);importedCovers[book.id]=cover}
+}
+})
+}
 
 
 function photoGetAll(){return new Promise(function(ok,fail){if(!db)return ok([]);var r=db.transaction("pages","readonly").objectStore("pages").getAll();r.onsuccess=function(){ok((r.result||[]).filter(function(item){return item.key==="personal:nicole"||/^personal:nicole:[0-4]$/.test(item.key)}))};r.onerror=function(){fail(r.error)}})}
@@ -159,8 +174,8 @@ return privatePhotos.length?'<img src="'+privatePhotos[n%privatePhotos.length]+'
 }
 function summerCard(){return '<section class="summer-card"><div class="summer-copy"><small>🌸 НАШЕ МАЛЕНЬКОЕ ЛЕТО</small><b>Николь и её сказки</b><small>Цветы, солнце и яркие платья</small></div><button class="summer-photo" data-photo-next="1" aria-label="Следующее фото Николь">'+photoView()+'</button></section>'}
 function photoStrip(){return privatePhotos.map(function(u,i){return '<button class="photo-tile'+(selectedPhoto===i?' chosen':'')+'" data-photo-select="'+i+'" aria-label="Выбрать фото '+(i+1)+'"><img src="'+u+'" alt="Фото Николь '+(i+1)+'"></button>'}).join("")}
-function bookButton(s,big){return '<button class="book'+(big?' big':'')+'" style="--card:'+s.card+'" data-book="'+s.id+'" aria-label="Открыть сказку '+s.name+'"><div class="book-text">'+(big?'<span class="mini-stars">✦ ✧ ✦</span>':'')+'<div class="name">'+(s.bonus?s.short:s.name)+'</div>'+(big?'<div class="sub">Нажми, чтобы читать</div>':'')+'</div><span class="art">'+(s.bonus?'<span class="bonus-art">'+s.emoji+'</span>':svg(s.id))+'</span>'+(favorites[s.id]?'<span class="bookmark-heart">♥</span>':'')+'</button>'}
-function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>Нажми на любимого зверька 🧸</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3,7).map(function(s){return bookButton(s,false)}).join("")+'</div>'+(STORIES.some(function(s){return s.bonus&&unlockedBonus[s.id]})?'<div class="section-heading more-heading"><h2>Новые книжки</h2><small>Наши истории ✨</small></div><div class="books">'+STORIES.filter(function(s){return s.bonus&&unlockedBonus[s.id]}).map(function(s){return bookButton(s,false)}).join("")+'</div>':'')+'<div class="footer-note">С любовью для Николь ✨ · v2.8</div></main>';attachParentHold()}
+function bookButton(s,big){return '<button class="book'+(big?' big':'')+'" style="--card:'+s.card+'" data-book="'+s.id+'" aria-label="Открыть сказку '+s.name+'"><div class="book-text">'+(big?'<span class="mini-stars">✦ ✧ ✦</span>':'')+'<div class="name">'+(s.bonus?s.short:s.name)+'</div>'+(big?'<div class="sub">Нажми, чтобы читать</div>':'')+'</div><span class="art">'+(s.bonus?(importedCovers[s.id]?'<img class="import-cover" src="'+importedCovers[s.id]+'" alt="Первая страница сказки '+s.name+'">':'<span class="bonus-art">'+s.emoji+'</span>'):svg(s.id))+'</span>'+(favorites[s.id]?'<span class="bookmark-heart">♥</span>':'')+'</button>'}
+function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>Нажми на любимого зверька 🧸</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3,7).map(function(s){return bookButton(s,false)}).join("")+'</div>'+(STORIES.some(function(s){return s.bonus&&unlockedBonus[s.id]})?'<div class="section-heading more-heading"><h2>Новые книжки</h2><small>Наши истории ✨</small></div><div class="books">'+STORIES.filter(function(s){return s.bonus&&unlockedBonus[s.id]}).map(function(s){return bookButton(s,false)}).join("")+'</div>':'')+'<div class="footer-note">С любовью для Николь ✨ · v2.9</div></main>';attachParentHold()}
 function drawReader(){var s=story(id);if(!s){goHome();return}var pictureHasText=!!images[page] && textIsEmbedded(id);var art=images[page]?'<img alt="Иллюстрация страницы '+(page+1)+'" src="'+images[page]+'">':'<div class="main-animal">'+(s.bonus?'<span class="bonus-art">'+s.emoji+'</span>':svg(id))+'</div>';
 root.innerHTML='<main class="reader'+(sleep?' sleep':'')+'"><header class="reader-head"><button class="round" data-home="1" aria-label="Все сказки">⌂</button><strong class="story-name">'+s.name+'</strong><button class="round sleep-toggle" data-sleep="1" aria-label="'+(sleep?'Выключить':'Включить')+' спокойный режим">'+(sleep?'☀':'☾')+'</button></header><div class="progress">'+s.text.map(function(t,i){return '<span class="'+(i===page?'active':'')+'"></span>'}).join("")+'</div><section class="story-stage" style="--card:'+s.card+'" id="storyStage">'+art+'<button class="tap left" data-turn="-1" aria-label="Предыдущая страница"></button><button class="tap right" data-turn="1" aria-label="Следующая страница"></button><span class="decor">Листай пальчиком ✦</span></section><section class="story-copy"><p class="count">'+(page+1)+' из 10</p>'+(pictureHasText?'':'<h1 class="story-line">'+s.text[page]+'</h1>')+'</section><div class="story-controls"><button data-turn="-1" '+(page===0?'disabled':'')+'>← Назад</button><button class="next" data-turn="1">'+(page===9?'Сначала ↻':'Дальше →')+'</button></div></main>';
 var stage=document.getElementById("storyStage"),x0=null,y0=null,moved=false;
