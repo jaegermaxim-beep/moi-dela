@@ -160,6 +160,16 @@
 @media(max-width:330px){.calm-entry-actions{grid-template-columns:1fr}.calm-entry button{min-height:53px}}
 @media(max-height:670px){.calm-screen{gap:9px;padding-top:calc(6px + env(safe-area-inset-top))}.calm-image-wrap{max-height:43dvh;min-height:190px}.calm-actions button{min-height:54px}.calm-text h1{margin-bottom:6px}.calm-text p{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.calm-first .calm-image-wrap{animation:none}}
+
+/* First calm illustration: one soft ear or tail greeting, never a loop. */
+.calm-first .calm-illustration .animal-ear-left,.calm-first .calm-illustration .animal-ear-right,.calm-first .calm-illustration .animal-tail{transform-box:fill-box;transform-origin:center 90%}
+.calm-first .calm-illustration .animal-ear-left{animation:calm-ear 1.45s ease-in-out 1}
+.calm-first .calm-illustration .animal-ear-right{animation:calm-ear-right 1.45s ease-in-out 1}
+.calm-first .calm-illustration .animal-tail{animation:calm-tail 1.45s ease-in-out 1}
+@keyframes calm-ear{0%,100%{transform:rotate(0)}45%{transform:rotate(-10deg)}}
+@keyframes calm-ear-right{0%,100%{transform:rotate(0)}45%{transform:rotate(12deg)}}
+@keyframes calm-tail{0%,100%{transform:rotate(0)}45%{transform:rotate(10deg)}}
+@media(prefers-reduced-motion:reduce){.calm-first .calm-illustration .animal-ear-left,.calm-first .calm-illustration .animal-ear-right,.calm-first .calm-illustration .animal-tail{animation:none}}
 </style>
 </head>
 <body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><input class="file-hidden" id="fileInput" type="file" accept="image/*" multiple><input class="file-hidden" id="nicolePhotoInput" type="file" accept="image/*" multiple><input class="file-hidden" id="zipInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><input class="file-hidden" id="bundleInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><script src="./scene-art.js"></script><script src="./animal-games.js"></script><script src="./calm-scenes.js"></script><script>
