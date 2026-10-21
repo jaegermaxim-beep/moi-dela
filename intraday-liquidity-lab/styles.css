@@ -18,3 +18,20 @@
 .monitor-layout{display:grid;grid-template-columns:1fr 1.35fr;gap:16px}.monitor-controls{background:linear-gradient(130deg,#193342,#142538)}.monitor-controls .form-field{margin-top:30px}.monitor-flag{margin-top:24px;border:1px solid #386b64;background:#163734;color:#85e1ce;border-radius:10px;padding:16px;font-size:11px;line-height:1.6}.monitor-flag.watch{background:#392b25;border-color:#9d714b;color:#ffe0a2}
 .monitor-stats{display:grid;grid-template-columns:1fr 1fr;column-gap:25px;margin-top:17px}.segment-panel{margin-top:16px}.segment-bars{display:grid;gap:11px;margin-top:21px}.segment-row{display:grid;grid-template-columns:132px 1fr 95px;align-items:center;gap:13px;font-size:11px;color:#b8c7d7}.segment-track{height:9px;background:#283d50;border-radius:10px;overflow:hidden}.segment-fill{background:linear-gradient(90deg,#2dc9b5,#c8a4ea);border-radius:10px;height:100%}.segment-value{text-align:right;color:#e0e9f5;font-variant-numeric:tabular-nums}
 @media(max-width:980px){.decision-grid,.monitor-layout{grid-template-columns:1fr}}@media(max-width:680px){.decision-summary{align-items:flex-start;flex-direction:column}.monitor-stats{grid-template-columns:1fr 1fr}.decision-buttons{flex-direction:column}.segment-row{grid-template-columns:90px 1fr 65px;gap:6px;font-size:9px}.impact-panel{padding:18px}.audit-item{flex-direction:column;gap:5px}}
+
+/* v3: terminology and transparent illustrative LNNCP reference levels */
+.reference-panel{margin-top:20px;display:grid;grid-template-columns:1fr 1.35fr;gap:30px;padding:26px 30px}
+.reference-intro h3{font-size:19px;margin:8px 0 9px;letter-spacing:-.025em}
+.reference-intro p{font-size:13px;line-height:1.75;color:var(--muted,#91a4bc);max-width:440px}
+.reference-values{display:grid;gap:15px}
+.reference-values label{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,1.7fr) auto;align-items:center;gap:14px;color:var(--muted,#91a4bc);font-size:12px}
+.reference-values label strong{font-size:13px;color:#e5f1ff;min-width:68px;text-align:right;font-variant-numeric:tabular-nums}
+.reference-values input{width:100%;accent-color:#44d9c5;cursor:pointer}
+.reference-results{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid rgba(133,157,185,.16);padding-top:14px}
+.reference-results>div{display:flex;gap:8px;flex-direction:column;background:rgba(32,49,69,.45);padding:11px;border-radius:12px}
+.reference-results>div:last-child{grid-column:1/-1}
+.reference-results span{font-size:10px;color:#9cb0c8}
+.reference-results strong{font-size:14px;color:#ebf9ff}
+.scenario-note{font-size:11px;line-height:1.6;color:#91a4bc;margin:12px 0}
+@media(max-width:1080px){.reference-panel{grid-template-columns:1fr;padding:20px}.reference-intro p{max-width:none}}
+@media(max-width:600px){.reference-panel{padding:16px;gap:18px}.reference-values label{grid-template-columns:1fr auto;gap:7px}.reference-values input{grid-column:1/-1;grid-row:2}.reference-results{grid-template-columns:1fr 1fr}}
