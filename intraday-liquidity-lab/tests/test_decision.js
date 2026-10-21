@@ -29,6 +29,9 @@ assert.equal(JSON.stringify(book),bookClone,'No mutation of baseline cashflows')
 assert.equal(engine.riskStatus(-1).level,'breach');
 assert.equal(engine.riskStatus(300).level,'watch');
 assert.equal(engine.riskStatus(700).level,'normal');
+assert.equal(engine.riskStatus(700, 1300, 1200, 2300).level,'watch','BaU threshold should flag governance review');
+assert.equal(engine.riskStatus(700, 1900, 1200, 2300).level,'watch','80% stressed reference should flag review');
+assert.equal(engine.referenceAssessment(1840,1200,2300).level,'80% STRESSED REFERENCE REACHED');
 const normal=engine.monitor(book,0),shifted=engine.monitor(book,150);
 assert.equal(normal.records,155);
 assert.equal(normal.segments.length,6);
