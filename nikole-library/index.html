@@ -63,9 +63,16 @@
 .photo-tile{display:block;width:67px;height:80px;padding:0;flex-shrink:0;border:3px solid transparent;border-radius:16px;overflow:hidden;background:#fee8db}
 .photo-tile img{display:block;width:100%;height:100%;object-fit:cover}
 .photo-tile.chosen{border-color:#9b6ac2;box-shadow:0 0 0 2px #ead4fb}
+
+/* v2.7: compact parent import tools and sunny floral personal card */
+.parent-book .action{padding:0 10px;font-size:12px;min-height:46px;flex-shrink:0}
+.text-option{display:block;margin:-5px 0 8px auto;padding:4px 8px;border:0;border-radius:8px;background:#f8f2fa;color:#786282;font-size:11px;font-weight:750}
+.summer-card{background:linear-gradient(112deg,#ffe4d1 0%,#ffe4bf 33%,#f6cde0 68%,#f3e4e9 100%)}
+.summer-card:after{content:"🌼";position:absolute;right:15%;bottom:-10px;font-size:25px;opacity:.28;pointer-events:none}
+@media(max-width:390px){.parent-book .action{padding:0 8px;font-size:11px}.parent-book{gap:8px}}
 </style>
 </head>
-<body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><input class="file-hidden" id="fileInput" type="file" accept="image/*" multiple><input class="file-hidden" id="nicolePhotoInput" type="file" accept="image/*" multiple><script>
+<body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><input class="file-hidden" id="fileInput" type="file" accept="image/*" multiple><input class="file-hidden" id="nicolePhotoInput" type="file" accept="image/*" multiple><input class="file-hidden" id="zipInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><script>
 (function() {
 "use strict";
 var STORIES=[
@@ -77,7 +84,7 @@ var STORIES=[
 {id:"mouse",name:"Мышиная история Пипи",short:"Мышка",emoji:"🐭",card:"#e8e2f6",badge:"Уютная мышиная история",text:["Жила-была маленькая мышка Пипи.","Она выглянула из норки.","Вокруг было тихо-тихо.","Пипи нашла круглое зёрнышко.","Она понесла его домой.","По дороге встретилась улитка.","Пипи сказала: привет!","Вместе они посмотрели на звёздочку.","Мышка спряталась в уютную норку.","И увидела самый сладкий сон."]},
 {id:"dino",name:"Николь и динозавры",short:"Динозавры",emoji:"🦕",card:"#c7edea",badge:"Динозавры и Николь",text:["Николь отправилась в удивительную долину.","Она увидела большого доброго динозавра.","Маленький динозаврик сказал: привет!","Николь познакомилась с новым другом.","Вместе они гуляли среди зелёных деревьев.","Друзья нашли красивые цветы.","Потом встретили ещё одного динозаврика.","Динозавры играли и веселились.","Николь попрощалась с новыми друзьями.","До скорой встречи, долина динозавров!"]}
 ];
-var privatePhotos=[],photoIsSet=false,selectedPhoto=0;try{selectedPhoto=Math.max(0,Number(localStorage.getItem("nikole-personal-current")||0)||0)}catch(e){}
+var privatePhotos=[],photoIsSet=false,selectedPhoto=0,embeddedText={};try{embeddedText=JSON.parse(localStorage.getItem("nikole-embedded-text")||"{}")||{}}catch(e){}try{selectedPhoto=Math.max(0,Number(localStorage.getItem("nikole-personal-current")||0)||0)}catch(e){}
 var db=null,screen="home",id=null,page=0,sleep=false,images={},urls=[],toastTimer=null,parentTimer=null,importId=null;
 var favorites={};try{favorites=JSON.parse(localStorage.getItem("nikole-storybook-favorites")||"{}")||{}}catch(e){}
 var root=document.getElementById("app"),toast=document.getElementById("toast");
@@ -146,8 +153,8 @@ return privatePhotos.length?'<img src="'+privatePhotos[n%privatePhotos.length]+'
 function summerCard(){return '<section class="summer-card"><div class="summer-copy"><small>🌸 НАШЕ МАЛЕНЬКОЕ ЛЕТО</small><b>Николь и её сказки</b><small>Цветы, солнце и яркие платья</small></div><button class="summer-photo" data-photo-next="1" aria-label="Следующее фото Николь">'+photoView()+'</button></section>'}
 function photoStrip(){return privatePhotos.map(function(u,i){return '<button class="photo-tile'+(selectedPhoto===i?' chosen':'')+'" data-photo-select="'+i+'" aria-label="Выбрать фото '+(i+1)+'"><img src="'+u+'" alt="Фото Николь '+(i+1)+'"></button>'}).join("")}
 function bookButton(s,big){return '<button class="book'+(big?' big':'')+'" style="--card:'+s.card+'" data-book="'+s.id+'" aria-label="Открыть сказку '+s.name+'"><div class="book-text">'+(big?'<span class="mini-stars">✦ ✧ ✦</span>':'')+'<div class="name">'+s.name+'</div>'+(big?'<div class="sub">Нажми, чтобы читать</div>':'')+'</div><span class="art">'+svg(s.id)+'</span>'+(favorites[s.id]?'<span class="bookmark-heart">♥</span>':'')+'</button>'}
-function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>Нажми на любимого зверька 🧸</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3).map(function(s){return bookButton(s,false)}).join("")+'</div><div class="footer-note">С любовью для Николь ✨ · v2.6</div></main>';attachParentHold()}
-function drawReader(){var s=story(id);if(!s){goHome();return}var pictureHasText=id==="dino" && !!images[page];var art=images[page]?'<img alt="Иллюстрация страницы '+(page+1)+'" src="'+images[page]+'">':'<div class="main-animal">'+svg(id)+'</div>';
+function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>Нажми на любимого зверька 🧸</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3).map(function(s){return bookButton(s,false)}).join("")+'</div><div class="footer-note">С любовью для Николь ✨ · v2.7</div></main>';attachParentHold()}
+function drawReader(){var s=story(id);if(!s){goHome();return}var pictureHasText=!!images[page] && textIsEmbedded(id);var art=images[page]?'<img alt="Иллюстрация страницы '+(page+1)+'" src="'+images[page]+'">':'<div class="main-animal">'+svg(id)+'</div>';
 root.innerHTML='<main class="reader'+(sleep?' sleep':'')+'"><header class="reader-head"><button class="round" data-home="1" aria-label="Все сказки">⌂</button><strong class="story-name">'+s.name+'</strong><button class="round sleep-toggle" data-sleep="1" aria-label="'+(sleep?'Выключить':'Включить')+' спокойный режим">'+(sleep?'☀':'☾')+'</button></header><div class="progress">'+s.text.map(function(t,i){return '<span class="'+(i===page?'active':'')+'"></span>'}).join("")+'</div><section class="story-stage" style="--card:'+s.card+'" id="storyStage">'+art+'<button class="tap left" data-turn="-1" aria-label="Предыдущая страница"></button><button class="tap right" data-turn="1" aria-label="Следующая страница"></button><span class="decor">Листай пальчиком ✦</span></section><section class="story-copy"><p class="count">'+(page+1)+' из 10</p>'+(pictureHasText?'':'<h1 class="story-line">'+s.text[page]+'</h1>')+'</section><div class="story-controls"><button data-turn="-1" '+(page===0?'disabled':'')+'>← Назад</button><button class="next" data-turn="1">'+(page===9?'Сначала ↻':'Дальше →')+'</button></div></main>';
 var stage=document.getElementById("storyStage"),x0=null,y0=null,moved=false;
 stage.addEventListener("touchstart",function(e){x0=e.changedTouches[0].clientX;y0=e.changedTouches[0].clientY;moved=false},{passive:true});
@@ -155,7 +162,7 @@ stage.addEventListener("touchend",function(e){if(x0===null)return;var dx=e.chang
 stage.addEventListener("click",function(e){if(moved){moved=false;e.preventDefault();e.stopPropagation()}},true);
 }
 async function drawParents(){var recs=await loadAll(),amount=recs.reduce(function(a,x){return a+(x.size||0)},0);
-root.innerHTML='<main class="parents"><button class="back" data-home="1">← К сказкам</button><h1>Для родителей</h1><p class="explain">Добавляйте собственные иллюстрации. Они сохраняются на этом устройстве и не загружаются в публичный GitHub.</p><section class="parent-card"><h2>Фото Николь 🌸</h2><p>Можно выбрать до пяти фотографий Николь в любимых платьях. Нажатие на открытку переключает фотографии.</p><div class="profile-preview"><div class="preview">'+photoView()+'</div><small>Все фотографии останутся только на этом устройстве. Ничего не публикуется в GitHub.</small></div><div class="photo-strip">'+photoStrip()+'</div><button class="action" data-personal-add="1">Добавить до 5 фото</button> '+(photoIsSet?'<button class="action danger" data-personal-clear="1">Убрать все фото</button>':'')+'</section><section class="parent-card"><h2>Картинки для сказок</h2><p>Выбери 10 изображений одной сказки в правильном порядке. Лучше заранее назвать их 01–10. Повторный импорт заменит картинки только выбранной книги.</p>'+STORIES.map(function(s){return '<div class="parent-book" style="--card:'+s.card+'"><span class="tiny">'+s.emoji+'</span><span class="info"><strong>'+s.name+'</strong><small>'+getCount(s.id,recs)+' из 10 картинок</small></span><button class="action" data-import="'+s.id+'">Добавить</button></div>'}).join("")+'</section><section class="parent-card"><h2>Хранилище</h2><p>На этом iPhone картинки занимают примерно '+(amount/1048576).toFixed(1)+' МБ. Оригиналы нужно сохранить в Dropbox, потому что iOS может очистить данные приложения.</p><p>Интеграция с закрытым Dropbox пока не настроена. Настройки здесь предназначены только для взрослого.</p></section><section class="parent-card"><h2>Удаление картинок</h2><p>Можно очистить картинки конкретной сказки, не затрагивая оригиналы в Dropbox.</p><button class="action danger" data-clear-list="1">Выбрать сказку для очистки</button><div id="clearPanel"></div></section></main>';}
+root.innerHTML='<main class="parents"><button class="back" data-home="1">← К сказкам</button><h1>Для родителей</h1><p class="explain">Добавляйте собственные иллюстрации. Они сохраняются на этом устройстве и не загружаются в публичный GitHub.</p><section class="parent-card"><h2>Фото Николь 🌸</h2><p>Можно выбрать до пяти фотографий Николь в любимых платьях. Нажатие на открытку переключает фотографии.</p><div class="profile-preview"><div class="preview">'+photoView()+'</div><small>Все фотографии останутся только на этом устройстве. Ничего не публикуется в GitHub.</small></div><div class="photo-strip">'+photoStrip()+'</div><button class="action" data-personal-add="1">Добавить до 5 фото</button> '+(photoIsSet?'<button class="action danger" data-personal-clear="1">Убрать все фото</button>':'')+'</section><section class="parent-card"><h2>Картинки для сказок</h2><p>Выбери 10 отдельных картинок или один ZIP с десятью страницами из Dropbox. Названия страниц желательно пронумеровать 01–10. Архив распаковывается только на устройстве. Повторный импорт заменит картинки лишь выбранной книги.</p>'+STORIES.map(function(s){return '<div class="parent-book" style="--card:'+s.card+'"><span class="tiny">'+s.emoji+'</span><span class="info"><strong>'+s.name+'</strong><small>'+getCount(s.id,recs)+' из 10 картинок</small></span><button class="action secondary" data-import="'+s.id+'">10 фото</button><button class="action" data-zip="'+s.id+'">ZIP</button></div><button class="text-option" data-textmode="'+s.id+'">Текст уже на картинках: '+(textIsEmbedded(s.id)?'ДА':'НЕТ')+'</button>'}).join("")+'</section><section class="parent-card"><h2>Хранилище</h2><p>На этом iPhone картинки занимают примерно '+(amount/1048576).toFixed(1)+' МБ. Оригиналы нужно сохранить в Dropbox, потому что iOS может очистить данные приложения.</p><p>Интеграция с закрытым Dropbox пока не настроена. Настройки здесь предназначены только для взрослого.</p></section><section class="parent-card"><h2>Удаление картинок</h2><p>Можно очистить картинки конкретной сказки, не затрагивая оригиналы в Dropbox.</p><button class="action danger" data-clear-list="1">Выбрать сказку для очистки</button><div id="clearPanel"></div></section></main>';}
 function turn(delta){if(screen!=="reader")return;page=(page+delta+10)%10;drawReader()}
 function goHome(){screen="home";id=null;sleep=false;unloadImages();drawHome();window.scrollTo(0,0)}
 async function openBook(sid){if(!story(sid))return;screen="reader";id=sid;page=0;sleep=false;await loadBook(sid);drawReader();window.scrollTo(0,0)}
@@ -163,6 +170,52 @@ function attachParentHold(){var b=root.querySelector("[data-parent]");if(!b)retu
 b.addEventListener("pointerdown",function(e){if(e.button!==undefined&&e.button!==0)return;cancel();holdButton=b;holdCompleted=false;parentTimer=setTimeout(function(){parentTimer=null;holdCompleted=true;screen="parents";drawParents();if(navigator.vibrate)navigator.vibrate(35)},1800)});
 ["pointerup","pointercancel","pointerleave"].forEach(function(n){b.addEventListener(n,cancel)});
 b.addEventListener("contextmenu",function(e){e.preventDefault()});b.addEventListener("click",function(e){e.preventDefault();if(!holdCompleted)say("Удерживайте ⚙ 2 секунды")});}
+
+/* ZIP importer: ZIP64/encrypted archives are rejected. Files are decoded on-device. */
+async function unzipPictures(file){
+if(file.size>125829120)throw new Error("Архив слишком большой. Максимум 120 МБ.");
+var bytes=new Uint8Array(await file.arrayBuffer()),dv=new DataView(bytes.buffer),eocd=-1;
+for(var p=bytes.length-22;p>=Math.max(0,bytes.length-65557);p--){if(dv.getUint32(p,true)===0x06054b50){eocd=p;break}}
+if(eocd<0)throw new Error("ZIP не распознан. Используй обычный ZIP-архив.");
+var count=dv.getUint16(eocd+10,true),pos=dv.getUint32(eocd+16,true);
+if(count>200||pos>=eocd)throw new Error("Слишком много файлов в архиве.");
+var entries=[],sum=0,decoder=new TextDecoder("utf-8");
+for(var k=0;k<count;k++){
+if(pos+46>bytes.length||dv.getUint32(pos,true)!==0x02014b50)throw new Error("Ошибка структуры ZIP.");
+var method=dv.getUint16(pos+10,true),flags=dv.getUint16(pos+8,true),packed=dv.getUint32(pos+20,true),size=dv.getUint32(pos+24,true),fnlen=dv.getUint16(pos+28,true),elen=dv.getUint16(pos+30,true),clen=dv.getUint16(pos+32,true),offset=dv.getUint32(pos+42,true);
+if(pos+46+fnlen+elen+clen>bytes.length)throw new Error("Неполный ZIP.");
+var name=decoder.decode(bytes.subarray(pos+46,pos+46+fnlen)),base=name.split("/").pop();
+pos+=46+fnlen+elen+clen;
+if(!base||name.includes("__MACOSX/")||base.startsWith(".")||!/\.(jpe?g|png|webp)$/i.test(base)||/(?:обложк|cover|коллаж|contact|обзор)/i.test(base))continue;
+if(flags&1)throw new Error("ZIP с паролем не поддерживается.");
+if((method!==0&&method!==8)||packed===0||size===0||packed>35000000||size>35000000)throw new Error("Один из файлов ZIP имеет неподдерживаемый размер или формат.");
+sum+=size;if(sum>160000000)throw new Error("Слишком много данных в ZIP.");
+entries.push({name:base,packed:packed,size:size,offset:offset,method:method});
+}
+entries.sort(function(a,b){return a.name.localeCompare(b.name,"ru",{numeric:true,sensitivity:"base"})});
+if(entries.length!==10)throw new Error("В архиве найдено "+entries.length+" страниц. Для одной книжки нужно ровно 10 изображений.");
+var files=[];
+for(var entry of entries){
+var o=entry.offset;
+if(o+30>bytes.length||dv.getUint32(o,true)!==0x04034b50)throw new Error("ZIP повреждён.");
+var locName=dv.getUint16(o+26,true),locExtra=dv.getUint16(o+28,true),start=o+30+locName+locExtra;
+if(start+entry.packed>bytes.length)throw new Error("ZIP повреждён.");
+var zipped=bytes.subarray(start,start+entry.packed),plain;
+if(entry.method===0)plain=zipped;
+else{
+if(typeof DecompressionStream==="undefined")throw new Error("Для распаковки ZIP обнови Safari.");
+try{
+var stream=new Blob([zipped]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+plain=new Uint8Array(await new Response(stream).arrayBuffer())
+}catch(error){throw new Error("Не удалось распаковать ZIP. Используй выбор 10 картинок.")}
+}
+if(plain.length!==entry.size)throw new Error("Повреждённая страница ZIP: "+entry.name);
+var mime=/\.png$/i.test(entry.name)?"image/png":/\.webp$/i.test(entry.name)?"image/webp":"image/jpeg";
+files.push(new File([plain],entry.name,{type:mime}));
+}
+return files;
+}
+function textIsEmbedded(bookId){return embeddedText[bookId]!==undefined?!!embeddedText[bookId]:true}
 function compress(file){return new Promise(function(ok,fail){var blobURL=URL.createObjectURL(file),img=new Image();img.onload=function(){try{var f=Math.min(1,1400/Math.max(img.width,img.height));var canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(img.width*f));canvas.height=Math.max(1,Math.round(img.height*f));var ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(function(blob){URL.revokeObjectURL(blobURL);if(blob)ok(blob);else fail(new Error("Не удалось сохранить изображение"))},"image/webp",.82)}catch(err){URL.revokeObjectURL(blobURL);fail(err)}};img.onerror=function(){URL.revokeObjectURL(blobURL);fail(new Error("Формат не поддерживается"))};img.src=blobURL})}
 document.getElementById("fileInput").addEventListener("change",async function(e){var selected=Array.from(e.target.files||[]).filter(function(x){return x.type.startsWith("image/")}).sort(function(a,b){return a.name.localeCompare(b.name,"ru",{numeric:true})});e.target.value="";if(!selected.length)return;if(selected.length>10){say("Для одной сказки выбери не больше 10 изображений");return}if(!db){say("Не удалось открыть локальное хранилище");return}say("Подготавливаю картинки…");var result=[];try{for(var k=0;k<selected.length;k++)result.push(await compress(selected[k]));await saveBook(importId,result);say("Сохранено "+result.length+" картинок");await drawParents()}catch(err){console.error(err);say("Ошибка импорта. Проверь формат картинок и свободное место.")}});
 
@@ -181,6 +234,17 @@ try{localStorage.setItem("nikole-personal-current","0")}catch(e){}
 await photoReload();await drawParents();say("Сохранено "+blobs.length+" фото только на этом устройстве");
 }catch(e){console.error(e);say("Не получилось сохранить фотографии")}
 });
+
+document.getElementById("zipInput").addEventListener("change",async function(e){
+var file=e.target.files&&e.target.files[0];e.target.value="";
+if(!file||!importId)return;if(!db){say("Хранилище недоступно");return}
+try{
+say("Открываю ZIP-книжку…");
+var pages=await unzipPictures(file),blobs=[];
+for(var i=0;i<pages.length;i++){say("Сжимаю страницу "+(i+1)+" из 10");blobs.push(await compress(pages[i]))}
+await saveBook(importId,blobs);await drawParents();say("Все 10 страниц сохранены для чтения!");
+}catch(error){console.error(error);say(error.message||"Не удалось импортировать ZIP.")}
+});
 root.addEventListener("click",async function(e){var el=e.target.closest("button");if(!el)return;var d=el.dataset;
 if(d.book){await openBook(d.book)}
 else if(d.home){goHome()}
@@ -188,6 +252,8 @@ else if(d.turn){if(Date.now()-lastSwipeAt>=550)turn(Number(d.turn))}
 else if(d.sleep){sleep=!sleep;drawReader()}
 else if(d.photoNext){if(privatePhotos.length>1){selectedPhoto=(selectedPhoto+1)%privatePhotos.length;try{localStorage.setItem("nikole-personal-current",String(selectedPhoto))}catch(e){}drawHome()}}
 else if(d.photoSelect!==undefined){selectedPhoto=Number(d.photoSelect)||0;try{localStorage.setItem("nikole-personal-current",String(selectedPhoto))}catch(e){}await drawParents()}
+else if(d.textmode){embeddedText[d.textmode]=!textIsEmbedded(d.textmode);try{localStorage.setItem("nikole-embedded-text",JSON.stringify(embeddedText))}catch(e){}await drawParents()}
+else if(d.zip){if(!db){say("Хранилище недоступно");return}var existing=getCount(d.zip,await loadAll());if(existing && !confirm("Заменить "+existing+" загруженных страниц этой книги новым ZIP?"))return;importId=d.zip;document.getElementById("zipInput").click()}
 else if(d.personalAdd){document.getElementById("nicolePhotoInput").click()}
 else if(d.personalClear){if(confirm("Убрать все фотографии Николь с этого iPhone?")){await photoErase();await photoReload();await drawParents();say("Фото убрано")}}
 else if(d.import){if(!db){say("Хранилище недоступно");return}var existing=getCount(d.import,await loadAll());if(existing && !confirm("Заменить "+existing+" ранее загруженных картинок в книге? Оригиналы в Dropbox останутся."))return;importId=d.import;document.getElementById("fileInput").click()}
