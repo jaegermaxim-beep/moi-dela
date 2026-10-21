@@ -100,7 +100,7 @@ var STORIES=[
 {id:"dino",name:"Николь и динозавры",short:"Динозавры",emoji:"🦕",card:"#c7edea",badge:"Динозавры и Николь",text:["Николь отправилась в удивительную долину.","Она увидела большого доброго динозавра.","Маленький динозаврик сказал: привет!","Николь познакомилась с новым другом.","Вместе они гуляли среди зелёных деревьев.","Друзья нашли красивые цветы.","Потом встретили ещё одного динозаврика.","Динозавры играли и веселились.","Николь попрощалась с новыми друзьями.","До скорой встречи, долина динозавров!"]},
 {id:"balloons",bonus:true,name:"Ась и Мяу — Три шарика",short:"Три шарика",emoji:"🎈",card:"#f8ddea",text:Array(10).fill("Листаем сказку вместе.")},
 {id:"seed",bonus:true,name:"Ась и Мяу — Волшебное семечко",short:"Волшебное семечко",emoji:"🌱",card:"#deefd5",text:Array(10).fill("Листаем сказку вместе.")},
-{id:"thumbelina",bonus:true,name:"Дюймовочка",short:"Дюймовочка",emoji:"🌺",card:"#f6dcdf",text:Array(10).fill("Листаем сказку вместе.")},
+{id:"thumbelina",bonus:true,name:"Дюймовочка",short:"Дюймовочка",emoji:"🌺",card:"#f6dcdf",text:["В цветке появилась маленькая Дюймовочка.","Она спала в уютной колыбельке из скорлупки.","Однажды рядом оказалась большая жаба.","Дюймовочка поплыла по реке на зелёном листочке.","К ней подлетел любопытный майский жук.","Зимой добрая мышка приютила Дюймовочку.","Дюймовочка помогла замёрзшей ласточке.","Весной ласточка унесла её в тёплую страну.","Там она встретила цветочного принца.","Дюймовочка обрела счастливый дом среди цветов."]},
 {id:"father",bonus:true,name:"Папа меня любит",short:"Папа меня любит",emoji:"🐘",card:"#f5e5c7",text:Array(10).fill("Листаем сказку вместе.")},
 {id:"seva",bonus:true,name:"Зайчик Сева",short:"Зайчик Сева",emoji:"🐇",card:"#e1ede5",text:Array(10).fill("Листаем сказку вместе.")}
 ];
@@ -323,7 +323,7 @@ var existing=pack.ids.filter(function(id){return (installedCounts[id]||0)>0});
 if(existing.length&&!confirm("Заменить картинки "+existing.length+" уже загруженных книжек? Другие сказки сохранятся."))return;
 for(var i=0;i<pack.ids.length;i++){
 var sid=pack.ids[i];say("Сохраняю "+(i+1)+" из 6: "+story(sid).name);
-await saveBook(sid,pack.books[sid]);embeddedText[sid]=true;
+await saveBook(sid,pack.books[sid]);embeddedText[sid]=sid!=="thumbelina";
 }
 try{localStorage.setItem("nikole-embedded-text",JSON.stringify(embeddedText))}catch(error){}
 if(!photoIsSet&&pack.photos.length){await photoWriteAll(pack.photos);selectedPhoto=0;try{localStorage.setItem("nikole-personal-current","0")}catch(error){}await photoReload()}
