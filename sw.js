@@ -1,5 +1,5 @@
 const CACHE='moi-dela-v1.2.0-beta';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./apple-touch-icon.png','./icon.svg'];
+const ASSETS=['./','./index.html','./styles.css','./app.js','./sync.js','./manifest.webmanifest','./apple-touch-icon.png','./icon.svg'];
 self.addEventListener('install', e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate', e=>e.waitUntil(Promise.all([self.clients.claim(), caches.keys().then(keys=>Promise.all(keys.filter(x=>x!==CACHE).map(x=>caches.delete(x))))])));
 self.addEventListener('fetch',e=>{
