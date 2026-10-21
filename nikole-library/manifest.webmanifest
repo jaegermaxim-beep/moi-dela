@@ -1,0 +1,20 @@
+{
+  "name": "Мир Николь — библиотека сказок",
+  "short_name": "Мир Николь",
+  "lang": "ru",
+  "description": "Шесть сказок по десять страниц для спокойного семейного чтения",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fbf7f0",
+  "theme_color": "#fbf7f0",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
