@@ -21,6 +21,12 @@ with sync_playwright() as p:
         page.evaluate('init()')
         page.wait_for_function("document.querySelector('#engine-text').textContent === 'Trained model ready'",timeout=30000)
         print(name,'mae',page.locator('#kpi-mae').inner_text(),'funding',page.locator('#kpi-funding').inner_text(),'ETA',page.locator('#eta').inner_text())
+        assert page.locator('#kpi-surplus').inner_text() != '—'
+        assert page.locator('#reference-status').inner_text() != '—'
+        assert 'liquidity surplus' in page.locator('.kpis').inner_text().lower()
+        page.locator('#bau-reference').fill('500');page.locator('#bau-reference').dispatch_event('input')
+        assert page.locator('#reference-status').inner_text() != 'WITHIN BAU REFERENCE'
+        page.locator('#bau-reference').fill('1200');page.locator('#bau-reference').dispatch_event('input')
         before=page.locator('#kpi-funding').inner_text()
         page.locator('#delay').fill('90');page.locator('#delay').dispatch_event('input')
         print(name,'stressed funding',page.locator('#kpi-funding').inner_text())
