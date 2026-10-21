@@ -4,7 +4,8 @@
 const CONFIG_KEY='moi-dela-cloud-config-v1';
 const SESSION_KEY='moi-dela-cloud-session-v1';
 const $=s=>document.querySelector(s);
-let config=read(CONFIG_KEY)||{}, session=read(SESSION_KEY)||null;
+const DEFAULT_CONFIG={url:'https://gngbuxdmsrywmjpfyhdk.supabase.co',key:'sb_publishable_TdqXt42Sr5avgVFG5PZ7CQ_yfdX45nC'};
+let config={...DEFAULT_CONFIG,...(read(CONFIG_KEY)||{})}, session=read(SESSION_KEY)||null;
 let ready=false,busy=false,rerun=false,timer=null;
 let state='off',detail='';
 function read(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}}
