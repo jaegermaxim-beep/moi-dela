@@ -1,6 +1,6 @@
 /* Nicole stories offline shell v2.8 — only stable, known-good assets */
-const CACHE="nikole-books-v12";
-const ASSETS=["./index.html","./manifest.webmanifest","./icon.svg"];
+const CACHE="nikole-books-v13";
+const ASSETS=["./index.html","./scene-art.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
 });
