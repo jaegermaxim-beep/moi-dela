@@ -40,7 +40,7 @@ var STORIES=[
 var db=null,screen="home",id=null,page=0,sleep=false,images={},urls=[],toastTimer=null,parentTimer=null,importId=null;
 var favorites={};try{favorites=JSON.parse(localStorage.getItem("nikole-storybook-favorites")||"{}")||{}}catch(e){}
 var root=document.getElementById("app"),toast=document.getElementById("toast");
-var holdButton=null,holdStarted=0,holdCompleted=false;
+var holdButton=null,holdStarted=0,holdCompleted=false,lastSwipeAt=0;
 function say(s){toast.textContent=s;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){toast.classList.remove("show")},3100)}
 function story(sid){return STORIES.find(function(x){return x.id===sid})}
 function svg(id) {
@@ -87,7 +87,7 @@ function drawReader(){var s=story(id);if(!s){goHome();return}var art=images[page
 root.innerHTML='<main class="reader'+(sleep?' sleep':'')+'"><header class="reader-head"><button class="round" data-home="1" aria-label="Все сказки">⌂</button><strong class="story-name">'+s.name+'</strong><button class="round sleep-toggle" data-sleep="1" aria-label="'+(sleep?'Выключить':'Включить')+' спокойный режим">'+(sleep?'☀':'☾')+'</button></header><div class="progress">'+s.text.map(function(t,i){return '<span class="'+(i===page?'active':'')+'"></span>'}).join("")+'</div><section class="story-stage" style="--card:'+s.card+'" id="storyStage">'+art+'<button class="tap left" data-turn="-1" aria-label="Предыдущая страница"></button><button class="tap right" data-turn="1" aria-label="Следующая страница"></button><span class="decor">Листай пальчиком ✦</span></section><section class="story-copy"><p class="count">'+(page+1)+' из 10</p><h1 class="story-line">'+s.text[page]+'</h1></section><div class="story-controls"><button data-turn="-1" '+(page===0?'disabled':'')+'>← Назад</button><button class="next" data-turn="1">'+(page===9?'Сначала ↻':'Дальше →')+'</button></div></main>';
 var stage=document.getElementById("storyStage"),x0=null,y0=null,moved=false;
 stage.addEventListener("touchstart",function(e){x0=e.changedTouches[0].clientX;y0=e.changedTouches[0].clientY;moved=false},{passive:true});
-stage.addEventListener("touchend",function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.25){moved=true;turn(dx<0?1:-1)}x0=null},{passive:true});
+stage.addEventListener("touchend",function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.25){moved=true;lastSwipeAt=Date.now();turn(dx<0?1:-1)}x0=null},{passive:true});
 stage.addEventListener("click",function(e){if(moved){moved=false;e.preventDefault();e.stopPropagation()}},true);
 }
 async function drawParents(){var recs=await loadAll(),amount=recs.reduce(function(a,x){return a+(x.size||0)},0);
@@ -104,7 +104,7 @@ document.getElementById("fileInput").addEventListener("change",async function(e)
 root.addEventListener("click",async function(e){var el=e.target.closest("button");if(!el)return;var d=el.dataset;
 if(d.book){await openBook(d.book)}
 else if(d.home){goHome()}
-else if(d.turn){turn(Number(d.turn))}
+else if(d.turn){if(Date.now()-lastSwipeAt>=550)turn(Number(d.turn))}
 else if(d.sleep){sleep=!sleep;drawReader()}
 else if(d.import){if(!db){say("Хранилище недоступно");return}var existing=getCount(d.import,await loadAll());if(existing && !confirm("Заменить "+existing+" ранее загруженных картинок в книге? Оригиналы в Dropbox останутся."))return;importId=d.import;document.getElementById("fileInput").click()}
 else if(d.clearList){var panel=document.getElementById("clearPanel");panel.innerHTML=STORIES.map(function(s){return '<button class="action secondary" style="margin:6px 6px 0 0" data-clear="'+s.id+'">'+s.name+'</button>'}).join("")}
