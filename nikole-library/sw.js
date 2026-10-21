@@ -1,6 +1,6 @@
-/* Nicole stories offline shell v4.5 — 10-page illustrated bunny story and easy ZIP import */
-const CACHE="nikole-books-v17";
-const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./manifest.webmanifest","./icon.svg"];
+/* Nicole stories offline shell v5.0 — calm stories and manual parent-led reading */
+const CACHE="nikole-books-v18";
+const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
 });
