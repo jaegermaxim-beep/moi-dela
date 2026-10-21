@@ -1,5 +1,5 @@
-/* Nicole stories offline shell v4.3 — animal-specific tap games and private illustrated stories */
-const CACHE="nikole-books-v15";
+/* Nicole stories offline shell v4.4 — animated ears, wings, beaks, whiskers and species-specific reactions */
+const CACHE="nikole-books-v16";
 const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
