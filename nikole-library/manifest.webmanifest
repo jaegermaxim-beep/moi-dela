@@ -2,11 +2,10 @@
   "name": "Мир Николь — добрые сказки",
   "short_name": "Мир Николь",
   "lang": "ru",
-  "description": "Сказки и короткие спокойные истории про Ася и Клео для совместного чтения с Николь, в том числе офлайн.",
+  "description": "Сказки, анимации и спокойные истории для совместного чтения с Николь на iPhone и iPad, в том числе офлайн.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
   "background_color": "#fff9f2",
   "theme_color": "#fff9f2",
   "icons": [
