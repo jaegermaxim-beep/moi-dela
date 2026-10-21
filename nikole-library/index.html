@@ -92,6 +92,36 @@
 .scene-unavailable{display:grid;place-items:center;text-align:center;padding:28px;font-size:20px;line-height:1.45;color:#705e74;font-weight:750}
 .reader.sleep .story-stage .scene-host{filter:none}
 @media(max-height:710px){.story-stage .scene-host{height:100%}}
+
+/* Interactive summer postcard: large hit target, one-tap delight, no automatic sounds. */
+.summer-card{width:100%;border:0;color:inherit;text-align:left;font:inherit;cursor:pointer;touch-action:manipulation;min-height:128px;box-shadow:0 6px 22px #855d8310}
+.summer-card:focus-visible{outline:4px solid #a979cb;outline-offset:4px}
+.summer-card:active{transform:scale(.985)}
+.summer-card .summer-photo{pointer-events:none}
+.surprise-layer{display:none;position:fixed;inset:0;z-index:80;overflow:hidden;pointer-events:none;isolation:isolate}
+.surprise-layer.playing{display:block}
+.hop-rabbit{position:absolute;bottom:22%;left:0;width:150px;height:193px;filter:drop-shadow(0 9px 10px #68516a30);animation:hop-across 4.3s ease-in-out forwards}
+.hop-rabbit svg{height:100%;width:100%;display:block}
+.surprise-float{position:absolute;left:var(--x);top:var(--y);font-size:35px;opacity:0;animation:float-surprise 2.6s ease-out var(--delay) both;filter:drop-shadow(0 3px 5px #83657330)}
+.surprise-message{position:absolute;left:50%;top:20%;width:max-content;max-width:90%;transform:translateX(-50%);border-radius:23px;padding:11px 17px;background:#fff8f0e9;color:#755080;font-size:clamp(18px,5.3vw,25px);font-weight:950;box-shadow:0 7px 20px #7551762c;opacity:0;animation:message-surprise 4.1s ease both}
+@keyframes hop-across{
+0%{transform:translate3d(-170px,0,0) rotate(-5deg)}
+9%{transform:translate3d(calc(10vw - 120px),-95px,0) rotate(4deg)}
+18%{transform:translate3d(calc(22vw - 110px),0,0) rotate(-4deg)}
+28%{transform:translate3d(calc(35vw - 100px),-120px,0) rotate(6deg)}
+39%{transform:translate3d(calc(48vw - 90px),0,0) rotate(-3deg)}
+52%{transform:translate3d(calc(64vw - 80px),-115px,0) rotate(6deg)}
+64%{transform:translate3d(calc(78vw - 75px),0,0) rotate(-4deg)}
+77%{transform:translate3d(calc(91vw - 65px),-90px,0) rotate(4deg)}
+100%{transform:translate3d(calc(100vw + 170px),0,0) rotate(-4deg)}
+}
+@keyframes float-surprise{0%{opacity:0;transform:translate3d(0,35px,0) rotate(0)}25%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate3d(10px,-90px,0) rotate(var(--rotate))}}
+@keyframes message-surprise{0%,7%{opacity:0;transform:translate(-50%,18px) scale(.85)}17%,75%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-25px) scale(.94)}}
+@media(prefers-reduced-motion:reduce){
+.hop-rabbit{animation:none;left:50%;bottom:30%;transform:translateX(-50%)}
+.surprise-float{animation:none;opacity:.85}
+.surprise-message{animation:none;opacity:1}
+}
 </style>
 </head>
 <body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><input class="file-hidden" id="fileInput" type="file" accept="image/*" multiple><input class="file-hidden" id="nicolePhotoInput" type="file" accept="image/*" multiple><input class="file-hidden" id="zipInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><input class="file-hidden" id="bundleInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><script src="./scene-art.js"></script><script>
@@ -112,7 +142,7 @@ var STORIES=[
 {id:"seva",bonus:true,name:"Зайчик Сева",short:"Зайчик Сева",emoji:"🐇",card:"#e1ede5",text:Array(10).fill("Листаем сказку вместе.")}
 ];
 var privatePhotos=[],photoIsSet=false,selectedPhoto=0,embeddedText={};try{embeddedText=JSON.parse(localStorage.getItem("nikole-embedded-text")||"{}")||{}}catch(e){}try{selectedPhoto=Math.max(0,Number(localStorage.getItem("nikole-personal-current")||0)||0)}catch(e){}
-var unlockedBonus={},importedCovers={},coverObjectUrls=[],installedCounts={};
+var unlockedBonus={},importedCovers={},coverObjectUrls=[],installedCounts={};var surpriseTimer=null;
 var db=null,screen="home",id=null,page=0,sleep=false,images={},urls=[],toastTimer=null,parentTimer=null,importId=null;
 var favorites={};try{favorites=JSON.parse(localStorage.getItem("nikole-storybook-favorites")||"{}")||{}}catch(e){}
 var root=document.getElementById("app"),toast=document.getElementById("toast");
@@ -192,10 +222,33 @@ function photoView(index){
 var n=index===undefined?selectedPhoto:index;
 return privatePhotos.length?'<img src="'+privatePhotos[n%privatePhotos.length]+'" alt="Личная фотография Николь">':'<span aria-label="Яркое летнее платье">👗</span>';
 }
-function summerCard(){return '<section class="summer-card"><div class="summer-copy"><small>🌸 НАШЕ МАЛЕНЬКОЕ ЛЕТО</small><b>Николь и её сказки</b><small>Цветы, солнце и яркие платья</small></div><button class="summer-photo" data-photo-next="1" aria-label="Следующее фото Николь">'+photoView()+'</button></section>'}
+function summerCard(){return '<button class="summer-card" type="button" data-summer-play="1" aria-label="Николь и её сказки: нажми, чтобы зайчик Ась попрыгал"><span class="summer-copy"><small>🌸 НАШЕ МАЛЕНЬКОЕ ЛЕТО</small><b>Николь и её сказки</b><small>Нажми! Зайчик Ась будет прыгать 🐰</small></span><span class="summer-photo">'+photoView()+'</span></button>'}
 function photoStrip(){return privatePhotos.map(function(u,i){return '<button class="photo-tile'+(selectedPhoto===i?' chosen':'')+'" data-photo-select="'+i+'" aria-label="Выбрать фото '+(i+1)+'"><img src="'+u+'" alt="Фото Николь '+(i+1)+'"></button>'}).join("")}
 function bookButton(s,big){return '<button class="book'+(big?' big':'')+'" style="--card:'+s.card+'" data-book="'+s.id+'" aria-label="Открыть сказку '+s.name+'"><div class="book-text">'+(big?'<span class="mini-stars">✦ ✧ ✦</span>':'')+'<div class="name">'+(s.bonus?s.short:s.name)+'</div>'+(big?'<div class="sub">Нажми, чтобы читать</div>':'')+'</div><span class="art">'+(importedCovers[s.id]?'<img class="import-cover" src="'+importedCovers[s.id]+'" alt="Первая страница сказки '+s.name+'">' :s.bonus?'<span class="bonus-art">'+s.emoji+'</span>':svg(s.id))+'</span>'+(favorites[s.id]?'<span class="bookmark-heart">♥</span>':'')+'</button>'}
-function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>Нажми на любимого зверька 🧸</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3,7).map(function(s){return bookButton(s,false)}).join("")+'</div>'+(STORIES.some(function(s){return s.bonus&&unlockedBonus[s.id]})?'<div class="section-heading more-heading"><h2>Новые книжки</h2><small>Наши истории ✨</small></div><div class="books">'+STORIES.filter(function(s){return s.bonus&&unlockedBonus[s.id]}).map(function(s){return bookButton(s,false)}).join("")+'</div>':'')+'<div class="footer-note">С любовью для Николь ✨ · v4.0</div></main>';attachParentHold()}
+
+/* Personal postcard always reacts, even before any photos are imported. */
+function playSurprise(){
+var layer=document.getElementById("surpriseLayer");
+if(!layer)return;
+if(surpriseTimer){clearTimeout(surpriseTimer);surpriseTimer=null}
+var decorations=[
+["🌸","13%","70%","0s"],["🌼","36%","23%",".35s"],["✨","71%","48%",".8s"],
+["🌷","85%","75%","1.1s"],["💛","55%","15%",".55s"],["🦋","19%","30%",".95s"],
+["⭐","91%","29%","1.4s"],["🌸","56%","68%","1.65s"]
+];
+layer.innerHTML='<div class="hop-rabbit">'+svg("rabbit")+'</div>'+decorations.map(function(f,i){
+return '<span class="surprise-float" style="--x:'+f[1]+';--y:'+f[2]+';--delay:'+f[3]+';--rotate:'+(i%2?"25deg":"-25deg")+'">'+f[0]+'</span>'
+}).join("")+'<div class="surprise-message">Прыг-скок! Привет, Николь! 🐰</div>';
+layer.classList.remove("playing");
+// Re-trigger the keyframe sequence for each tap.
+void layer.offsetWidth;
+layer.classList.add("playing");
+if(navigator.vibrate)try{navigator.vibrate(25)}catch(error){}
+surpriseTimer=setTimeout(function(){
+layer.classList.remove("playing");layer.innerHTML="";surpriseTimer=null
+},4600);
+}
+function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>Нажми на любимого зверька 🧸</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3,7).map(function(s){return bookButton(s,false)}).join("")+'</div>'+(STORIES.some(function(s){return s.bonus&&unlockedBonus[s.id]})?'<div class="section-heading more-heading"><h2>Новые книжки</h2><small>Наши истории ✨</small></div><div class="books">'+STORIES.filter(function(s){return s.bonus&&unlockedBonus[s.id]}).map(function(s){return bookButton(s,false)}).join("")+'</div>':'')+'<div class="footer-note">С любовью для Николь ✨ · v4.2</div></main><div class="surprise-layer" id="surpriseLayer" aria-hidden="true"></div>';attachParentHold()}
 function drawReader(){var s=story(id);if(!s){goHome();return}var pictureHasText=!!images[page] && textIsEmbedded(id);var scene=(!s.bonus&&window.NicoleSceneArt)?window.NicoleSceneArt.render(id,page,svg):"";var art=images[page]?'<img alt="Иллюстрация страницы '+(page+1)+'" src="'+images[page]+'">':scene?'<div class="main-animal scene-host" data-illustration-page="'+(page+1)+'">'+scene+'</div>':'<div class="scene-unavailable" role="status">Иллюстрация пока недоступна. Обновите страницу при включённом интернете.</div>';
 root.innerHTML='<main class="reader'+(sleep?' sleep':'')+'"><header class="reader-head"><button class="round" data-home="1" aria-label="Все сказки">⌂</button><strong class="story-name">'+s.name+'</strong><button class="round sleep-toggle" data-sleep="1" aria-label="'+(sleep?'Выключить':'Включить')+' спокойный режим">'+(sleep?'☀':'☾')+'</button></header><div class="progress">'+s.text.map(function(t,i){return '<span class="'+(i===page?'active':'')+'"></span>'}).join("")+'</div><section class="story-stage" style="--card:'+s.card+'" id="storyStage">'+art+'<button class="tap left" data-turn="-1" aria-label="Предыдущая страница"></button><button class="tap right" data-turn="1" aria-label="Следующая страница"></button><span class="decor">Листай пальчиком ✦</span></section><section class="story-copy"><p class="count">'+(page+1)+' из 10</p>'+(pictureHasText?'':'<h1 class="story-line">'+s.text[page]+'</h1>')+'</section><div class="story-controls"><button data-turn="-1" '+(page===0?'disabled':'')+'>← Назад</button><button class="next" data-turn="1">'+(page===9?'Сначала ↻':'Дальше →')+'</button></div></main>';
 var stage=document.getElementById("storyStage"),x0=null,y0=null,moved=false;
@@ -343,7 +396,7 @@ if(d.book){await openBook(d.book)}
 else if(d.home){goHome()}
 else if(d.turn){if(Date.now()-lastSwipeAt>=550)turn(Number(d.turn))}
 else if(d.sleep){sleep=!sleep;drawReader()}
-else if(d.photoNext){if(privatePhotos.length>1){selectedPhoto=(selectedPhoto+1)%privatePhotos.length;try{localStorage.setItem("nikole-personal-current",String(selectedPhoto))}catch(e){}drawHome()}}
+else if(d.summerPlay||d.photoNext){if(privatePhotos.length>1){selectedPhoto=(selectedPhoto+1)%privatePhotos.length;try{localStorage.setItem("nikole-personal-current",String(selectedPhoto))}catch(e){}drawHome()}playSurprise()}
 else if(d.photoSelect!==undefined){selectedPhoto=Number(d.photoSelect)||0;try{localStorage.setItem("nikole-personal-current",String(selectedPhoto))}catch(e){}await drawParents()}
 else if(d.textmode){embeddedText[d.textmode]=!textIsEmbedded(d.textmode);try{localStorage.setItem("nikole-embedded-text",JSON.stringify(embeddedText))}catch(e){}await drawParents()}
 else if(d.zip){if(!db){say("Хранилище недоступно");return}var existing=installedCounts[d.zip]||0;if(existing && !confirm("Заменить "+existing+" загруженных страниц этой книги новым ZIP?"))return;importId=d.zip;document.getElementById("zipInput").click()}
