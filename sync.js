@@ -154,5 +154,5 @@ window.addEventListener('offline',()=>status('offline'));
 setInterval(()=>{if(!document.hidden)schedule(1000)},45000);
 window.MoiDelaCloud={settingsHTML,syncNow:sync};
 // The app may initialize before this script downloads on a slow mobile connection.
-if(window.MoiDelaBridge?.initialized){ready=true;status(session?'idle':'off');schedule(500)}
+if(window.MoiDelaBridge?.initialized){ready=true;window.MoiDelaBridge.refresh();status(session?'idle':'off');schedule(500)}
 })();
