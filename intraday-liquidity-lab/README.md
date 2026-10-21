@@ -27,7 +27,7 @@ python -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
-The training script deterministically rebuilds `model.json`, `model/training_report.json`, and `model/parity_cases.json`.
+The training script deterministically rebuilds `model.json`, `model-packed.json`, `model/training_report.json`, and `model/parity_cases.json`.
 
 ## Safety and interpretation
 
