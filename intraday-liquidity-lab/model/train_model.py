@@ -5,6 +5,8 @@ not a claim that any bank uses the implementation or feature set.
 """
 from __future__ import annotations
 import json
+import gzip
+import base64
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -121,6 +123,9 @@ def fit_and_export():
               "baseline_medians":{f"{a}::{b}":round(float(c),5) for (a,b),c in med.items()},
               "global_baseline":float(np.median(ytr)),"metrics":metrics}
     with open(ROOT/'model.json','w') as f:json.dump(exported,f,separators=(',',':'))
+    # Portable, static-hosting-friendly compressed model for browser inference.
+    packed=base64.b64encode(gzip.compress((ROOT/'model.json').read_bytes(),compresslevel=9,mtime=0)).decode('ascii')
+    with open(ROOT/'model-packed.json','w') as f:json.dump({'encoding':'gzip-base64','data':packed},f,separators=(',',':'))
     with open(ROOT/'model'/'training_report.json','w') as f:json.dump(metrics,f,indent=2)
     # Small subset for parity and schema tests, explicitly synthetic.
     examples=[]
