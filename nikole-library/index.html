@@ -170,6 +170,26 @@
 @keyframes calm-ear-right{0%,100%{transform:rotate(0)}45%{transform:rotate(12deg)}}
 @keyframes calm-tail{0%,100%{transform:rotate(0)}45%{transform:rotate(10deg)}}
 @media(prefers-reduced-motion:reduce){.calm-first .calm-illustration .animal-ear-left,.calm-first .calm-illustration .animal-ear-right,.calm-first .calm-illustration .animal-tail{animation:none}}
+
+/* v5.1: a parent can finish at any calm page or choose a fully screen-free route. */
+.calm-entry button.calm-screenless{grid-column:1/-1;min-height:52px;background:#f9f7f0;color:#6b6171;border:1px solid #dcd8ce;font-size:15px}
+.calm-actions .calm-exit-early{background:transparent;color:#847485;border:1.5px solid #dcd2db;font-size:16px;min-height:54px}
+.calm-actions .calm-exit-early:active{background:#efeaec}
+.calm-support{background:#f2f0e9;color:#55525b;justify-content:center;text-align:left;padding-inline:clamp(19px,6vw,34px)}
+.calm-support .quiet-label{font-size:14px;letter-spacing:.04em;color:#8b858c;font-weight:850}
+.calm-support h1{font-size:clamp(28px,7vw,37px);line-height:1.16;letter-spacing:-.04em;margin:0}
+.calm-support>p{font-size:18px;line-height:1.46;margin:0;color:#756e78}
+.calm-support .support-steps{background:#fffdf7;padding:16px 17px;border-radius:20px;display:flex;flex-direction:column;gap:13px}
+.calm-support .support-step{display:flex;align-items:flex-start;gap:11px;font-size:17px;line-height:1.4;color:#5e5761}
+.calm-support .support-step .support-number{background:#e8eee2;color:#526759;display:grid;place-items:center;font-size:14px;font-weight:900;flex:0 0 31px;height:31px;border-radius:11px}
+.calm-support .calm-off{background:#dfe8e0;color:#425b49;font-size:18px;border:0;border-radius:19px;min-height:64px;padding:10px 18px;font-weight:950}
+.calm-support .exit-quiet{border:0;background:transparent;color:#91858e;min-height:46px;font-size:14px;font-weight:700}
+.calm-away{min-height:100dvh;background:#161b22;color:#d9ddd9;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:15px;padding:24px}
+.calm-away .quiet-symbol{font-size:54px;line-height:1.2;color:#c9d9c9}
+.calm-away h1{font-size:clamp(25px,7vw,35px);margin:0;font-weight:850;letter-spacing:-.045em}
+.calm-away p{max-width:310px;font-size:18px;line-height:1.5;margin:0;color:#b9c3bc}
+.calm-away .exit-quiet{position:absolute;bottom:calc(9px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:none;border:0;color:#8a948e;font-size:13px;min-height:50px;padding:14px}
+@media(max-height:670px){.calm-support{gap:10px}.calm-support .support-steps{gap:10px;padding:12px}.calm-support .support-step{font-size:15px}}
 </style>
 </head>
 <body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite"></div><input class="file-hidden" id="fileInput" type="file" accept="image/*" multiple><input class="file-hidden" id="nicolePhotoInput" type="file" accept="image/*" multiple><input class="file-hidden" id="zipInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><input class="file-hidden" id="bundleInput" type="file" accept=".zip,application/zip,application/x-zip-compressed"><script src="./scene-art.js"></script><script src="./animal-games.js"></script><script src="./calm-scenes.js"></script><script>
@@ -308,7 +328,7 @@ var item=all[calmStep];
 if(!item){drawCalmEnd();return}
 var art=window.NicoleCalmArt?window.NicoleCalmArt.render(calmAnimal,calmStep,svg):'<div class="calm-fallback">'+svg(calmAnimal)+'</div>';
 var who=calmAnimal==="cleo"?"Клео":"Ась";
-root.innerHTML='<main class="calm-screen'+(calmStep===0?' calm-first':'')+'" aria-label="Спокойная история про '+who+'"><header class="calm-head"><span class="calm-topline">♡ Тихая минутка с '+who+'</span><button type="button" data-calm-exit="1" aria-label="Выйти из спокойного режима">Выйти</button></header><div class="calm-progress" aria-label="Шаг '+(calmStep+1)+' из 4">'+all.map(function(_,i){return '<span'+(i===calmStep?' class="active"':'')+'></span>'}).join("")+'</div><div class="calm-image-wrap" aria-hidden="true">'+art+'</div><section class="calm-text"><h1>'+item.title+'</h1><p>'+item.text+'</p></section><div class="calm-actions"><button type="button" data-calm-next="1"'+(calmStep===3?' class="final"':'')+'>'+(calmStep===3?'Обнимемся и закончим ♡':'Дальше →')+'</button></div><p class="calm-caption">Читайте вместе в своём темпе. Ничего не начнётся само.</p></main>';
+root.innerHTML='<main class="calm-screen'+(calmStep===0?' calm-first':'')+'" aria-label="Спокойная история про '+who+'"><header class="calm-head"><span class="calm-topline">♡ Тихая минутка с '+who+'</span><button type="button" data-calm-exit="1" aria-label="Выйти из спокойного режима">Выйти</button></header><div class="calm-progress" aria-label="Шаг '+(calmStep+1)+' из 4">'+all.map(function(_,i){return '<span'+(i===calmStep?' class="active"':'')+'></span>'}).join("")+'</div><div class="calm-image-wrap" aria-hidden="true">'+art+'</div><section class="calm-text"><h1>'+item.title+'</h1><p>'+item.text+'</p></section><div class="calm-actions"><button type="button" data-calm-next="1"'+(calmStep===3?' class="final"':'')+'>'+(calmStep===3?'Обнимемся и закончим ♡':'Дальше →')+'</button>'+(calmStep<3?'<button type="button" class="calm-exit-early" data-calm-finish="1">Уже спокойнее — закончим ♡</button>':'')+'</div><p class="calm-caption">Читайте вместе в своём темпе. Ничего не начнётся само.</p></main>';
 }
 function advanceCalm(){
 if(screen!=="calm")return;
@@ -321,9 +341,17 @@ root.innerHTML='<main class="calm-screen calm-end"><div class="calm-end-art" ari
 }
 function finishCalm(){
 if(screen!=="calm-end")return;
-root.innerHTML='<main class="calm-screen calm-end"><div class="calm-end-art" aria-hidden="true">♡</div><h1>Обнимемся?</h1><p>Можно убрать телефон. Ась и Клео тоже отдыхают.</p><button class="exit-small" type="button" data-calm-exit="1">К сказкам</button></main>';
+showCalmAway();
 }
-function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>На зверька — играть, на название — читать 🧸</p></section><section class="calm-entry" aria-label="Помогаем успокоиться"><div class="calm-entry-heading">♡ Когда Николь нужно успокоиться</div><div class="calm-entry-actions"><button type="button" class="start-rabbit" data-calm-start="rabbit">🐰 Ась рядом</button><button type="button" class="start-cat" data-calm-start="cleo">🐱 Клео рядом</button></div><p>Четыре спокойные картинки вместе с родителем. Потом — обниматься и отдыхать.</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3,7).map(function(s){return bookButton(s,false)}).join("")+'</div>'+(STORIES.some(function(s){return s.bonus&&unlockedBonus[s.id]})?'<div class="section-heading more-heading"><h2>Новые книжки</h2><small>Наши истории ✨</small></div><div class="books">'+STORIES.filter(function(s){return s.bonus&&unlockedBonus[s.id]}).map(function(s){return bookButton(s,false)}).join("")+'</div>':'')+'<div class="footer-note">С любовью для Николь ✨ · v5.0</div></main><div class="surprise-layer" id="surpriseLayer" aria-hidden="true"></div>';attachParentHold()}
+function showCalmAway(){
+screen="calm-away";
+root.innerHTML='<main class="calm-away" aria-label="Телефон отдыхает"><div class="quiet-symbol" aria-hidden="true">♡</div><h1>Побудем вместе</h1><p>Телефон можно заблокировать. Ась и Клео тоже отдыхают.</p><button type="button" class="exit-quiet" data-calm-exit="1">Вернуться к сказкам</button></main>';
+}
+function openScreenFree(){
+screen="screen-free";
+root.innerHTML='<main class="calm-screen calm-support" aria-label="Подсказки взрослому без мультфильмов"><span class="quiet-label">♡ ТИХАЯ МИНУТКА БЕЗ ЭКРАНА</span><h1>Я рядом, Николь</h1><p>Если картинки не помогают, необязательно продолжать. Можно просто побыть рядом.</p><section class="support-steps"><div class="support-step"><span class="support-number">1</span><span>Присядьте рядом и скажите тихо: «Я рядом».</span></div><div class="support-step"><span class="support-number">2</span><span>Предложите обнять Николь, только если она хочет.</span></div><div class="support-step"><span class="support-number">3</span><span>Проверьте: не устала ли она, не голодна ли и нет ли боли или другого дискомфорта.</span></div></section><button class="calm-off" type="button" data-calm-off="1">Убираем телефон ♡</button><button class="exit-quiet" type="button" data-calm-exit="1">Вернуться к сказкам</button></main>';
+}
+function drawHome(){root.innerHTML='<main class="home"><header class="head"><div class="brand"><span class="head-photo">'+photoView()+'</span>МИР НИКОЛЬ</div><button class="parent-access" aria-label="Родительские настройки, удерживайте две секунды" title="Родителям: удерживать 2 секунды" data-parent="1">⚙</button></header><section class="intro"><span class="eyebrow">Для нашей маленькой Николь ♡</span><h1>Выбирай сказку!</h1><p>На зверька — играть, на название — читать 🧸</p></section><section class="calm-entry" aria-label="Помогаем успокоиться"><div class="calm-entry-heading">♡ Когда Николь нужно успокоиться</div><div class="calm-entry-actions"><button type="button" class="start-rabbit" data-calm-start="rabbit">🐰 Ась рядом</button><button type="button" class="start-cat" data-calm-start="cleo">🐱 Клео рядом</button><button type="button" class="calm-screenless" data-calm-no-screen="1">♡ Просто рядом — без экрана</button></div><p>Короткие истории вместе с родителем. Или несколько спокойных подсказок взрослому — и убрать телефон.</p></section>'+summerCard()+'<div class="section-heading"><h2>Любимые зверята</h2><small>Одно касание</small></div><div class="books">'+STORIES.slice(0,3).map(function(s,i){return bookButton(s,i===0)}).join("")+'</div><div class="section-heading more-heading"><h2>Ещё истории</h2><small>Листай ниже ↓</small></div><div class="books">'+STORIES.slice(3,7).map(function(s){return bookButton(s,false)}).join("")+'</div>'+(STORIES.some(function(s){return s.bonus&&unlockedBonus[s.id]})?'<div class="section-heading more-heading"><h2>Новые книжки</h2><small>Наши истории ✨</small></div><div class="books">'+STORIES.filter(function(s){return s.bonus&&unlockedBonus[s.id]}).map(function(s){return bookButton(s,false)}).join("")+'</div>':'')+'<div class="footer-note">С любовью для Николь ✨ · v5.1</div></main><div class="surprise-layer" id="surpriseLayer" aria-hidden="true"></div>';attachParentHold()}
 function drawReader(){var s=story(id);if(!s){goHome();return}var pictureHasText=!!images[page] && textIsEmbedded(id);var scene=(!s.bonus&&window.NicoleSceneArt)?window.NicoleSceneArt.render(id,page,svg):"";var art=images[page]?'<img alt="Иллюстрация страницы '+(page+1)+'" src="'+images[page]+'">':scene?'<div class="main-animal scene-host" data-illustration-page="'+(page+1)+'">'+scene+'</div>':'<div class="scene-unavailable" role="status">Иллюстрация пока недоступна. Обновите страницу при включённом интернете.</div>';
 root.innerHTML='<main class="reader'+(sleep?' sleep':'')+'"><header class="reader-head"><button class="round" data-home="1" aria-label="Все сказки">⌂</button><strong class="story-name">'+s.name+'</strong><button class="round sleep-toggle" data-sleep="1" aria-label="'+(sleep?'Выключить':'Включить')+' спокойный режим">'+(sleep?'☀':'☾')+'</button></header><div class="progress">'+s.text.map(function(t,i){return '<span class="'+(i===page?'active':'')+'"></span>'}).join("")+'</div><section class="story-stage" style="--card:'+s.card+'" id="storyStage">'+art+'<button class="tap left" data-turn="-1" aria-label="Предыдущая страница"></button><button class="tap right" data-turn="1" aria-label="Следующая страница"></button><span class="decor">Листай пальчиком ✦</span></section><section class="story-copy"><p class="count">'+(page+1)+' из 10</p>'+(pictureHasText?'':'<h1 class="story-line">'+s.text[page]+'</h1>')+'</section><div class="story-controls"><button data-turn="-1" '+(page===0?'disabled':'')+'>← Назад</button><button class="next" data-turn="1">'+(page===9?'Сначала ↻':'Дальше →')+'</button></div></main>';
 var stage=document.getElementById("storyStage"),x0=null,y0=null,moved=false;
@@ -468,7 +496,10 @@ say("Готово! Шесть иллюстрированных сказок те
 });
 root.addEventListener("click",async function(e){var el=e.target.closest("button");if(!el)return;var d=el.dataset;
 if(d.calmStart){startCalm(d.calmStart)}
+else if(d.calmNoScreen){openScreenFree()}
 else if(d.calmNext){advanceCalm()}
+else if(d.calmFinish&&screen==="calm"){drawCalmEnd()}
+else if(d.calmOff&&screen==="screen-free"){showCalmAway()}
 else if(d.calmDone){finishCalm()}
 else if(d.calmExit){goHome()}
 else if(d.book){if(window.NicoleAnimalGames&&window.NicoleAnimalGames.hitAnimal(e,el)){playSurprise(d.book)}else{await openBook(d.book)}}
@@ -486,7 +517,7 @@ else if(d.import){if(!db){say("Хранилище недоступно");return}
 else if(d.clearList){var panel=document.getElementById("clearPanel");panel.innerHTML=STORIES.map(function(s){return '<button class="action secondary" style="margin:6px 6px 0 0" data-clear="'+s.id+'">'+s.name+'</button>'}).join("")}
 else if(d.clear){if(confirm("Удалить только загруженные изображения сказки «"+story(d.clear).name+"» с этого iPhone?")){await deleteBook(d.clear);await refreshBonus();await drawParents();say("Картинки удалены только с iPhone")}}
 });
-window.addEventListener("keydown",function(e){if(screen==="reader"&&e.key==="ArrowRight")turn(1);if(screen==="reader"&&e.key==="ArrowLeft")turn(-1);if((screen==="reader"||screen==="calm"||screen==="calm-end")&&e.key==="Escape")goHome();if(screen==="calm"&&e.key==="ArrowRight")advanceCalm()});
+window.addEventListener("keydown",function(e){if(screen==="reader"&&e.key==="ArrowRight")turn(1);if(screen==="reader"&&e.key==="ArrowLeft")turn(-1);if((screen==="reader"||screen==="calm"||screen==="calm-end"||screen==="screen-free"||screen==="calm-away")&&e.key==="Escape")goHome();if(screen==="calm"&&e.key==="ArrowRight")advanceCalm()});
 async function init(){try{db=await openDb()}catch(err){console.warn("IndexedDB is unavailable",err);say("Нет доступа к сохранению картинок")}await photoReload();await refreshBonus();drawHome();if("serviceWorker" in navigator && location.protocol.indexOf("http")===0)navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(function(reg){reg.update().catch(function(){})}).catch(function(err){console.warn(err)})}
 init();
 })();
