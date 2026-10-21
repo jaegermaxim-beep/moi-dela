@@ -1,5 +1,5 @@
-/* Nicole stories offline shell v2.8 — only stable, known-good assets */
-const CACHE="nikole-books-v13";
+/* Nicole stories offline shell v4.2 — interactive summer postcard and richer illustrations */
+const CACHE="nikole-books-v14";
 const ASSETS=["./index.html","./scene-art.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
