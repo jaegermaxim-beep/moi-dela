@@ -1,6 +1,6 @@
-/* Nicole stories offline shell v5.2 — bookmark-safe direct calm routes and offline caregiver guidance */
-const CACHE="nikole-books-v21";
-const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./manifest.webmanifest","./icon.svg"];
+/* Nicole stories offline shell v5.3 — iPhone and iPad portrait/landscape layouts plus calm mode */
+const CACHE="nikole-books-v22";
+const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./tablet.css","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
 });
