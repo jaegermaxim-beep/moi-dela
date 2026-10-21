@@ -77,10 +77,43 @@ function prop(kind,x,y,scale){
  }
  return '<g transform="translate('+x+' '+y+') scale('+scale+')" aria-hidden="true">'+c+'</g>';
 }
+
+/* Layered picture-book details. All placements are deterministic and lightweight for Safari. */
+function pictureDetails(scene,page,time){
+var out="",indoor=scene==="room"||scene==="bedroom",dark=time==="night",base=page*37+scene.length*29;
+if(indoor){
+ // Wallpaper, picture frames, wooden floor boards, lace curtains and a tiny shelf.
+ out+='<g opacity=".55">';
+ for(var k=0;k<12;k++){
+ var wx=32+(k%4)*144,wy=63+Math.floor(k/4)*120;
+ out+='<path d="M'+wx+' '+wy+'q14-23 28 0-14 23-28 0Z" fill="#fff7e6" opacity=".55"/><circle cx="'+(wx+14)+'" cy="'+(wy-1)+'" r="4" fill="#e9c7b6"/>';
+ }
+ out+='</g><path d="M0 824h720M0 879h720" stroke="#cdaea9" stroke-width="4" opacity=".38"/>';
+ out+='<path d="M32 576V126Q52 149 67 118M688 576V126q-21 23-35-8" fill="none" stroke="#fff1f1" stroke-width="19" opacity=".52"/>';
+ out+='<rect x="28" y="331" width="113" height="13" rx="7" fill="#c49c8a"/><rect x="43" y="294" width="25" height="37" rx="4" fill="#f1b7bd"/><rect x="76" y="277" width="26" height="54" rx="4" fill="#f1dca4"/><rect x="105" y="299" width="19" height="32" rx="4" fill="#a9d3c6"/>';
+ return out;
+}
+out+='<g opacity="'+(dark?".65":".9")+'">';
+for(var i=0;i<22;i++){
+ var x=(i*117+base*13)%700+10,y=615+(i*79+base*7)%270,k=.45+(i%4)*.12;
+ if(x>230&&x<500&&y>665)continue;
+ out+='<path d="M'+x+' '+y+'q-11 -16-15 -21m15 21q6-17 17-22" stroke="'+(dark?"#a5b8b3":"#6cae7e")+'" fill="none" stroke-width="'+(3*k)+'" stroke-linecap="round"/>';
+ if(i%4===0){out+='<circle cx="'+x+'" cy="'+(y-23)+'" r="'+(8*k)+'" fill="'+(dark?"#dce4cf":i%8===0?"#ffe3a4":"#f5bed0")+'"/><circle cx="'+x+'" cy="'+(y-23)+'" r="'+(3*k)+'" fill="#f2b875"/>'}
+}
+out+='</g>';
+ // Distant bushes and field borders add depth, leaving the character unobstructed.
+ out+='<path d="M0 610Q29 572 51 598q13-39 44-21 25-30 47 6v56H0ZM571 619q29-54 53-27 17-42 44-25 33-26 52 24v52H571Z" fill="'+(dark?"#7a9295":"#a0c99a")+'" opacity=".54"/>';
+ for(var z=0;z<8;z++){
+ var dx=(z*97+base*11)%680+20,dy=165+(z*57)%310;
+ if(z%3===0)out+='<path d="M'+dx+' '+dy+'q12-9 25 0 12-9 24 0" stroke="'+(dark?"#d4c9bf":"#f8f8f2")+'" opacity=".73" stroke-width="4" fill="none" stroke-linecap="round"/>';
+ else if(!dark)out+='<ellipse cx="'+dx+'" cy="'+dy+'" rx="5" ry="9" transform="rotate('+(z*45)+' '+dx+' '+dy+')" fill="#f8edd6" opacity=".6"/>';
+ }
+return out;
+}
 function background(scene,number){
 var p=envColors[scene]||envColors.meadow,night=number==="night",sunset=number==="sunset";
 var sky=night?"#34445d":sunset?"#fae2d5":p[0],horizon=night?"#6c8492":sunset?"#f2ceb3":p[1],floor=night?"#536873":sunset?"#d6c0a4":p[2];
-var bg='<rect width="720" height="900" fill="'+sky+'"/>';
+var bg='<defs><linearGradient id="nicole-sky" x1="0" y1="0" x2=".1" y2="1"><stop offset="0" stop-color="'+sky+'"/><stop offset="1" stop-color="'+horizon+'"/></linearGradient><linearGradient id="nicole-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+horizon+'"/><stop offset="1" stop-color="'+floor+'"/></linearGradient></defs><rect width="720" height="900" fill="url(#nicole-sky)"/>';
 if(scene==="room"||scene==="bedroom"){
  bg+='<rect y="585" width="720" height="315" fill="'+(night?"#7b7290":"#e9cdb8")+'"/><path d="M0 587H720" stroke="#dfbea8" stroke-width="12"/>';
  bg+=prop("window",580,222,1.08);
@@ -90,7 +123,7 @@ if(scene==="room"||scene==="bedroom"){
 }else if(scene==="nest"){
  bg+='<rect y="565" width="720" height="335" fill="#d3e1b4"/>'+prop("nest",350,742,2.4);
 }else{
- bg+='<path d="M0 555q150-95 360 6 180-111 360-2v341H0Z" fill="'+horizon+'"/><path d="M0 710q189-91 388-4 141-88 332-28v222H0Z" fill="'+floor+'"/>';
+ bg+='<path d="M0 555q150-95 360 6 180-111 360-2v341H0Z" fill="url(#nicole-ground)"/><path d="M0 710q189-91 388-4 141-88 332-28v222H0Z" fill="'+floor+'"/>';
  if(scene==="forest"||scene==="valley")bg+=prop("tree",100,462,1.6)+prop("tree",633,472,1.25);
  if(scene==="meadow"||scene==="garden"||scene==="hills")bg+=prop("tree",629,495,1.15);
  if(scene==="pond")bg+=prop("water",375,713,2.1);
@@ -109,7 +142,7 @@ var y=environment==="room"||environment==="bedroom"?373:environment==="nest"?350
 var small=environment==="room"?1:environment==="bedroom"?.92:1;
 var body=animal(id).replace(/^<svg[^>]*>/,"").replace(/<\/svg>\s*$/,"");
 var art='<svg xmlns="http://www.w3.org/2000/svg" class="story-scene" viewBox="0 0 720 900" role="img" aria-label="Сюжетная иллюстрация страницы '+(page+1)+' сказки '+id+'">';
-art+=background(environment,time);
+art+=background(environment,time)+pictureDetails(environment,page,time);
 var left=["flower","flowers","ball","butterfly","cloud","sun","sunset","dew","grain","snail","ladybug","mushroom","girl","bowl","egg","hole","bone","footprints","water","pillow","couch","mama-rabbit","mother-hen","kitten","friend-dino","baby-dino","sparkles","paw","heart","music"].includes(main);
 var pX=left?140:553,pY=["butterfly","sun","cloud","moon","stars","star","music","sparkles"].includes(main)?265:625;
 art+=prop(main,pX,pY,["couch","pillow","ball","hole","house","girl"].includes(main)?1.4:1.08);
@@ -122,7 +155,7 @@ for(var j=0;j<2;j++){var kind=j===0?main:secondary;if(!friends[kind])continue;
  art+='<g transform="translate('+fx+' '+fy+') scale('+k+')" opacity=".96">'+friendSvg+'</g>';
 }
 art+='<ellipse cx="'+(centerX+140)+'" cy="779" rx="151" ry="20" fill="#635c71" opacity=".08"/>';
-art+='<g transform="translate('+centerX+' '+y+') scale('+small+')">'+body+'</g>';
+art+='<g transform="translate('+centerX+' '+y+') scale('+small+') rotate('+((page%5-2)*2)+')">'+body+'</g>';
 if(night)art+=prop("stars",355,172,.45);
 if(main==="leaves")art+=prop("leaves",505,290,.65);
 if(main==="hidden-ball")art+=prop("ball",594,741,.44);
