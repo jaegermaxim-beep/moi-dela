@@ -329,15 +329,21 @@ function startCalm(kind){
 calmAnimal=kind==="cleo"?"cleo":"rabbit";calmStep=0;screen="calm";
 drawCalm();window.scrollTo(0,0);
 }
-/* Links are suitable for Safari bookmarks / iOS Shortcuts and contain no personal information.
-   Read once on launch, then remove 'calm' to avoid unintended re-entry when refreshing. */
+/* Retain calm links while they are open so Safari can bookmark the exact mode.
+   Remove only this parameter when returning to the usual stories home. */
+function clearCalmLink(){
+try{
+var params=new URLSearchParams(location.search||"");
+if(!params.get("calm"))return;
+params.delete("calm");
+if(window.history&&window.history.replaceState)window.history.replaceState(null,"",(location.pathname||"./")+(params.toString()?"?"+params.toString():"")+(location.hash||""));
+}catch(err){console.warn("Cannot clear quick calm link",err)}
+}
 function openCalmFromLink(){
-var mode;
-try{var params=new URLSearchParams(location.search||"");mode=params.get("calm");
+try{
+var mode=new URLSearchParams(location.search||"").get("calm");
 if(mode!=="as"&&mode!=="rabbit"&&mode!=="cleo"&&mode!=="quiet")return false;
 if(mode==="quiet")openScreenFree();else startCalm(mode==="cleo"?"cleo":"rabbit");
-params.delete("calm");
-try{if(window.history&&window.history.replaceState)window.history.replaceState(null,"",(location.pathname||"./")+(params.toString()?"?"+params.toString():"")+(location.hash||""))}catch(ignore){}
 return true;
 }catch(err){console.warn("Cannot open quick calm link",err);return false}
 }
@@ -382,7 +388,7 @@ stage.addEventListener("click",function(e){if(moved){moved=false;e.preventDefaul
 async function drawParents(){var recs=await loadAll(),amount=recs.reduce(function(a,x){return a+(x.size||0)},0);
 root.innerHTML='<main class="parents"><button class="back" data-home="1">← К сказкам</button><h1>Для родителей</h1><p class="explain">Добавляйте собственные иллюстрации. Они сохраняются на этом устройстве и не загружаются в публичный GitHub.</p><section class="parent-card"><h2>♡ Тихая минутка с Николь</h2><p>Можно открывать нужный режим сразу, без яркого главного экрана. Сохрани одну из ссылок в закладки Safari или добавь её в приложение «Команды» на iPhone.</p><div class="calm-shortcuts"><a href="./?calm=as">🐰 Ась сразу</a><a href="./?calm=cleo">🐱 Клео сразу</a><a href="./?calm=quiet">♡ Без экрана</a></div><p>На главном экране две кнопки: «Ась рядом» и «Клео рядом». Каждая открывает четыре короткие иллюстрированные сцены. Читайте вместе, листайте вручную и завершайте объятиями. Режим без звуков, автозапуска следующих историй и наград.</p><p>Экран — дополнительный способ отвлечь внимание, а не обязательный шаг. Если Николь не хочет смотреть, лучше убрать телефон и проверить, что её беспокоит. При необычном или продолжительном плаче сначала исключите боль и другие физические причины.</p></section><section class="parent-card pack-card"><h2>🐰 Зайчик Ась — 10 новых сюжетных картинок</h2><p>Новая подробная история о дружбе Ася и ёжика. Скачайте ZIP из нашего чата и выберите его ниже. Страницы автоматически откроются в правильном порядке, с текстом под картинкой. Анимация зайчика на главном экране останется.</p><button class="action pack-action" data-zip="rabbit">Добавить 10 иллюстраций Ася из ZIP</button><p>Изображения сохраняются только на этом iPhone. Импорт заменит картинки только сказки Ася.</p></section><section class="parent-card pack-card"><h2>📚 Шесть готовых книжек одним файлом</h2><p>60 настоящих иллюстраций и 5 фотографий Николь. Скачай приватный архив из ChatGPT в «Файлы» iPhone, затем выбери его здесь.</p><button class="action pack-action" data-library-bundle="1">Загрузить всю библиотеку</button><p>Книжки сохранятся только на iPhone и будут доступны офлайн. Публичный GitHub не получает изображения.</p></section><section class="parent-card"><h2>Фото Николь 🌸</h2><p>Можно выбрать до пяти фотографий Николь в любимых платьях. Нажатие на открытку переключает фотографии.</p><div class="profile-preview"><div class="preview">'+photoView()+'</div><small>Все фотографии останутся только на этом устройстве. Ничего не публикуется в GitHub.</small></div><div class="photo-strip">'+photoStrip()+'</div><button class="action" data-personal-add="1">Добавить до 5 фото</button> '+(photoIsSet?'<button class="action danger" data-personal-clear="1">Убрать все фото</button>':'')+'</section><section class="parent-card"><h2>Картинки для сказок</h2><p>Выбери 10 отдельных картинок или один ZIP с десятью страницами из Dropbox. Названия страниц желательно пронумеровать 01–10. Архив распаковывается только на устройстве. Повторный импорт заменит картинки лишь выбранной книги.</p>'+STORIES.map(function(s){return '<div class="parent-book" style="--card:'+s.card+'"><span class="tiny">'+s.emoji+'</span><span class="info"><strong>'+s.name+'</strong><small>'+getCount(s.id,recs)+' из 10 картинок</small></span><button class="action secondary" data-import="'+s.id+'">10 фото</button><button class="action" data-zip="'+s.id+'">ZIP</button></div><button class="text-option" data-textmode="'+s.id+'">Текст уже на картинках: '+(textIsEmbedded(s.id)?'ДА':'НЕТ')+'</button>'}).join("")+'</section><section class="parent-card"><h2>Хранилище</h2><p>На этом iPhone картинки занимают примерно '+(amount/1048576).toFixed(1)+' МБ. Оригиналы нужно сохранить в Dropbox, потому что iOS может очистить данные приложения.</p><p>Интеграция с закрытым Dropbox пока не настроена. Настройки здесь предназначены только для взрослого.</p></section><section class="parent-card"><h2>Удаление картинок</h2><p>Можно очистить картинки конкретной сказки, не затрагивая оригиналы в Dropbox.</p><button class="action danger" data-clear-list="1">Выбрать сказку для очистки</button><div id="clearPanel"></div></section></main>';}
 function turn(delta){if(screen!=="reader")return;if(page===9&&delta>0)page=0;else page=Math.max(0,Math.min(9,page+delta));drawReader()}
-function goHome(){screen="home";id=null;sleep=false;unloadImages();drawHome();window.scrollTo(0,0)}
+function goHome(){clearCalmLink();screen="home";id=null;sleep=false;unloadImages();drawHome();window.scrollTo(0,0)}
 async function openBook(sid){if(!story(sid))return;screen="reader";id=sid;page=0;sleep=false;await loadBook(sid);drawReader();window.scrollTo(0,0)}
 function attachParentHold(){var b=root.querySelector("[data-parent]");if(!b)return;function cancel(){clearTimeout(parentTimer);parentTimer=null;holdButton=null}
 b.addEventListener("pointerdown",function(e){if(e.button!==undefined&&e.button!==0)return;cancel();holdButton=b;holdCompleted=false;parentTimer=setTimeout(function(){parentTimer=null;holdCompleted=true;screen="parents";drawParents();if(navigator.vibrate)navigator.vibrate(35)},1800)});
