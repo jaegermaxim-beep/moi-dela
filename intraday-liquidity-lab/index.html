@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0b1220">
+<meta name="description" content="A fully synthetic, interactive intraday liquidity forecasting and treasury risk management laboratory, powered by a real Random Forest model.">
+<title>FLOWSTATE | Intraday Liquidity Intelligence Lab</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head><body>
+<div class="site-shell">
+<aside class="sidebar">
+  <a href="#overview" class="brand"><span class="brand-mark">◈</span><span>FLOWSTATE<small>LIQUIDITY INTELLIGENCE</small></span></a>
+  <div class="side-label">WORKSPACE</div>
+  <nav class="side-nav" aria-label="Page sections">
+    <a class="side-link active" href="#overview"><span>◩</span> Command center</a>
+    <a class="side-link" href="#simulator"><span>◷</span> Scenario simulator</a>
+    <a class="side-link" href="#inspector"><span>◈</span> Payment inspector</a>
+    <a class="side-link" href="#architecture"><span>⌘</span> Architecture</a>
+    <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
+  </nav>
+  <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 1.0 · Oct 2026</small></div>
+</aside>
+<main class="main" id="overview">
+<header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
+<div class="content">
+<section class="hero"><div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> NEXT-GEN LIQUIDITY INTELLIGENCE</div><h1>See liquidity<br><em>before it moves.</em></h1><p>An interactive machine-learning lab for settlement-time forecasting, intraday liquidity exposure and treasury decision support.</p><div class="hero-actions"><a href="#simulator" class="btn primary">Explore live simulation <span>↗</span></a><a href="#architecture" class="btn outline">View system architecture <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="hero-vertical">FORECAST / DETECT / ACT</div></div></section>
+<div class="disclosure"><strong>Illustrative proof of concept</strong><span>This entire application uses fabricated transactions, counterparties, model inputs and outcomes. Not affiliated with or endorsed by any bank. Results are not validated for production decisions.</span></div>
+<section class="section" id="simulator">
+<div class="section-heading"><div><div class="overline">01 / COMMAND CENTER</div><h2>Intraday risk at a glance</h2><p>Payment-timing intelligence translated into projected funding pressure.</p></div><div class="engine-pill" id="engine-pill"><span class="small-spinner"></span><span id="engine-text">Loading trained model</span></div></div>
+<div class="kpis">
+  <article class="kpi"><div class="kpi-top"><span>ML validation MAE</span><span class="mini-symbol">◉</span></div><div class="kpi-value" id="kpi-mae">—</div><div class="kpi-footer">Held-out synthetic payments</div></article>
+  <article class="kpi"><div class="kpi-top"><span>Versus rules baseline</span><span class="mini-symbol">↗</span></div><div class="kpi-value mint" id="kpi-improve">—</div><div class="kpi-footer">Lower absolute timing error</div></article>
+  <article class="kpi"><div class="kpi-top"><span>ML peak funding need</span><span class="mini-symbol">↘</span></div><div class="kpi-value" id="kpi-funding">—</div><div class="kpi-footer">Maximum cumulative net outflow</div></article>
+  <article class="kpi"><div class="kpi-top"><span>Minimum buffer headroom</span><span class="mini-symbol">◇</span></div><div class="kpi-value" id="kpi-headroom">—</div><div class="kpi-footer" id="headroom-label">Forecast opening liquidity less peak need</div></article>
+</div>
+<div class="workspace-grid">
+ <section class="panel chart-panel"><div class="panel-header"><div><span class="panel-kicker">INTRADAY POSITION</span><h3>Projected liquidity trajectory</h3><p>USD billions · 15-minute intervals · illustrative payment book</p></div><span class="pill-tag">07:30 – 19:00</span></div>
+ <div class="chart-legends"><span><i class="legend-dot teal"></i> ML forecast</span><span><i class="legend-dot violet"></i> Rules baseline</span><span><i class="legend-dot slate"></i> Synthetic realized</span></div>
+ <div id="chart-container" class="chart-container" role="img" aria-label="Chart comparing intraday liquidity paths based on a trained model, rules baseline, and synthetic realised payment times"><div class="placeholder">Loading forecast engine…</div></div>
+ <div class="chart-footnote">All curves use the same synthetic payment book. The realized series is a simulated benchmark, not observed bank data.</div>
+ </section>
+ <section class="panel scenario-panel"><div class="panel-header"><div><span class="panel-kicker">SCENARIO CONTROL</span><h3>Stress the payment book</h3><p>Adjust assumptions to see how peak funding needs respond.</p></div></div>
+ <div class="form-field"><label for="delay">Incoming payment delay <b id="delay-value">0 min</b></label><input id="delay" type="range" min="0" max="120" step="15" value="0"><div class="range-ends"><span>Normal</span><span>+120 min</span></div></div>
+ <div class="form-field"><label for="accel">Outgoing payment acceleration <b id="accel-value">0 min</b></label><input id="accel" type="range" min="0" max="60" step="15" value="0"><div class="range-ends"><span>Normal</span><span>60 min early</span></div></div>
+ <div class="form-field"><label for="opening">Opening liquidity buffer <b id="opening-value">$2.0bn</b></label><input id="opening" type="range" min="0" max="4500" step="250" value="2000"><div class="range-ends"><span>$0</span><span>$4.5bn</span></div></div>
+ <div class="scenario-divider"></div><div class="scenario-readout"><span>Synthetic payment universe</span><strong id="payment-count">—</strong></div><div class="scenario-readout"><span>Total simulated inflows</span><strong id="inflows">—</strong></div><div class="scenario-readout"><span>Total simulated outflows</span><strong id="outflows">—</strong></div>
+ <div class="scenario-actions"><button id="refresh" type="button" class="btn primary stretch">Generate new trading day <span>↻</span></button><button id="reset" type="button" class="btn subtle stretch">Reset scenario</button></div>
+ </section>
+</div>
+<div class="info-grid"><article class="insight"><span class="small-badge">RISK INSIGHT</span><h3 id="insight-title">Run the forecasting scenario</h3><p id="insight-text">The model will forecast USD arrival times and derive an intraday liquidity trajectory.</p></article><article class="insight contrast"><span class="small-badge">WHAT-IF</span><h3>Why settlement timing matters</h3><p>Two payments with identical amounts can create very different funding pressure depending on when liquidity actually arrives. Intraday peaks matter more than end-of-day balances alone.</p></article></div>
+</section>
+<section class="section" id="inspector"><div class="section-heading"><div><div class="overline">02 / MODEL EXPLORER</div><h2>Inspect a single payment</h2><p>Change input features and run the real trained forest, directly in your browser.</p></div><span class="section-chip">Random Forest · 32 trees</span></div>
+<div class="inspector-grid"><section class="panel inspector-controls"><div class="control-grid">
+<div class="form-field"><label for="product">Payment product</label><select id="product"><option>Repo</option><option>FX</option><option selected>Client payment</option><option>Securities</option><option>Money market</option><option>Derivatives</option></select></div>
+<div class="form-field"><label for="counterparty">Counterparty</label><select id="counterparty"><option>Counterparty A</option><option>Counterparty B</option><option>Counterparty C</option><option selected>Counterparty D</option><option>Counterparty E</option><option>Counterparty F</option></select></div>
+<div class="form-field"><label for="rail">Payment rail</label><select id="rail"><option>SWIFT</option><option selected>Fedwire</option><option>CLS</option><option>Correspondent</option></select></div>
+<div class="form-field"><label for="weekday">Weekday</label><select id="weekday"><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option></select></div>
+<div class="form-field"><label for="amount">Notional amount · USD million</label><input id="amount" type="number" min="0.1" max="500" step="0.5" value="75"></div>
+<div class="form-field"><label for="booking">Booking time · demo local</label><input id="booking" type="time" value="09:15" min="07:55" max="15:25"></div>
+<div class="form-field"><label for="pressure">Market settlement pressure <b id="pressure-value">0.6</b></label><input id="pressure" type="range" min="0" max="1.8" step="0.1" value="0.6"></div>
+<div class="form-field"><label for="hist">Prior historical median delay <b id="hist-value">95 min</b></label><input id="hist" type="range" min="25" max="300" step="5" value="95"></div>
+</div><button id="predict" class="btn primary" type="button">Calculate settlement forecast <span>↗</span></button></section>
+<section class="panel prediction-output"><span class="panel-kicker">MODEL OUTPUT / USD INFLOW</span><div class="prediction-value" id="eta">—</div><p>Predicted settlement time</p><div class="prediction-separator"></div><div class="prediction-line"><span>Random Forest prediction</span><strong id="pred-minutes">—</strong></div><div class="prediction-line"><span>Rule-based baseline</span><strong id="base-minutes">—</strong></div><div class="prediction-line"><span>Difference in arrival</span><strong id="difference">—</strong></div><div class="prediction-callout"><span>◈</span><p>This is a **point estimate**, not a probability or a settlement guarantee. The reported model accuracy comes only from synthetic holdout data.</p></div></section></div></section>
+<section class="section" id="architecture"><div class="section-heading"><div><div class="overline">03 / TARGET REFERENCE ARCHITECTURE</div><h2>Designed to fit the enterprise stack</h2><p>A vendor-neutral interpretation inspired by common bank architecture patterns. This diagram is not a reproduction of a bank's implemented setup.</p></div></div>
+<div class="architecture panel"><div class="arch-chain"><div class="arch-node"><span class="arch-numeral">01</span><div class="arch-icon">▤</div><strong>Source systems</strong><small>Transaction histories<br>Counterparty and product data</small><span class="arch-category">DATA INPUT</span></div><span class="arch-arrow">→</span><div class="arch-node"><span class="arch-numeral">02</span><div class="arch-icon">⌘</div><strong>Azure Data Factory</strong><small>Data pipelines<br>Calibration / forecasting jobs</small><span class="arch-category">SCHEDULER</span></div><span class="arch-arrow">→</span><div class="arch-node"><span class="arch-numeral">03</span><div class="arch-icon">◈</div><strong>Azure Functions</strong><small>Orchestration<br>Operational controls</small><span class="arch-category">ORCHESTRATOR</span></div><span class="arch-arrow">→</span><div class="arch-node accent"><span class="arch-numeral">04</span><div class="arch-icon">✳</div><strong>Azure Databricks</strong><small>Random Forest inference<br>Estimated settlement time</small><span class="arch-category">ML CALCULATOR</span></div><span class="arch-arrow">→</span><div class="arch-node"><span class="arch-numeral">05</span><div class="arch-icon">▥</div><strong>Treasury analytics</strong><small>Payment forecasting<br>Risk monitoring & action</small><span class="arch-category">CONSUMPTION</span></div></div>
+<div class="arch-caption"><strong>Prototype implementation:</strong> model training in Python / scikit-learn; exported decision trees running in client-side JavaScript. Azure services are architectural reference components and are not required to run this demo.</div></div>
+</section>
+<section class="section" id="methodology"><div class="section-heading"><div><div class="overline">04 / MODEL GOVERNANCE</div><h2>Transparent by design</h2><p>The prototype distinguishes measured synthetic results from assumptions and future production requirements.</p></div></div>
+<div class="method-grid"><article class="method-card"><div class="method-number">01 / TRAINING</div><h3>Supervised Random Forest</h3><p>32 regression trees, trained on 16,500 completely simulated payments across six synthetic products and four payment rails.</p><strong>Target: minutes from booking to settlement</strong></article><article class="method-card"><div class="method-number">02 / VALIDATION</div><h3>Chronological holdout</h3><p>First 80% of synthetic days for training and last 20% for testing. The rules baseline uses training-period group medians only.</p><strong id="test-count">— synthetic test transactions</strong></article><article class="method-card"><div class="method-number">03 / CONTROL FRAMEWORK</div><h3>Model risk considerations</h3><p>A bank deployment would require data completeness, time-of-prediction leakage testing, asymmetric error review, backtesting, challenger models and independent validation.</p><strong>Not a production validated model</strong></article></div>
+<div class="methodology-bottom"><div><h3>From ML prototype to ALM decision support</h3><p>Keep the prediction engine separate from liquidity aggregation, risk thresholds and human-authorized actions. For a client implementation, connect approved data feeds and validate performance against actual value-dated settlements.</p></div><button class="btn outline" id="download" type="button">Download synthetic demo CSV <span>↓</span></button></div></section>
+<footer><span>© 2026 FLOWSTATE LAB · INDEPENDENT RESEARCH CONCEPT</span><span>SIMULATED DATA ONLY · NOT INVESTMENT OR RISK ADVICE</span></footer>
+</div></main></div>
+<script defer src="app.js"></script>
+</body></html>

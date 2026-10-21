@@ -1,0 +1,80 @@
+[
+  {
+    "inputs": {
+      "weekday": 0,
+      "product": "Money market",
+      "rail": "Fedwire",
+      "counterparty": "Counterparty A",
+      "booking_minute": 493,
+      "amount_musd": 5.06392,
+      "pressure": 0.62678,
+      "historical_median_delay": 60.8617
+    },
+    "expected_delay": 102.26326
+  },
+  {
+    "inputs": {
+      "weekday": 0,
+      "product": "Repo",
+      "rail": "SWIFT",
+      "counterparty": "Counterparty C",
+      "booking_minute": 693,
+      "amount_musd": 55.60098,
+      "pressure": 0.65328,
+      "historical_median_delay": 149.1945
+    },
+    "expected_delay": 235.90146
+  },
+  {
+    "inputs": {
+      "weekday": 0,
+      "product": "Client payment",
+      "rail": "Correspondent",
+      "counterparty": "Counterparty B",
+      "booking_minute": 879,
+      "amount_musd": 3.02678,
+      "pressure": 1.02308,
+      "historical_median_delay": 115.3768
+    },
+    "expected_delay": 202.43872
+  },
+  {
+    "inputs": {
+      "weekday": 1,
+      "product": "FX",
+      "rail": "Fedwire",
+      "counterparty": "Counterparty B",
+      "booking_minute": 892,
+      "amount_musd": 27.23581,
+      "pressure": 0.73178,
+      "historical_median_delay": 123.3454
+    },
+    "expected_delay": 217.45265
+  },
+  {
+    "inputs": {
+      "weekday": 1,
+      "product": "Derivatives",
+      "rail": "SWIFT",
+      "counterparty": "Counterparty B",
+      "booking_minute": 619,
+      "amount_musd": 27.98835,
+      "pressure": 0.49218,
+      "historical_median_delay": 176.4222
+    },
+    "expected_delay": 236.05535
+  },
+  {
+    "inputs": {
+      "weekday": 4,
+      "product": "FX",
+      "rail": "SWIFT",
+      "counterparty": "Counterparty C",
+      "booking_minute": 553,
+      "amount_musd": 4.19143,
+      "pressure": 0.78605,
+      "historical_median_delay": 211.0251
+    },
+    "expected_delay": 281.56915
+  }
+]
