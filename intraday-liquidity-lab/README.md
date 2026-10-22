@@ -1,6 +1,6 @@
 # FLOWSTATE — Intraday Liquidity Intelligence Lab
 
-An interactive, client-ready **synthetic-data v4 prototype** demonstrating how payment-arrival prediction can inform an intraday liquidity position. The shipped application is a self-contained static frontend running a **real trained Random Forest** through a compact JavaScript decision-tree evaluator.
+An interactive, client-ready **synthetic-data v6 prototype** demonstrating how payment-arrival prediction can inform an intraday liquidity position. The shipped application is a self-contained static frontend running a **real trained Random Forest** through a compact JavaScript decision-tree evaluator.
 
 > **Important:** No Rabobank, PwC, client, private or proprietary data is included. No production model, proprietary bank architecture, client software, or actual bank forecasting performance is reproduced. The product categories, counterparties, payment rails, validations and stress scenarios are illustrative design choices.
 
@@ -160,3 +160,25 @@ python tests/browser_qa_v5.py
 ```
 
 The synthetic regression tests cover group/entity cash conservation, transfer neutrality, no retroactive funding, transferability restrictions, projected reserve floors, aggregate collateral haircuts, settlement timing, fallback recommendations and controls against mutating synthetic payment source data. Desktop and mobile browser tests also verify plan selection, approval, rejection, invalidation, chart overlay, and absence of page overflow or JavaScript errors.
+
+
+## v6 — Payment Explainability and BaU / Stressed Diagnostics
+
+This iteration introduces a self-contained `diagnostics-engine.js` with pure calculations and a responsive `diagnostics-ui.js` panel. It keeps the v5 Optimisation Agent and its approval/eligibility controls intact.
+
+- **Synthetic BaU and Stress comparison:** The BaU scenario uses zero cash-flow shifts and the configured SoD liquidity position. The stress scenario uses an explicitly selected inflow timing delay, outflow acceleration and haircut to available SoD liquidity sources. Compare Group and entity LNNCP, Liquidity Surplus and entity-level reserve gaps. It is **not** the methodology or calibrated IST scenario of any bank.
+- **Synthetic cash-flow decomposition:** The largest actual-versus-forecast cumulative position discrepancy is decomposed by product. The exact signed difference for the full book equals the sum of product contributions at the chosen time bucket. This is a *cash-flow attribution*, not a causal explanation of risk or a model's feature importance.
+- **Transaction-level RF sensitivity:** Clicking a payment ID in the cockpit or selecting an inflow from the v6 panel runs the **trained 54-tree Random Forest**. One-variable-at-a-time counterfactual inputs reveal changes in the estimated booking-to-settlement lag. This is *not* SHAP, causal inference, model confidence, or independent validation. Some alternative feature combinations may be economically invalid.
+- **Group → Entity → Payment:** Clicking entity cards filters the transaction inspector; selecting one payment opens a linked explanation and product drivers. Entity restrictions are preserved.
+- **No autonomous operations:** v6 does not initiate bank transfers, repo deals, payments, changes to model parameters or external API calls.
+
+### v6 regression checks
+
+```bash
+node tests/test_diagnostics.js
+python tests/browser_qa_v6.py
+```
+
+`test_diagnostics.js` checks BaU and stressed calculations against the existing Group position, Group/Entity liquidity conservation, exact gap-driver reconciliation, Random Forest prediction identity and source-data immutability. The browser test covers desktop and mobile, payment selection, entity drill-down, scenario changes, optimiser preservation, overflow and Javascript exceptions.
+
+The model and every hypothetical instrument, transaction and counterparty are **fully synthetic**. These materials must not be described as confirmed Rabobank data, bank-calibrated stress assumptions or observed portfolio-level model feature importances.
