@@ -10,15 +10,8 @@
  const clamp=(x,l,h)=>Math.max(l,Math.min(h,x));
  const entityById=(id)=>ENTITIES.find(e=>e.id===id);
  function enrich(book){return book.map((p,i)=>({...p,entity_id:ENTITIES[((i*7+Math.floor(i/4))%ENTITIES.length+ENTITIES.length)%ENTITIES.length].id,synthetic_id:`SIM-${String(i+1).padStart(4,'0')}`}));}
- function timeline(book,type='forecast_minute',delay=0,accel=0,opening=0,events=[]){
-  const points=[];let peak=0;
-  for(let t=450;t<=1140;t+=15){let cum=0;
-   for(const p of book){const when=clamp(Number(p[type])+(p.kind==='IN'?delay:-accel),450,1140);if(when<=t)cum+=(p.kind==='IN'?1:-1)*p.amount_musd;}
-   for(const ev of events){if(ev.when<=t)cum+=ev.amount_musd;}
-   peak=Math.max(peak,-cum);points.push({t,net:cum,y:opening+cum});
-  }
-  return {points,peak_need:peak,surplus:opening-peak,closing:points.at(-1).y};
- }
+ const cashflow=typeof CashflowEngine!=='undefined'?CashflowEngine:(typeof require==='function'?require('./cashflow-engine.js'):null);
+ function timeline(book,type='forecast_minute',delay=0,accel=0,opening=0,events=[]){return cashflow.timeline(book,type,delay,accel,opening,events)}
  function bookFor(book,id){return id==='all'?book:book.filter(p=>p.entity_id===id)}
  function openingFor(entity,opening){return opening*entity.share}
  function simulate(book,opts={}){
