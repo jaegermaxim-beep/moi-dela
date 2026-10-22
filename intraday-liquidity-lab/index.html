@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="optimiser.css">
 <link rel="stylesheet" href="diagnostics.css">
 <link rel="stylesheet" href="confidence.css">
+<link rel="stylesheet" href="distribution.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -17,6 +18,7 @@
     <a class="side-link active" href="#group-cockpit"><span>◩</span> Group cockpit</a>
     <a class="side-link" href="#risk-diagnostics"><span>⌁</span> Risk diagnostics</a>
     <a class="side-link" href="#settlement-confidence"><span>◷</span> Settlement confidence</a>
+    <a class="side-link" href="#mc-distribution"><span>∿</span> Liquidity-at-risk</a>
     <a class="side-link" href="#simulator"><span>◉</span> Forecast laboratory</a>
     <a class="side-link" href="#risk-decisions"><span>◇</span> Treasury actions</a>
     <a class="side-link" href="#monitoring"><span>◬</span> Model monitoring</a>
@@ -25,7 +27,7 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 7.0 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 8.0 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
@@ -93,6 +95,28 @@
     <p class="conf-caution"><b>Model-risk boundary:</b> probabilities and intervals are estimated using unseen synthetic residuals grouped by product — not raw Random Forest tree votes or calibrated bank probabilities. The 70% review threshold is a prototype choice, not a Rabobank risk-appetite limit. This is a one-payment sensitivity test, not a probabilistic aggregate liquidity distribution. If P90 falls beyond 19:00, scenario application is blocked pending overnight modelling.</p>
     <p class="conf-caution" id="confidence-calibration">Loading independent synthetic calibration statistics...</p>
     <p class="conf-caution" id="confidence-sample">—</p>
+  </section>
+  <section class="panel mc-panel" id="mc-distribution" aria-labelledby="mc-title">
+    <div class="panel-header"><div><span class="panel-kicker">MONTE CARLO LIQUIDITY-AT-RISK · SYNTHETIC</span><h3 id="mc-title">From settlement uncertainty to Group Liquidity Surplus</h3><p class="conf-intro">Simulate joint USD receipt timings across the Group and three entities. Compare distributions under BaU and a more severe intraday stress, including an explicitly assumed shared payment-system delay. No real bank calibration or independent joint tail validation.</p></div><span class="section-chip">NEW · v8</span></div>
+    <div class="mc-controls">
+      <label>Monte Carlo scenarios <b id="mc-runs-value">500</b><input id="mc-runs" type="range" min="100" max="1500" step="100" value="500"></label>
+      <label>Common shock probability · assumption <b id="mc-shock-prob-value">25%</b><input id="mc-shock-prob" type="range" min="0" max="50" step="5" value="25"></label>
+      <label>Shared payment-system delay <b id="mc-shock-delay-value">60 min</b><input id="mc-shock-delay" type="range" min="0" max="120" step="15" value="60"></label>
+      <label>Stress: additional inflow delay <b id="mc-delay-value">45 min</b><input id="mc-delay" type="range" min="0" max="120" step="15" value="45"></label>
+      <label>Stress: earlier outflow settlement <b id="mc-accel-value">30 min</b><input id="mc-accel" type="range" min="0" max="90" step="15" value="30"></label>
+      <label>Stress: haircut to SoD Liquidity <b id="mc-haircut-value">15%</b><input id="mc-haircut" type="range" min="0" max="30" step="5" value="15"></label>
+    </div>
+    <div class="mc-stats">
+      <div class="mc-stat"><span>Group Liquidity Surplus · P10</span><strong id="mc-stress-surplus">—</strong><div class="mc-dual"><span>BaU</span><b id="mc-bau-surplus">—</b></div></div>
+      <div class="mc-stat"><span>Group LNNCP · P90</span><strong id="mc-stress-lnncp">—</strong><div class="mc-dual"><span>BaU</span><b id="mc-bau-lnncp">—</b></div></div>
+      <div class="mc-stat"><span>P(Group position below assumed reserve floor)</span><strong id="mc-stress-group-breach">—</strong><div class="mc-dual"><span>BaU</span><b id="mc-bau-group-breach">—</b></div></div>
+      <div class="mc-stat"><span>P(Any entity falls below local reserve)</span><strong id="mc-stress-local-breach">—</strong><div class="mc-dual"><span>BaU</span><b id="mc-bau-local-breach">—</b></div></div>
+    </div>
+    <div class="mc-chart-box"><h4>Group cash position distribution over the intraday session</h4><p>Median trajectories with 10th–90th percentile simulation bands · 15-minute settlement buckets · USD millions. Later-than-19:00 receipts are not credited in this session.</p><div class="mc-chart" id="mc-chart" role="img" aria-label="BaU and Stress group cash position distribution">Computing synthetic cash-flow paths…</div><div class="mc-legend"><span><i class="bau"></i>BaU · median and P10–P90 band</span><span><i class="stress"></i>Stress · median and P10–P90 band</span></div></div>
+    <div class="mc-bottom"><div class="mc-entity-box"><h4>Reserve breach probability by entity</h4><div class="mc-table-wrap"><table class="mc-table"><thead><tr><th>Legal entity</th><th>BaU</th><th>Stress</th><th>Stress surplus P10</th></tr></thead><tbody id="mc-entity-body"><tr><td colspan="4">Awaiting Monte Carlo model…</td></tr></tbody></table></div></div><div class="mc-explainer"><strong>What this measures</strong><p>Liquidity Surplus = SoD Liquidity Position minus the peak negative cumulative net cash flow. Local reserve breaches use separate illustrative entity floors. A Group reserve floor is assumed as the sum of three local floors and is not an official limit. The probability of a true negative Group cash position in this synthetic stress is <strong id="mc-zero-prob">—</strong>.</p><p>Group cash shortfall below zero and reserve-floor breach are different events. The displayed probability refers to the reserve floor, not insolvency or regulatory LCR.</p></div></div>
+    <div class="mc-buttons"><button class="btn outline" id="mc-reset" type="button">Reset scenario assumptions</button><button class="btn primary" id="mc-review" type="button">Review Treasury funding plans ↓</button></div>
+    <p id="mc-summary" class="mc-note">Awaiting synthetic calibration…</p><p id="mc-status" class="mc-status" role="status" aria-live="polite">Loading Monte Carlo…</p>
+    <p class="mc-note"><b>Limitations:</b> Residual samples are grouped only by product. Their dependence is not estimated; the common shock probability and size are freely selected assumptions. These are scenario-implied relative frequencies, not defensible real-world probabilities. Results are hypothetical and are not integrated as automatic approvals or actual Treasury actions.</p>
   </section>
   <section class="panel op-agent-panel" id="optimisation-agent" aria-labelledby="op-title">
     <div class="panel-header op-header"><div><span class="panel-kicker">EXPLAINABLE ALM OPTIMISATION AGENT · SIMULATION</span><h3 id="op-title">From forecasted shortfall to a ranked funding plan</h3><p>Compare up to three coordinated funding actions using local liquidity reserve floors, legal-entity restrictions, settlement windows, collateral haircuts and explicit synthetic costs.</p></div><span class="section-chip">HUMAN APPROVAL REQUIRED</span></div>
@@ -166,7 +190,7 @@
 <div class="arch-caption"><strong>Prototype implementation:</strong> model training in Python / scikit-learn; exported decision trees running in client-side JavaScript. Azure services are architectural reference components and are not required to run this demo.</div></div>
 </section>
 <section class="section" id="methodology"><div class="section-heading"><div><div class="overline">07 / MODEL GOVERNANCE</div><h2>Transparent by design</h2><p>The prototype distinguishes measured synthetic results from assumptions and future production requirements.</p></div></div>
-<div class="method-grid"><article class="method-card"><div class="method-number">01 / TRAINING</div><h3>Supervised Random Forest</h3><p>54 regression trees, trained on 16,500 completely simulated payments across six synthetic products and four payment rails.</p><strong>Target: minutes from booking to settlement</strong></article><article class="method-card"><div class="method-number">02 / VALIDATION</div><h3>Chronological holdout</h3><p>First 80% of synthetic days for training and last 20% for testing. The rules baseline uses training-period group medians only.</p><strong id="test-count">— synthetic test transactions</strong></article><article class="method-card"><div class="method-number">03 / CONTROL FRAMEWORK</div><h3>Model risk considerations</h3><p>A bank deployment would require data completeness, time-of-prediction leakage testing, asymmetric error review, backtesting, challenger models and independent validation.</p><strong>Not a production validated model</strong></article></div>
+<div class="method-grid"><article class="method-card"><div class="method-number">01 / TRAINING</div><h3>Supervised Random Forest</h3><p>32 regression trees, trained on 16,500 completely simulated payments across six synthetic products and four payment rails.</p><strong>Target: minutes from booking to settlement</strong></article><article class="method-card"><div class="method-number">02 / VALIDATION</div><h3>Chronological holdout</h3><p>First 80% of synthetic days for training and last 20% for testing. The rules baseline uses training-period group medians only.</p><strong id="test-count">— synthetic test transactions</strong></article><article class="method-card"><div class="method-number">03 / CONTROL FRAMEWORK</div><h3>Model risk considerations</h3><p>A bank deployment would require data completeness, time-of-prediction leakage testing, asymmetric error review, backtesting, challenger models and independent validation.</p><strong>Not a production validated model</strong></article></div>
 <div class="methodology-bottom"><div><h3>From ML prototype to ALM decision support</h3><p>Keep the prediction engine separate from liquidity aggregation, risk thresholds and human-authorized actions. For a client implementation, connect approved data feeds and validate performance against actual value-dated settlements.</p></div><button class="btn outline" id="download" type="button">Download synthetic demo CSV <span>↓</span></button></div></section>
 <footer><span>© 2026 FLOWSTATE LAB · INDEPENDENT RESEARCH CONCEPT</span><span>SIMULATED DATA ONLY · NOT INVESTMENT OR RISK ADVICE</span></footer>
 </div></main></div>
@@ -179,5 +203,7 @@
 <script defer src="diagnostics-ui.js"></script>
 <script defer src="confidence-engine.js"></script>
 <script defer src="confidence-ui.js"></script>
+<script defer src="distribution-engine.js"></script>
+<script defer src="distribution-ui.js"></script>
 <script defer src="app.js"></script>
 </body></html>
