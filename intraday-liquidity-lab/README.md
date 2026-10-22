@@ -1,6 +1,6 @@
 # FLOWSTATE — Intraday Liquidity Intelligence Lab
 
-An interactive, client-ready **synthetic-data v6 prototype** demonstrating how payment-arrival prediction can inform an intraday liquidity position. The shipped application is a self-contained static frontend running a **real trained Random Forest** through a compact JavaScript decision-tree evaluator.
+An interactive, client-demonstration **synthetic-data v7 prototype** demonstrating how payment-arrival prediction can inform an intraday liquidity position. The shipped application is a self-contained static frontend running a **real trained Random Forest** through a compact JavaScript decision-tree evaluator.
 
 > **Important:** No Rabobank, PwC, client, private or proprietary data is included. No production model, proprietary bank architecture, client software, or actual bank forecasting performance is reproduced. The product categories, counterparties, payment rails, validations and stress scenarios are illustrative design choices.
 
@@ -13,7 +13,7 @@ For a GitHub Pages site published from a repository root, open `/intraday-liquid
 - **Training:** Python 3, scikit-learn `RandomForestRegressor`, NumPy, Pandas.
 - **Source:** 16,500 synthetic USD receipts, including product, counterparty, payment rail, prior settlement behavior, booking time, weekday, amount and market pressure.
 - **Validation:** 80% early synthetic days for training, the final 20% for out-of-time validation; train-only product × rail median baseline.
-- **Deployment:** Static HTML, CSS, JavaScript. All 54 exported fitted regression trees execute in-browser with no ML inference service or API key. Model file is approx. 1.7MB uncompressed.
+- **Deployment:** Static HTML, CSS, JavaScript. All 32 exported fitted regression trees execute in-browser with no ML inference service or API key. Model file is approx. 1.7MB uncompressed.
 - **Architecture diagram:** Azure data and orchestration tools are conceptual enterprise integration options **not used to host this proof of concept**.
 
 ## Reproduce training
@@ -182,3 +182,38 @@ python tests/browser_qa_v6.py
 `test_diagnostics.js` checks BaU and stressed calculations against the existing Group position, Group/Entity liquidity conservation, exact gap-driver reconciliation, Random Forest prediction identity and source-data immutability. The browser test covers desktop and mobile, payment selection, entity drill-down, scenario changes, optimiser preservation, overflow and Javascript exceptions.
 
 The model and every hypothetical instrument, transaction and counterparty are **fully synthetic**. These materials must not be described as confirmed Rabobank data, bank-calibrated stress assumptions or observed portfolio-level model feature importances.
+
+## Version 7 — Settlement confidence & conservative cut-off scenario (October 2026)
+
+The v7 **Settlement Confidence** panel answers an illustrative operational question: *What fraction of comparable synthetic incoming USD payments would be expected to arrive before a specified payment cut-off?* It supplements (but does not replace) the existing Random Forest settlement-time point forecast.
+
+### Calibration method and validation separation
+
+- The **existing 32-tree RandomForestRegressor remains unchanged**; it was fitted to synthetic days 0–139. It does not directly output calibrated settlement probabilities.
+- A reproducible script, `model/build_calibration.py`, applies the exported trained forest to later synthetic days 140–157, then saves sorted realised-minus-predicted timing residuals by product (`model-calibration.json`). These calibration observations were not used to train the forest.
+- A still-later holdout, days 158–175, evaluates the interval and probabilities with *no reuse* of those evaluation outcomes in calibration. The nominal P10–P90 range contains the synthetic realised times for **78.1%** of those 1,670 evaluation payments. A set of predefined synthetic relative cut-off tests yields a Brier score of **0.1335**. These figures are synthetic-generator-dependent.
+- **Probability at cut-off** is calculated from the empirical CDF of residuals associated with the payment product, conditional on the model point forecast, booking time and chosen cut-off. Simple rank smoothing avoids claiming certainty at the observed tails. The residual sample size is visible to the user. The instrument categories (including repo) are invented, not actual bank model coverage.
+- The expected amount *not received by a cut-off* is `payment_amount × (1 − P(on time))`. This is a probability-weighted single-payment exposure indicator, **not** a liquidity buffer, group-wide expected shortfall, standalone risk capital measure or guaranteed cash position.
+
+### Governed decision support
+
+The P90 what-if substitutes a **single payment's** forecast timestamp with its conservative upper settlement-time prediction. After explicitly selecting "Apply P90 timing to Treasury scenario", the model recalculates the synthetic 15-minute Group/Entity liquidity curves, Group LNNCP, Liquidity Surplus, and ranked Treasury Optimisation Agent responses. Old approvals are invalidated when the payment timing changes. The "Restore original payment forecast" button reverses the what-if. No payment instructions or repo transactions are executed.
+
+**Restrictions:** P90 scenarios beyond the 19:00 demo horizon are blocked because the current model does not correctly represent overnight carryover. A 70% indicative review threshold is an original demo setting, **not** a Rabobank or PwC policy. Residual distributions pooled only by product ignore other heterogeneity, correlated inflows, market regime shifts, tail concentration, missingness and legal-entity settlement constraints. These are neither official bank estimates nor calibrated probabilities on real payments.
+
+### New files
+
+- `model/build_calibration.py` — replays original deterministic synthetic feature generator and existing exported forest, builds separate calibration and evaluation cohorts.
+- `model-calibration.json` — portable product-conditional synthetic residual arrays, plus holdout metrics and limitations.
+- `model/calibration_report.json` — validation summary.
+- `confidence-engine.js` — pure functions for calibration quantiles, on-time probability, expected unreceived cash and payment-level Group/Entity LNNCP sensitivity.
+- `confidence-ui.js` and `confidence.css` — cut-off selection, payment selection, P10–P90 range and the explicit P90 risk scenario flow.
+- `tests/test_confidence.js` and `tests/browser_qa_v7.py` — mathematical/regression and desktop/mobile interactive verification.
+
+To reproduce the synthetic calibration:
+
+```bash
+python model/build_calibration.py
+node tests/test_confidence.js
+python tests/browser_qa_v7.py
+```
