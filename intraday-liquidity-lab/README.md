@@ -248,3 +248,25 @@ python tests/browser_qa_v8.py
 ```
 
 `test_distribution.js` verifies seed reproducibility, correct settled-bucket accounting, monotonic deterioration under stronger stress, reserve-breach probabilities, strict same-day treatment of after-19:00 inflows, calibration validation, and the resulting Group cash conservation checks. The browser QA runs 1440px desktop and 390px mobile tests, scenario slider sensitivity and reset, entity drill-down, preserved optimiser, and P90 payment what-if event compatibility. Prior v1–v7 calculation and browser tests remain available.
+
+## FLOWSTATE v9 — Risk-Aware ALM Optimisation Agent (22 October 2026)
+
+**Client purpose:** Demonstrate the end-to-end (synthetic) workflow **Forecast → Quantify Risk → Compare Funding Options → Reduce Risk → Human Approval** without connecting to bank payment, collateral or treasury execution infrastructure.
+
+### Implementation and mathematical scope
+
+- `risk-plan-engine.js` evaluates a finite list of funding candidate plans on **identical Monte Carlo payment-timing draws**. It uses the same synthetic historical forecast residuals, random seed, payment-system-shock assumptions, additional stress delay, outgoing-payment acceleration and haircut as the existing Liquidity-at-Risk panel (v8). Results are scenario-implied frequencies rather than calibrated probabilities of real bank events.
+- Shortlist generation uses `OptimiserEngine.optimise` for both BaU and an additional deterministic stress state, retaining at most 11 candidate plans plus an explicit **no-action baseline**. The search is heuristic and not guaranteed optimal. Each candidate is rechecked using the existing deterministic legal-entity, repo/collateral, settlement window and local reserve controls.
+- For each paired scenario and each plan, cash is simulated in 15-minute intraday buckets from 07:30 to 19:00. Incoming payments past 19:00 are **not** booked as intraday receipts. Internal transfers debit their source and credit their destination simultaneously, leaving consolidated Group cash unchanged. Intraday repo provides a settlement-time cash inflow to its receiving entity. **Repo repayment at maturity is not implemented**, and the opening balance has not been decomposed sufficiently to exclude every possible collateral double-counting. These are material limitations for real-world decision-making.
+- Risk metrics are computed **from the decision time onward**. The principal KPI is `P(any legal entity falls below its assumed local reserve floor)`. Secondary metrics are `P(Group falls below illustrative sum of entity reserve floors)`, `P(Group cash below zero)`, mean sum of **entity-level peak shortfalls**, mean shortfall-hours and Group Liquidity Surplus P10. Local reserve breach is not a default or regulatory LCR breach.
+- Candidate recommendations can be ranked by legal-entity breach frequency, Group reserve breach frequency or severity of local peak gaps. Independent entity-level breach frequencies are displayed; a plan shifting probability of breach to another legal entity is flagged as **Entity Risk Transfer** and blocked from simulated approval, even if an aggregate metric improves. A plan that passes deterministic source constraints may nonetheless fail probabilistic stress testing.
+- Explicit user-driven approval or rejection is logged in browser memory only. Changing payment data, stress assumptions, planning time or ranking priority invalidates a previous approval. A CSV audit export contains synthetic decisions; **no payment, market instruction or funding transfer is ever executed**.
+
+### Scripts and QA
+
+```bash
+node tests/test_risk_plan.js
+python tests/browser_qa_v9.py
+```
+
+All model inputs, counterparty groups, product labels, financial prices, settlement times, probabilities and action amounts are fabricated, unless explicitly identified as generic risk-management concepts. The tool does **not** recreate a proprietary bank system, does not verify the real Random Forest model at any bank, and has not been validated for investment, regulatory or intraday liquidity management decisions.
