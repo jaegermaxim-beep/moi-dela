@@ -1,0 +1,33 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const app=require('../app.js'),core=require('../cockpit-engine.js'),c=require('../confidence-engine.js');
+const model=JSON.parse(fs.readFileSync(path.join(__dirname,'../model.json'))),cal=JSON.parse(fs.readFileSync(path.join(__dirname,'../model-calibration.json')));
+app.setModel(model);
+const original=app.makeDay(20261021),book=core.enrich(original),state=core.simulate(book,{opening:2000,delay:0,accel:0}),before=JSON.stringify(book);
+const inflows=book.filter(p=>p.kind==='IN');assert.equal(inflows.length,155);
+for(const p of inflows){
+ const a=c.profile(p,app.predictOne,cal,800),b=c.profile(p,app.predictOne,cal,880);
+ assert(a.p_by_cutoff<=b.p_by_cutoff,'On-time probability must be monotone in cut-off');
+ assert(a.p_by_cutoff>=0&&b.p_by_cutoff<=1);
+ assert(a.high>=a.low,'interval ordered');
+ assert(a.expected_missing>=0&&a.expected_missing<=p.amount_musd);
+ assert.equal(a.sample_size,cal.residuals_by_product[p.product].length);
+ assert(Math.abs(a.point-p.forecast_minute)<.0001,'RF expected settlement unchanged');
+ assert(c.profile(p,app.predictOne,cal,p.booking_minute-15).p_by_cutoff===0,'cannot receive before booked');
+ const effect=c.timingShiftState(core,state,p.synthetic_id,a.high);
+ assert(effect.timing_notional_unchanged);
+ assert(effect.conservative_time<=1140);
+ if(!effect.truncated)assert(effect.conservative_time>=p.booking_minute);
+}
+assert.throws(()=>c.profile({...book[160],kind:'OUT'},app.predictOne,cal,850));
+assert.throws(()=>c.profile(inflows[0],app.predictOne,{},850));
+assert.equal(JSON.stringify(book),before,'profile and what-if functions must not mutate source payments');
+const target=inflows.find(p=>p.forecast_minute<900 && p.forecast_minute>700 && p.amount_musd>30);
+const st=c.timingShiftState(core,state,target.synthetic_id,target.forecast_minute+60);
+assert(st.group_delta<=1e-8,'delaying one incoming payment cannot improve the group cash floor');
+assert(st.lnncp_increase>=-1e-8,'delaying one incoming payment cannot reduce group peak liquidity need');
+const metrics=cal.calibration;
+assert.equal(metrics.calibration_payments,1719);
+assert.equal(metrics.evaluation_payments,1670);
+assert(metrics.evaluation_80pct_interval_coverage>.65 && metrics.evaluation_80pct_interval_coverage<.9);
+console.log('PASS v7: probability monotonicity, calibration independence, P10-P90 interval, cutoff cash exposure, non-mutation, Group LNNCP conservative sensitivity.');
