@@ -38,11 +38,12 @@
    const tone=critical?'deficit':z.forecast.surplus<z.reserve?'caution':'healthy';
    return `<button type="button" data-entity="${esc(z.id)}" class="cp-entity-card ${tone} ${currentView()===z.id?'selected':''}" aria-label="View ${esc(z.name)} liquidity detail"><span class="cp-entity-heading"><strong>${esc(z.name)}</strong><span>${esc(z.region)}</span></span><span class="cp-entity-sup">Projected Liquidity Surplus</span><span class="cp-entity-val">${money(z.forecast.surplus)}</span><span class="cp-entity-readouts"><span><small>SoD position</small><b>${money(z.opening)}</b></span><span><small>Local LNNCP</small><b>${money(z.forecast.peak_need)}</b></span><span><small>Available for transfer</small><b>${money(tr.max)}</b></span></span><span class="cp-entity-footer">${z.transferable?'Illustrative local transfer rules':'Transfer out restricted'} · ${z.count} simulated payments →</span></button>`;
   }).join('');
-  $('cp-entity-grid').querySelectorAll('[data-entity]').forEach(node=>node.addEventListener('click',()=>{$('cp-view').value=node.dataset.entity;renderView()}));
+  $('cp-entity-grid').querySelectorAll('[data-entity]').forEach(node=>node.addEventListener('click',()=>{$('cp-view').value=node.dataset.entity;renderView();window.dispatchEvent(new CustomEvent('flowstate:entity-selected',{detail:{id:node.dataset.entity}}))}));
  }
  function renderPayments(){
   const product=$('cp-product').value,rows=e.paymentVariance(state,currentView()).rows.filter(p=>product==='all'||p.product===product).slice(0,8);
-  $('cp-payments').innerHTML=rows.length?rows.map(p=>`<tr><td class="cp-mono">${p.id}</td><td>${esc((state.entityById(p.entity)||{}).short||'—')}</td><td>${esc(p.product)}</td><td>${money(p.amount)}</td><td>${time(p.forecast)}</td><td>${time(p.actual)}</td><td class="${p.late>60?'cp-late':''}">${p.late?`+${p.late.toFixed(0)} min`:'On time / early'}</td></tr>`).join(''):'<tr><td colspan="7" class="cp-empty">No synthetic inflows in this segment.</td></tr>';
+  $('cp-payments').innerHTML=rows.length?rows.map(p=>`<tr><td class="cp-mono"><button class="dx-open-payment" type="button" data-inspect-payment="${esc(p.id)}" title="Explain Random Forest forecast">${p.id} ↗</button></td><td>${esc((state.entityById(p.entity)||{}).short||'—')}</td><td>${esc(p.product)}</td><td>${money(p.amount)}</td><td>${time(p.forecast)}</td><td>${time(p.actual)}</td><td class="${p.late>60?'cp-late':''}">${p.late?`+${p.late.toFixed(0)} min`:'On time / early'}</td></tr>`).join(''):'<tr><td colspan="7" class="cp-empty">No synthetic inflows in this segment.</td></tr>';
+  $('cp-payments').querySelectorAll('[data-inspect-payment]').forEach(b=>b.addEventListener('click',()=>{window.dispatchEvent(new CustomEvent('flowstate:payment-selected',{detail:{id:b.dataset.inspectPayment}}));$('risk-diagnostics')?.scrollIntoView({behavior:'smooth',block:'start'});}));
  }
  function renderAgents(){
   const messages=e.evaluationMessages(state,proposal);
