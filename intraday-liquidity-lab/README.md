@@ -125,3 +125,38 @@ python tests/browser_qa_v4.py
 - `cockpit.css` — responsive Group Cockpit layout, readouts, charts, entity cards and controls.
 - `tests/test_cockpit.js` — core mathematical invariants.
 - `tests/browser_qa_v4.py` — desktop and mobile interactive quality assurance.
+
+## Version 5 — Explainable ALM Optimisation Agent (October 2026)
+
+The **Explainable ALM Optimisation Agent** is a deterministic **heuristic decision-support component** running entirely in the browser. It is not a generative LLM, autonomous funding agent, repo dealer, payment instruction, or bank-approved risk model. The Random Forest remains responsible for predicting synthetic incoming USD settlement times. Funding suggestions are calculated separately using explicit liquidity and legal-entity constraints.
+
+### How the v5 recommendations work
+
+1. Select an as-of decision time and maximum of one, two, or three coordinated actions.
+2. For each entity, derive a projected forward minimum cash balance and calculate any shortfall **relative to that entity's illustrative minimum reserve**, using 15-minute forecast buckets from the selected decision time until 19:00.
+3. Generate internal transfer and collateralised repo candidates only for entities with an uncovered local reserve gap. Transfer origin must be approved in synthetic reference data and retain its minimum projected local reserve for the entire remaining day. Repo must fall in the 12:00–16:00 illustrative settlement window and stay under haircut-adjusted collateral capacity **aggregated across plan steps**.
+4. Recompute **all** affected entity cash curves and consolidated Group cash. An internal transfer moves liquidity without increasing Group cash; synthetic external repo funding increases Group cash only at its assumed settlement time.
+5. Use a bounded **beam-search heuristic** (up to three actions) to rank admissible plans primarily by remaining local peak-reserve gaps, then projected deficit-hours, indicative funding cost, and operational action count. This heuristic is *not* a mathematical guarantee of global optimality.
+6. Explain each selected plan with proposed settlement times, amounts, before/after uncovered local reserve gaps, cost assumptions, and failed or passed control tests. A human can approve or reject **a simulation**. No transaction, broker request, collateral pledge, or intercompany instruction occurs.
+
+### Cost conventions and risk boundaries
+
+- Internal transfer indicative cost: USD 1,000 fixed plus 0.001% of transferred notional.
+- Synthetic intraday repo indicative cost: 5.25% annualised for one 360-day period plus USD 4,000 processing fee.
+- Decision-time and settlement-window assumptions are illustrative. The browser uses a stylised time base; no live FX, reference rates, market depth, bank holidays, correspondent cut-offs, sanctions screening, governance approvals or legal advice is obtained.
+- Uncovered reserve gaps measure *local* position against synthetic minimum reserves; this is **not equivalent to regulatory liquidity shortfall, Group LNNCP, stress loss or the official Rabobank liquidity buffer calculation**.
+- The plan search does not have a complete production optimisation model, such as full multi-currency and central-bank collateral eligibility, transfer pricing, repo settlement risk, asset encumbrance, contingent funding actions, TSO lifecycle processing, counterparty limits, or payment queuing.
+- Where the available plan set cannot eliminate the reserve gap, the UI states the residual explicitly rather than asserting full coverage.
+- An approval remains strictly **human-in-the-loop, simulation only**; changing scenario inputs invalidates any earlier approval in this component.
+
+### Model and UI testing
+
+```bash
+node tests/test_model.js
+node tests/test_decision.js
+node tests/test_cockpit.js
+node tests/test_optimiser.js
+python tests/browser_qa_v5.py
+```
+
+The synthetic regression tests cover group/entity cash conservation, transfer neutrality, no retroactive funding, transferability restrictions, projected reserve floors, aggregate collateral haircuts, settlement timing, fallback recommendations and controls against mutating synthetic payment source data. Desktop and mobile browser tests also verify plan selection, approval, rejection, invalidation, chart overlay, and absence of page overflow or JavaScript errors.
