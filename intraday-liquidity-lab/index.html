@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="cockpit.css">
 <link rel="stylesheet" href="optimiser.css">
 <link rel="stylesheet" href="diagnostics.css">
+<link rel="stylesheet" href="confidence.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -15,6 +16,7 @@
   <nav class="side-nav" aria-label="Page sections">
     <a class="side-link active" href="#group-cockpit"><span>◩</span> Group cockpit</a>
     <a class="side-link" href="#risk-diagnostics"><span>⌁</span> Risk diagnostics</a>
+    <a class="side-link" href="#settlement-confidence"><span>◷</span> Settlement confidence</a>
     <a class="side-link" href="#simulator"><span>◉</span> Forecast laboratory</a>
     <a class="side-link" href="#risk-decisions"><span>◇</span> Treasury actions</a>
     <a class="side-link" href="#monitoring"><span>◬</span> Model monitoring</a>
@@ -23,7 +25,7 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 6.0 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 7.0 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
@@ -59,7 +61,7 @@
   </div>
 
   <section class="panel dx-panel" id="risk-diagnostics" aria-labelledby="dx-title">
-    <div class="panel-header"><div><span class="panel-kicker">MODEL TRANSPARENCY / INTRADAY STRESS SENSITIVITY</span><h3 id="dx-title">Explain the forecast. Quantify the stress.</h3><p>Independent synthetic scenario analysis by Group, entity and payment. No proprietary data or autonomous execution.</p></div><span class="section-chip">NEW · v6</span></div>
+    <div class="panel-header"><div><span class="panel-kicker">MODEL TRANSPARENCY / INTRADAY STRESS SENSITIVITY</span><h3 id="dx-title">Explain the forecast. Quantify the stress.</h3><p>Independent synthetic scenario analysis by Group, entity and payment. No proprietary data or autonomous execution.</p></div><span class="section-chip">v6 · DIAGNOSTICS</span></div>
     <div class="dx-grid">
       <div class="dx-stress">
         <div class="dx-subhead"><h4>BaU vs Stressed liquidity</h4><p>Stress parameters are illustrative, separate from the official Rabobank IST methodology.</p></div>
@@ -79,6 +81,18 @@
         <div class="dx-drivers"><div class="dx-feature-heading">Actual–Forecast gap by product <span id="dx-gap-time">—</span></div><div id="dx-driver-list"></div><p class="dx-accuracy-note">Product amounts are exact synthetic contributions to the realised-minus-forecast cash position at the selected time bucket. Not a causal risk decomposition.</p></div>
       </div>
     </div>
+  </section>
+  <section class="panel conf-panel" id="settlement-confidence" aria-labelledby="conf-title">
+    <div class="panel-header"><div><span class="panel-kicker">SETTLEMENT CONFIDENCE / CUT-OFF RISK</span><h3 id="conf-title">Will incoming liquidity arrive before the cut-off?</h3><p class="conf-intro">A Random Forest point forecast plus a separate empirical residual-calibration layer. Analyse one synthetic incoming USD payment, then carry its conservative P90 timing into the Group Liquidity Surplus and Treasury Optimisation Agent.</p></div><span class="section-chip">NEW · v7</span></div>
+    <div class="conf-form"><label>Incoming USD payment<select id="confidence-payment" aria-label="Choose incoming USD payment for settlement probability"></select></label><label>Settlement cut-off · demo local<input type="time" id="confidence-cutoff" value="14:00" min="07:30" max="19:00" step="900"></label></div>
+    <p class="conf-context" id="confidence-payment-context">Waiting for synthetic payment data...</p>
+    <div class="conf-metrics"><div class="conf-stat primary"><span>Estimated probability of settlement by cut-off</span><strong id="confidence-probability">—</strong><small>Product-conditional synthetic residual calibration</small></div><div class="conf-stat"><span>Random Forest expected settlement</span><strong id="confidence-eta">—</strong><small>Predicted point estimate</small></div><div class="conf-stat"><span>P10–P90 settlement window</span><strong id="confidence-window">—</strong><small>Nominal 80% prediction interval</small></div><div class="conf-stat"><span>Expected cash not yet received by cut-off</span><strong id="confidence-missing">—</strong><small>Payment value × (1 − estimated probability)</small></div></div>
+    <div class="conf-probability" role="img" aria-label="Estimated arrival probability before the cut-off"><div class="conf-probability-fill" id="confidence-risk-bar"></div></div><div class="conf-band-label"><span>0% likelihood</span><span>100% likelihood</span></div>
+    <div class="conf-bottom"><div class="conf-signal" id="confidence-signal" role="status" aria-live="polite"><span>Awaiting model calibration...</span></div><div class="conf-preview"><h4>Conservative P90 what-if — projected liquidity impact</h4><div class="conf-impact" id="confidence-scenario-impact">Choose a payment to preview impact.</div><p class="conf-caution" id="confidence-scenario-note">No real funding action is executed.</p></div></div>
+    <div class="conf-actions"><button type="button" class="btn primary" id="confidence-apply" disabled>Apply P90 timing to Treasury scenario</button><button type="button" class="btn subtle" id="confidence-reset" disabled>Restore original payment forecast</button><button type="button" class="btn outline" id="confidence-open-agent">Review funding plans ↓</button></div>
+    <p class="conf-caution"><b>Model-risk boundary:</b> probabilities and intervals are estimated using unseen synthetic residuals grouped by product — not raw Random Forest tree votes or calibrated bank probabilities. The 70% review threshold is a prototype choice, not a Rabobank risk-appetite limit. This is a one-payment sensitivity test, not a probabilistic aggregate liquidity distribution. If P90 falls beyond 19:00, scenario application is blocked pending overnight modelling.</p>
+    <p class="conf-caution" id="confidence-calibration">Loading independent synthetic calibration statistics...</p>
+    <p class="conf-caution" id="confidence-sample">—</p>
   </section>
   <section class="panel op-agent-panel" id="optimisation-agent" aria-labelledby="op-title">
     <div class="panel-header op-header"><div><span class="panel-kicker">EXPLAINABLE ALM OPTIMISATION AGENT · SIMULATION</span><h3 id="op-title">From forecasted shortfall to a ranked funding plan</h3><p>Compare up to three coordinated funding actions using local liquidity reserve floors, legal-entity restrictions, settlement windows, collateral haircuts and explicit synthetic costs.</p></div><span class="section-chip">HUMAN APPROVAL REQUIRED</span></div>
@@ -163,5 +177,7 @@
 <script defer src="optimiser-ui.js"></script>
 <script defer src="diagnostics-engine.js"></script>
 <script defer src="diagnostics-ui.js"></script>
+<script defer src="confidence-engine.js"></script>
+<script defer src="confidence-ui.js"></script>
 <script defer src="app.js"></script>
 </body></html>

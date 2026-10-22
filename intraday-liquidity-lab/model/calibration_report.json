@@ -1,0 +1,80 @@
+{
+  "method": "Product-conditional out-of-time empirical residual CDF",
+  "synthetic_only": true,
+  "train_days": "0-139, training already complete for the unchanged Random Forest",
+  "calibration_days": "140-157",
+  "evaluation_days": "158-175",
+  "calibration_payments": 1719,
+  "evaluation_payments": 1670,
+  "evaluation_80pct_interval_coverage": 0.7814,
+  "evaluation_brier_score": 0.1335,
+  "calibration_bands": [
+    {
+      "lower": 0.0,
+      "upper": 0.1,
+      "count": 0,
+      "observed_hit_rate": null
+    },
+    {
+      "lower": 0.1,
+      "upper": 0.2,
+      "count": 415,
+      "observed_hit_rate": 0.1976
+    },
+    {
+      "lower": 0.2,
+      "upper": 0.3,
+      "count": 1255,
+      "observed_hit_rate": 0.2351
+    },
+    {
+      "lower": 0.3,
+      "upper": 0.4,
+      "count": 0,
+      "observed_hit_rate": null
+    },
+    {
+      "lower": 0.4,
+      "upper": 0.5,
+      "count": 230,
+      "observed_hit_rate": 0.4913
+    },
+    {
+      "lower": 0.5,
+      "upper": 0.6,
+      "count": 1440,
+      "observed_hit_rate": 0.5236
+    },
+    {
+      "lower": 0.6,
+      "upper": 0.7,
+      "count": 0,
+      "observed_hit_rate": null
+    },
+    {
+      "lower": 0.7,
+      "upper": 0.8,
+      "count": 551,
+      "observed_hit_rate": 0.804
+    },
+    {
+      "lower": 0.8,
+      "upper": 0.9,
+      "count": 1119,
+      "observed_hit_rate": 0.7936
+    },
+    {
+      "lower": 0.9,
+      "upper": 1.0,
+      "count": 3340,
+      "observed_hit_rate": 0.9572
+    }
+  ],
+  "restrictions": [
+    "Probability is estimated from *synthetic* held-out residuals, grouped by product, not inferred from RF tree votes.",
+    "No bank data, no demonstrated out-of-sample transfer to real-world payments.",
+    "P10 and P90 reflect residual variability conditional on the broad product grouping; not a guaranteed coverage statement.",
+    "Cross-product and cross-system distribution shift may materially invalidate estimates.",
+    "No information about the actual calibration, targets or production status of any bank model."
+  ]
+}

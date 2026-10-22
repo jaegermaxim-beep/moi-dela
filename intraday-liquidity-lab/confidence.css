@@ -1,0 +1,34 @@
+/* FLOWSTATE v7 · conservative settlement timing & transparent sample-calibrated probability */
+.conf-panel{padding:22px 24px;margin:18px 0 22px;background:linear-gradient(145deg,rgba(18,44,60,.96),rgba(10,24,38,.98));border:1px solid rgba(62,218,190,.32)}
+.conf-panel .panel-header{gap:12px;flex-wrap:wrap}
+.conf-panel .panel-header h3{max-width:850px}
+.conf-intro{max-width:800px;color:#a9bdd0;font-size:.9rem;line-height:1.65}
+.conf-form{display:grid;grid-template-columns:minmax(0,2fr) minmax(140px,.65fr);gap:14px;margin:15px 0}
+.conf-form label{display:flex;flex-direction:column;gap:7px;color:#a7bed0;font-size:.75rem;font-weight:650;letter-spacing:.035em}
+.conf-form select,.conf-form input{background:#0b2234;color:#f1fcff;border:1px solid #345065;border-radius:9px;padding:11px;font-family:inherit;min-width:0;width:100%}
+.conf-context{font-size:.76rem;color:#91aebf;margin:5px 0 12px}
+.conf-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:13px}
+.conf-stat{background:rgba(3,16,28,.66);border:1px solid rgba(68,97,118,.45);padding:15px;border-radius:11px;min-width:0}
+.conf-stat span{font-size:.68rem;text-transform:uppercase;letter-spacing:.055em;line-height:1.5;color:#9ab9c8;display:block;min-height:34px}
+.conf-stat strong{font-size:1.45rem;color:#eafaff;display:block;letter-spacing:-.04em;margin:5px 0}
+.conf-stat.primary strong{font-size:1.75rem;color:#56e6ce}
+.conf-stat.primary strong[data-level="review"],.conf-stat.primary strong[data-level="high"]{color:#ffbd7d}
+.conf-stat small{font-size:.66rem;color:#94adbc;display:block}
+.conf-probability{height:10px;background:#203f53;overflow:hidden;border-radius:999px;margin:14px 0 5px}
+.conf-probability-fill{background:linear-gradient(90deg,#f2a769,#65ebc9);height:100%;width:0;border-radius:999px;transition:width .18s}
+.conf-band-label{display:flex;justify-content:space-between;color:#849fae;font-size:.68rem}
+.conf-bottom{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:13px;margin-top:14px}
+.conf-signal,.conf-preview{border:1px solid #345064;background:rgba(8,25,41,.75);padding:15px;border-radius:11px;min-width:0}
+.conf-signal strong{display:block;color:#f4cf94;font-size:.88rem;margin-bottom:6px}
+.conf-signal span{font-size:.75rem;color:#abc2ce;line-height:1.5}
+.conf-preview h4{font-size:.93rem;color:#edf9fe;margin:0 0 9px}
+.conf-impact div{display:flex;gap:10px;justify-content:space-between;margin:8px 0;border-bottom:1px solid #29445a;padding-bottom:7px;font-size:.73rem}
+.conf-impact span{color:#9db5c6}
+.conf-impact strong{color:#eaf8ff;font-size:.81rem;white-space:nowrap}
+.conf-actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.conf-actions .btn{min-height:41px}
+.conf-actions .btn:disabled{opacity:.45;cursor:not-allowed}
+.conf-caution{font-size:.73rem;line-height:1.6;color:#93aabd;margin:8px 0}
+.conf-caution b{color:#d0edf1}
+@media(max-width:920px){.conf-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.conf-bottom{grid-template-columns:1fr}}
+@media(max-width:540px){.conf-panel{padding:17px 13px}.conf-form{grid-template-columns:1fr}.conf-metrics{grid-template-columns:1fr 1fr;gap:6px}.conf-stat{padding:11px 9px}.conf-stat strong{font-size:1.16rem}.conf-stat.primary strong{font-size:1.35rem}.conf-stat span{font-size:.6rem}.conf-actions{flex-direction:column}.conf-actions .btn{width:100%;font-size:.77rem}.conf-impact div{align-items:flex-start}}
