@@ -10,17 +10,20 @@
 <link rel="stylesheet" href="distribution.css">
 <link rel="stylesheet" href="risk-plan.css">
 <link rel="stylesheet" href="funding-lifecycle.css">
+<link rel="stylesheet" href="executive.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
 <aside class="sidebar">
-  <a href="#overview" class="brand"><span class="brand-mark">◈</span><span>FLOWSTATE<small>LIQUIDITY INTELLIGENCE</small></span></a>
+  <a href="#executive" class="brand"><span class="brand-mark">◈</span><span>FLOWSTATE<small>LIQUIDITY INTELLIGENCE</small></span></a>
   <div class="side-label">WORKSPACE</div>
   <nav class="side-nav" aria-label="Page sections">
-    <a class="side-link active" href="#group-cockpit"><span>◩</span> Group cockpit</a>
+    <a class="side-link active" href="#executive"><span>✦</span> Executive dashboard</a>
+    <a class="side-link" href="#group-cockpit"><span>◩</span> Group cockpit</a>
     <a class="side-link" href="#risk-diagnostics"><span>⌁</span> Risk diagnostics</a>
     <a class="side-link" href="#settlement-confidence"><span>◷</span> Settlement confidence</a>
     <a class="side-link" href="#mc-distribution"><span>∿</span> Liquidity-at-risk</a>
+    <a class="side-link" href="#funding-lifecycle"><span>▣</span> Funding lifecycle</a>
     <a class="side-link" href="#risk-aware-plans"><span>◆</span> Risk-aware funding</a>
     <a class="side-link" href="#simulator"><span>◉</span> Forecast laboratory</a>
     <a class="side-link" href="#risk-decisions"><span>◇</span> Treasury actions</a>
@@ -30,13 +33,45 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 9.0 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 11.0 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
 <div class="content">
-<section class="hero"><div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> NEXT-GEN LIQUIDITY INTELLIGENCE</div><h1>See liquidity<br><em>before it moves.</em></h1><p>An interactive machine-learning lab for settlement-time forecasting, legal-entity liquidity risk and explainable Treasury decision support.</p><div class="hero-actions"><a href="#group-cockpit" class="btn primary">Explore Group cockpit <span>↗</span></a><a href="#architecture" class="btn outline">View system architecture <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="hero-vertical">FORECAST / DETECT / ACT</div></div></section>
+<section class="hero ex-hero"><div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TREASURY INTELLIGENCE · EXECUTIVE VIEW</div><h1>One group.<br><em>Clear liquidity decisions.</em></h1><p>Forecast payment settlement. Quantify intraday risk. Evaluate funding responses — with every decision subject to human approval.</p><div class="hero-actions"><button id="ex-launch" type="button" class="btn primary">Start 7-minute executive demo <span>↗</span></button><a href="#group-cockpit" class="btn outline">Explore the full platform <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="hero-vertical">FORECAST / DETECT / ACT</div></div></section>
 <div class="disclosure"><strong>Illustrative proof of concept</strong><span>This entire application uses fabricated transactions, counterparties, model inputs and outcomes. Not affiliated with or endorsed by any bank. Results are not validated for production decisions.</span></div>
+
+<section class="section ex-section" id="executive" aria-labelledby="ex-title">
+ <div class="ex-heading"><div><div class="overline">EXECUTIVE TREASURY OVERVIEW · FLOWSTATE v11</div><h2 id="ex-title">The intraday position, in one view.</h2><p>Groupwide liquidity intelligence across three fictional entities. Every number is derived from synthetic payment data or illustrative scenario assumptions.</p></div><div class="ex-controls"><span class="ex-live"><i></i> SYNTHETIC SIMULATION</span><button id="ex-guide" class="btn outline" type="button">▶ Guided demo</button></div></div>
+ <div class="ex-kpis" aria-label="Executive liquidity metrics">
+  <article class="ex-kpi ex-kpi-accent"><div class="ex-kpi-label">Group Liquidity Surplus <span>USD</span></div><strong id="ex-surplus">—</strong><small>Assumed SoD liquidity − Group LNNCP</small></article>
+  <article class="ex-kpi"><div class="ex-kpi-label">Projected Group LNNCP <span>USD</span></div><strong id="ex-lnncp">—</strong><small>Peak negative cumulative net position</small></article>
+  <article class="ex-kpi"><div class="ex-kpi-label">Stress reserve breach <span>Group</span></div><strong id="ex-risk">—</strong><small id="ex-risk-label">Awaiting synthetic Monte Carlo</small></article>
+  <article class="ex-kpi"><div class="ex-kpi-label">Entities below reserve floor <span>of 3</span></div><strong id="ex-entities-count">—</strong><small>Projected local position versus local minimum</small></article>
+ </div>
+ <div class="ex-grid">
+  <div class="ex-chart-card panel"><div class="ex-panel-head"><div><span class="panel-kicker">TREASURY PULSE / EXPECTED VS REALISED</span><h3>Group intraday liquidity</h3><p>Synthetic forecast vs synthetic realised cash position · USD million</p></div><a href="#group-cockpit" class="ex-text-link">Group drill-down ↗</a></div>
+    <div class="ex-legend"><span><i class="ex-dot forecast"></i> Random Forest forecast</span><span><i class="ex-dot realised"></i> Synthetic realised</span><span><i class="ex-dot reserve"></i> Sum of assumed entity reserve floors</span></div>
+    <div id="ex-chart" class="ex-chart" role="img" aria-label="Synthetic group projected and realised intraday cash positions">Loading Group position…</div>
+    <div class="ex-chart-metrics"><div><small>SoD liquidity</small><b id="ex-sod">—</b></div><div><small>Peak actual / forecast gap</small><b id="ex-gap">—</b></div><div><small>Risk interpretation</small><b id="ex-level">—</b></div></div>
+  </div>
+  <div class="ex-decisions panel"><div class="ex-panel-head"><div><span class="panel-kicker">DECISION INTELLIGENCE</span><h3>What requires attention?</h3><p>Explainable signals, linked to the underlying model.</p></div></div>
+    <div id="ex-alerts" class="ex-alerts" aria-live="polite"><p>Waiting for payment scenario…</p></div>
+    <div class="ex-decision-footer"><span>Human-in-the-loop<br><b>No real funding execution</b></span><a href="#risk-aware-plans" class="ex-cta-link">Compare funding plans →</a></div>
+  </div>
+ </div>
+ <div class="ex-lower">
+  <div class="ex-entity-panel panel"><div class="ex-panel-head"><div><span class="panel-kicker">ENTITY-LEVEL CONTROL</span><h3>Where is liquidity concentrated?</h3><p>Local minimum reserves and intercompany restrictions matter.</p></div><a class="ex-text-link" href="#group-cockpit">View entities ↗</a></div><div id="ex-entity-list" class="ex-entity-list"></div></div>
+  <div class="ex-story-panel panel"><div class="ex-story-kicker">VALUE PROPOSITION · 5—10 MINUTES</div><h3>From forecast to funding decision</h3><div class="ex-value-steps"><span><b>01</b> Predict settlement timing</span><span><b>02</b> Quantify liquidity shortfall risk</span><span><b>03</b> Compare eligible funding plans</span><span><b>04</b> Review, approve and audit</span></div><div class="ex-story-bottom"><p>Python-trained Random Forest · Browser simulation · Monte Carlo · Collateral lifecycle</p><button id="ex-story-launch" class="btn primary" type="button">Present the 7-minute demo <span>↗</span></button></div></div>
+ </div>
+ <div class="ex-source-note"><b>Model risk boundary.</b> Forecast accuracies and stress frequencies arise exclusively from fabricated examples. Neither the joint settlement distribution nor funding prices have been validated on actual bank data. This is independent research software, not a bank production tool.</div>
+</section>
+<div class="ex-guide" id="ex-walkthrough" hidden role="dialog" aria-modal="false" aria-label="FLOWSTATE executive presentation guide">
+  <div class="ex-guide-top"><div><span class="ex-guide-overline">CLIENT DEMONSTRATION · 7 MIN</span><strong id="ex-step-counter">01 / 05</strong></div><button id="ex-exit" type="button" aria-label="Close demo guide">×</button></div>
+  <div class="ex-guide-progress" id="ex-progress" aria-hidden="true"></div>
+  <div class="ex-guide-body"><h3 id="ex-guide-title">The intraday position</h3><p id="ex-guide-copy">Start with the consolidated USD liquidity position.</p><div id="ex-guide-evidence" class="ex-guide-evidence"></div></div>
+  <div class="ex-guide-actions"><button type="button" id="ex-prev" class="ex-btn-minor">← Previous</button><button type="button" id="ex-reset" class="ex-btn-minor">Reset to BaU</button><button type="button" id="ex-next" class="ex-btn-main">Next step →</button></div>
+</div>
 <section class="section group-section" id="group-cockpit" aria-labelledby="group-title">
   <div class="section-heading"><div><div class="overline">01 / GROUP TREASURY COCKPIT</div><h2 id="group-title">One platform. Multiple entities.</h2><p>A consolidated USD view with legal-entity liquidity, actual versus forecast divergence, and an explainable, human-controlled ALM optimisation agent.</p></div><span class="section-chip">SYNTHETIC INTRADAY SIMULATION · NO LIVE FEEDS</span></div>
   <div class="cockpit-kpis" aria-label="Group liquidity metrics">
@@ -249,4 +284,6 @@
 <script defer src="risk-plan-engine.js"></script>
 <script defer src="risk-plan-ui.js"></script>
 <script defer src="app.js"></script>
+<script defer src="executive-engine.js"></script>
+<script defer src="executive-ui.js"></script>
 </body></html>
