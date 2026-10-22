@@ -1,0 +1,3 @@
+.ds-strip{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 22px;margin:12px 0 22px;background:#111d2d;border:1px solid #365069;border-radius:13px;color:#f1f5fc}
+.ds-strip>div:first-child{display:grid;gap:4px}.ds-label{font-size:10px;color:#8fb3cb;letter-spacing:.13em;font-weight:800}.ds-strip strong{font-size:16px;letter-spacing:.01em}.ds-strip strong.ds-active{color:#53dec1}.ds-strip small{color:#8ea5ba;font-size:11px}.ds-actions{flex-shrink:0}.ds-actions .btn{font-size:12px;white-space:nowrap}
+@media(max-width:620px){.ds-strip{flex-direction:column;align-items:stretch;padding:15px}.ds-actions .btn{width:100%}}
