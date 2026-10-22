@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="diagnostics.css">
 <link rel="stylesheet" href="confidence.css">
 <link rel="stylesheet" href="distribution.css">
+<link rel="stylesheet" href="risk-plan.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -19,6 +20,7 @@
     <a class="side-link" href="#risk-diagnostics"><span>⌁</span> Risk diagnostics</a>
     <a class="side-link" href="#settlement-confidence"><span>◷</span> Settlement confidence</a>
     <a class="side-link" href="#mc-distribution"><span>∿</span> Liquidity-at-risk</a>
+    <a class="side-link" href="#risk-aware-plans"><span>◆</span> Risk-aware funding</a>
     <a class="side-link" href="#simulator"><span>◉</span> Forecast laboratory</a>
     <a class="side-link" href="#risk-decisions"><span>◇</span> Treasury actions</a>
     <a class="side-link" href="#monitoring"><span>◬</span> Model monitoring</a>
@@ -27,7 +29,7 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 8.0 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 9.0 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
@@ -118,7 +120,17 @@
     <p id="mc-summary" class="mc-note">Awaiting synthetic calibration…</p><p id="mc-status" class="mc-status" role="status" aria-live="polite">Loading Monte Carlo…</p>
     <p class="mc-note"><b>Limitations:</b> Residual samples are grouped only by product. Their dependence is not estimated; the common shock probability and size are freely selected assumptions. These are scenario-implied relative frequencies, not defensible real-world probabilities. Results are hypothetical and are not integrated as automatic approvals or actual Treasury actions.</p>
   </section>
-  <section class="panel op-agent-panel" id="optimisation-agent" aria-labelledby="op-title">
+  <section class="panel ra-panel" id="risk-aware-plans" aria-labelledby="ra-title">
+ <div class="ra-head"><div><span class="ra-kicker">RISK-AWARE TREASURY OPTIMISATION · CLIENT DEMO</span><h3 id="ra-title">Which funding plan actually reduces shortfall risk?</h3><p>Compare the same synthetic Monte Carlo stress paths before and after valid funding proposals. Risk-first ranking, indicative funding costs, independent local reserve floors and explicit human approval.</p></div><span class="ra-tag">NEW · v9</span></div>
+ <div class="ra-setup"><label>Risk ranking priority<select id="ra-priority"><option value="local">Protect local reserve floors</option><option value="group">Protect Group liquidity reserve</option><option value="severity">Reduce expected local shortfall</option></select></label><label>Simulation decision time<select id="ra-asof" disabled><option value="720">Linked to Treasury Agent</option></select></label><div class="ra-meta"><b id="ra-shortlist">Awaiting Group scenario…</b><span id="ra-run-meta">Shared Monte Carlo draws and current v8 stress assumptions</span></div></div>
+ <div class="ra-stats"><div class="ra-stat"><small>Any entity below local reserve · before</small><strong id="ra-before-p">—</strong><span>Stress from decision time onward</span></div><div class="ra-stat"><small>Any entity below local reserve · selected</small><strong id="ra-after-p">—</strong><span id="ra-delta-p">—</span></div><div class="ra-stat"><small>Expected sum of local peak gaps · before</small><strong id="ra-before-gap">—</strong><span>USD million · stressed</span></div><div class="ra-stat"><small>Expected sum of local peak gaps · selected</small><strong id="ra-after-gap">—</strong><span id="ra-gap-change">—</span></div></div>
+ <div class="ra-body"><div class="ra-comparison"><h4>Risk-ranked funding plans</h4><p>Includes no-action baseline and valid candidates generated from BaU and deterministic stress. Ranking compares a finite shortlist, not all possible transactions.</p><div class="ra-plan-list" id="ra-plan-list" aria-label="Funding plans ranked by Monte Carlo risk"></div><p id="ra-status" role="status" aria-live="polite">Waiting for calibrated synthetic cash flows…</p></div>
+ <div class="ra-review"><h4 id="ra-plan-title">Plan risk and execution review</h4><p id="ra-rationale">Choose a plan to assess expected liquidity shortfalls and control limitations.</p><div class="ra-review-grid"><div><small>Group reserve breach · before → after</small><strong id="ra-group-p">—</strong></div><div><small>Stress Group Liquidity Surplus · P10</small><strong id="ra-surplus">—</strong></div><div><small>Expected shortfall-hours · after</small><strong id="ra-hours">—</strong></div><div><small>Indicative synthetic cost</small><strong id="ra-cost">—</strong></div></div><div class="ra-score-bars"><div class="ra-riskbar"><span>Before</span><div><i id="ra-before-bar" style="width:0%"></i></div><b id="ra-before-bar-p">—</b></div><div class="ra-riskbar after"><span>Selected plan</span><div><i id="ra-after-bar" style="width:0%"></i></div><b id="ra-after-bar-p">—</b></div></div>
+ <h4>Legal-entity risk under stress</h4><div class="ra-entity-wrap"><table class="ra-entity"><thead><tr><th>Entity</th><th>P(reserve breach) before</th><th>After</th><th>Expected gap after</th></tr></thead><tbody id="ra-entities"></tbody></table></div><p class="ra-note" id="ra-control-note"></p>
+ <div class="ra-actions"><button class="btn primary" type="button" id="ra-approve" disabled>Approve this plan · simulation only</button><button class="btn subtle" type="button" id="ra-reject">Reject plan</button><button class="btn outline" type="button" id="ra-export">Export decision log CSV</button></div><p class="ra-note" id="ra-decision">No action or funding order has been executed.</p></div></div><div class="ra-audit" id="ra-audit">No risk-aware approvals recorded.</div>
+ <p class="ra-note"><b>Model-risk boundary:</b> Conditional, scenario-implied synthetic frequencies. Financial impact is shown from the selected decision time, not retroactively. All payment timestamps, cost assumptions, residuals and joint shock parameters are invented. Source legal-entity transfer restrictions and repo collateral limits are screened using the existing heuristic. Intraday repo is assumed funded until 19:00 without repayment modelling. These figures are not regulatory limits, actual credit capacity or a valid replacement for Treasury approvals.</p>
+ </section>
+ <section class="panel op-agent-panel" id="optimisation-agent" aria-labelledby="op-title">
     <div class="panel-header op-header"><div><span class="panel-kicker">EXPLAINABLE ALM OPTIMISATION AGENT · SIMULATION</span><h3 id="op-title">From forecasted shortfall to a ranked funding plan</h3><p>Compare up to three coordinated funding actions using local liquidity reserve floors, legal-entity restrictions, settlement windows, collateral haircuts and explicit synthetic costs.</p></div><span class="section-chip">HUMAN APPROVAL REQUIRED</span></div>
     <div class="op-controls-row"><label>Planning decision time<select id="op-asof"><option value="600">10:00</option><option value="660">11:00</option><option value="720" selected>12:00</option><option value="780">13:00</option><option value="840">14:00</option><option value="900">15:00</option></select></label><label>Maximum coordinated actions<select id="op-maxactions"><option value="1">1 action</option><option value="2">2 actions</option><option value="3" selected>3 actions</option></select></label><div class="op-search-metadata" id="op-considered">Assessing alternatives…</div></div>
     <div class="op-workspace"><div class="op-candidates"><h4>Ranked responses</h4><div id="op-list" class="op-list" aria-label="Ranked synthetic funding scenarios">Loading funding plans…</div></div>
@@ -205,5 +217,7 @@
 <script defer src="confidence-ui.js"></script>
 <script defer src="distribution-engine.js"></script>
 <script defer src="distribution-ui.js"></script>
+<script defer src="risk-plan-engine.js"></script>
+<script defer src="risk-plan-ui.js"></script>
 <script defer src="app.js"></script>
 </body></html>
