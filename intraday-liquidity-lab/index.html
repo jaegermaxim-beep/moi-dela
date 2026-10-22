@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="cockpit.css">
 <link rel="stylesheet" href="optimiser.css">
+<link rel="stylesheet" href="diagnostics.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -13,6 +14,7 @@
   <div class="side-label">WORKSPACE</div>
   <nav class="side-nav" aria-label="Page sections">
     <a class="side-link active" href="#group-cockpit"><span>◩</span> Group cockpit</a>
+    <a class="side-link" href="#risk-diagnostics"><span>⌁</span> Risk diagnostics</a>
     <a class="side-link" href="#simulator"><span>◉</span> Forecast laboratory</a>
     <a class="side-link" href="#risk-decisions"><span>◇</span> Treasury actions</a>
     <a class="side-link" href="#monitoring"><span>◬</span> Model monitoring</a>
@@ -21,7 +23,7 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 5.0 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 6.0 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
@@ -56,6 +58,28 @@
     </section>
   </div>
 
+  <section class="panel dx-panel" id="risk-diagnostics" aria-labelledby="dx-title">
+    <div class="panel-header"><div><span class="panel-kicker">MODEL TRANSPARENCY / INTRADAY STRESS SENSITIVITY</span><h3 id="dx-title">Explain the forecast. Quantify the stress.</h3><p>Independent synthetic scenario analysis by Group, entity and payment. No proprietary data or autonomous execution.</p></div><span class="section-chip">NEW · v6</span></div>
+    <div class="dx-grid">
+      <div class="dx-stress">
+        <div class="dx-subhead"><h4>BaU vs Stressed liquidity</h4><p>Stress parameters are illustrative, separate from the official Rabobank IST methodology.</p></div>
+        <div class="dx-control-row"><label>Inflow delay<select id="dx-delay"><option value="30">+30 min</option><option value="60" selected>+60 min</option><option value="90">+90 min</option><option value="120">+120 min</option></select></label><label>Outflow acceleration<select id="dx-accel"><option value="0">0 min</option><option value="15" selected>−15 min</option><option value="30">−30 min</option><option value="45">−45 min</option></select></label><label>SoD source haircut<select id="dx-haircut"><option value="0">0%</option><option value="0.05" selected>5%</option><option value="0.10">10%</option><option value="0.15">15%</option></select></label></div>
+        <div class="dx-compare-summary"><div><small>BaU Group Liquidity Surplus</small><strong id="dx-bau-surplus">—</strong></div><div><small>Stressed Group Liquidity Surplus</small><strong id="dx-stress-surplus">—</strong></div><div><small>Change in Group LNNCP</small><strong id="dx-lnncp-change">—</strong></div></div>
+        <div class="dx-chart" id="dx-chart" role="img" aria-label="BaU and stressed synthetic group liquidity positions"></div>
+        <div class="dx-table-scroll"><table class="dx-table"><thead><tr><th>Group / legal entity</th><th>BaU surplus</th><th>Stressed surplus</th><th>Change</th><th>Reserve gap (stress)</th></tr></thead><tbody id="dx-entities"></tbody></table></div>
+      </div>
+      <div class="dx-explain">
+        <div class="dx-subhead"><h4>Payment-level Random Forest explanation</h4><p>Select an incoming USD payment to see model predictions and controlled what-if sensitivities.</p></div>
+        <div class="dx-path" id="dx-path">Group → Select an entity or payment</div>
+        <label class="dx-payment-picker">Choose simulated inflow<select id="dx-payment" aria-label="Choose synthetic incoming payment"></select></label>
+        <div class="dx-payment-details" id="dx-payment-details" aria-live="polite">Loading model and synthetic payment book...</div>
+        <div class="dx-feature-heading">Model input sensitivity <span>minutes of predicted settlement lag</span></div>
+        <div id="dx-features" class="dx-features"></div>
+        <p class="dx-accuracy-note">One-feature what-if perturbations of a trained Random Forest, not SHAP values, causal explanations or validated global importance. Changing a feature may create an unrealistic combination. All input data and labels are synthetic.</p>
+        <div class="dx-drivers"><div class="dx-feature-heading">Actual–Forecast gap by product <span id="dx-gap-time">—</span></div><div id="dx-driver-list"></div><p class="dx-accuracy-note">Product amounts are exact synthetic contributions to the realised-minus-forecast cash position at the selected time bucket. Not a causal risk decomposition.</p></div>
+      </div>
+    </div>
+  </section>
   <section class="panel op-agent-panel" id="optimisation-agent" aria-labelledby="op-title">
     <div class="panel-header op-header"><div><span class="panel-kicker">EXPLAINABLE ALM OPTIMISATION AGENT · SIMULATION</span><h3 id="op-title">From forecasted shortfall to a ranked funding plan</h3><p>Compare up to three coordinated funding actions using local liquidity reserve floors, legal-entity restrictions, settlement windows, collateral haircuts and explicit synthetic costs.</p></div><span class="section-chip">HUMAN APPROVAL REQUIRED</span></div>
     <div class="op-controls-row"><label>Planning decision time<select id="op-asof"><option value="600">10:00</option><option value="660">11:00</option><option value="720" selected>12:00</option><option value="780">13:00</option><option value="840">14:00</option><option value="900">15:00</option></select></label><label>Maximum coordinated actions<select id="op-maxactions"><option value="1">1 action</option><option value="2">2 actions</option><option value="3" selected>3 actions</option></select></label><div class="op-search-metadata" id="op-considered">Assessing alternatives…</div></div>
@@ -137,5 +161,7 @@
 <script defer src="cockpit-ui.js"></script>
 <script defer src="optimiser-engine.js"></script>
 <script defer src="optimiser-ui.js"></script>
+<script defer src="diagnostics-engine.js"></script>
+<script defer src="diagnostics-ui.js"></script>
 <script defer src="app.js"></script>
 </body></html>
