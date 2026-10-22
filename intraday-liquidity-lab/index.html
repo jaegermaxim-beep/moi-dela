@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="risk-plan.css">
 <link rel="stylesheet" href="funding-lifecycle.css">
 <link rel="stylesheet" href="executive.css">
+<link rel="stylesheet" href="client-studio.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -18,7 +19,8 @@
   <a href="#executive" class="brand"><span class="brand-mark">◈</span><span>FLOWSTATE<small>LIQUIDITY INTELLIGENCE</small></span></a>
   <div class="side-label">WORKSPACE</div>
   <nav class="side-nav" aria-label="Page sections">
-    <a class="side-link active" href="#executive"><span>✦</span> Executive dashboard</a>
+    <a class="side-link active" href="#client-studio"><span>◇</span> Client studio</a>
+    <a class="side-link" href="#executive"><span>✦</span> Executive dashboard</a>
     <a class="side-link" href="#group-cockpit"><span>◩</span> Group cockpit</a>
     <a class="side-link" href="#risk-diagnostics"><span>⌁</span> Risk diagnostics</a>
     <a class="side-link" href="#settlement-confidence"><span>◷</span> Settlement confidence</a>
@@ -33,7 +35,7 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 11.0 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 11.1 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
@@ -72,6 +74,39 @@
   <div class="ex-guide-body"><h3 id="ex-guide-title">The intraday position</h3><p id="ex-guide-copy">Start with the consolidated USD liquidity position.</p><div id="ex-guide-evidence" class="ex-guide-evidence"></div></div>
   <div class="ex-guide-actions"><button type="button" id="ex-prev" class="ex-btn-minor">← Previous</button><button type="button" id="ex-reset" class="ex-btn-minor">Reset to BaU</button><button type="button" id="ex-next" class="ex-btn-main">Next step →</button></div>
 </div>
+
+<section class="section studio-section" id="client-studio" aria-labelledby="studio-title">
+ <div class="section-heading"><div><div class="overline">CLIENT DEMO EDITION · VERSION 11.1</div><h2 id="studio-title">From model insights to management decisions</h2><p>Choose the audience, apply one transparent synthetic scenario and compare the funding impact. No bank data or real transactions.</p></div><span class="section-chip">INDEPENDENT DEMO · HUMAN-CONTROLLED</span></div>
+ <div class="studio-modes" role="group" aria-label="Select client demonstration perspective">
+  <button type="button" class="studio-mode selected" data-studio-mode="executive" aria-pressed="true"><strong>Executive</strong><small>CFO / Head of Treasury</small></button>
+  <button type="button" class="studio-mode" data-studio-mode="treasury" aria-pressed="false"><strong>Treasury Operations</strong><small>Liquidity management</small></button>
+  <button type="button" class="studio-mode" data-studio-mode="validation" aria-pressed="false"><strong>Model & Risk Analytics</strong><small>ALM Risk / Validation</small></button>
+ </div>
+ <div class="studio-story panel"><div><span class="panel-kicker">PERSONALISED WALKTHROUGH</span><h3 id="studio-audience-title">Executive · 7-minute story</h3><p id="studio-audience-description">Start at the Group Liquidity Surplus.</p></div><a class="btn outline" id="studio-open" href="#executive">Open working module →</a></div>
+ <div class="studio-presets panel"><div><span class="panel-kicker">STRESS CONTROLS / REPRODUCIBLE DEMO</span><h3>Choose an intraday scenario</h3><p>Uses the same controls as the working Risk Cockpit. Changes invalidate previous scenario approvals.</p></div><div class="studio-preset-actions" role="group" aria-label="Demo scenario"><button class="studio-preset selected" data-studio-scenario="bau" aria-pressed="true">BaU</button><button class="studio-preset" data-studio-scenario="late" aria-pressed="false">Late USD receipts +75m</button><button class="studio-preset" data-studio-scenario="stress" aria-pressed="false">Combined stress</button><button class="studio-preset reset" id="studio-reset">Reset BaU</button></div></div>
+ <div class="studio-grid">
+  <article class="panel studio-value"><span class="panel-kicker">EXPLAINABLE BUSINESS VALUE · NOT CLAIMED COST SAVINGS</span><h3>Before / after eligible funding</h3><p>Illustrative repo settled at 13:00. Cost includes simplified interest only. No future market or regulatory claims.</p>
+   <div class="studio-inputs"><label>Funding recipient<select id="studio-entity"><option value="group-treasury">Group Treasury</option><option value="investment-bank">Investment Services</option><option value="international-branch">International Branch</option></select></label>
+    <label>Repo tenor<select id="studio-tenor"><option value="overnight">Overnight · T+1 repayment</option><option value="same_day">Same-day · 15:30 repayment</option></select></label>
+    <label class="studio-range">Facility notional <b id="studio-funding-label">$50.0m</b><input id="studio-funding" type="range" min="10" max="150" step="10" value="50"></label></div>
+   <div class="studio-value-grid"><div><span>Local liquidity floor · before</span><strong id="studio-before">—</strong></div><div><span>With funding lifecycle · after</span><strong id="studio-after">—</strong></div><div><span>Reserve shortfall · before</span><strong id="studio-reserve-before">—</strong></div><div><span>Reserve shortfall · after</span><strong id="studio-reserve-after">—</strong></div></div>
+   <div class="studio-economics"><div><small>Cash financing cost</small><strong id="studio-cost">—</strong></div><div><small>Collateral pledged</small><strong id="studio-pledge">—</strong></div><div><small>Repayment commitment</small><strong id="studio-obligation">—</strong></div></div><p class="studio-result-note" id="studio-result-note">Load a synthetic scenario to evaluate an eligible facility.</p>
+  </article>
+  <article class="panel studio-validation"><span class="panel-kicker">MODEL RISK / EVIDENCE CHECK</span><h3>Is the Random Forest actually adding value?</h3>
+    <p>Synthetic out-of-time results are compared with a rules baseline. The current simulated day is kept separate from the original evaluation sample.</p>
+    <div class="studio-quality"><div><small>Original synthetic holdout MAE</small><strong id="studio-holdout">—</strong></div><div><small>Live synthetic day · RF / rules MAE</small><strong id="studio-daily-mae">—</strong></div><div><small>Optimistically early forecasts</small><strong id="studio-optimism">—</strong></div><div><small>Nominal 80% interval · observed coverage</small><strong id="studio-calibration">—</strong></div><div><small>Largest training feature importance</small><strong id="studio-feature">—</strong></div></div>
+    <div class="studio-quality studio-challenger"><div><small>Gradient boosting challenger · synthetic holdout MAE</small><strong id="studio-challenger">—</strong></div><div><small>Random Forest without historic lag feature · MAE</small><strong id="studio-ablation">—</strong></div><div><small>+60 min settlement shift · RF MAE</small><strong id="studio-shift">—</strong></div></div>
+    <div class="studio-validation-warning"><b>Model-risk watch:</b> Dominance of the synthetic historical delay predictor does not prove it would be available or non-leaking at prediction time in a real bank. Production use requires temporal leakage tests, independent out-of-domain validation, asymmetric notional-weighted losses and joint-payment stress calibration.</div>
+    <p class="studio-fine" id="studio-validation-note">All calibration and testing evidence is synthetic. A synthetic holdout is not independent model validation.</p>
+  </article>
+ </div>
+ <div class="panel studio-enterprise"><div class="panel-header"><div><span class="panel-kicker">ENTERPRISE DESIGN · PROPOSED NOT DEPLOYED</span><h3>Reference architecture & governance gates</h3><p>Implementation blueprint for a future bank-specific environment. Current FLOWSTATE is Python training plus in-browser JavaScript inference.</p></div></div>
+  <div class="studio-architecture"><div><b>01 · Approved data ingestion</b><small>Payment systems, nostro, collateral, data-quality checks, replayable event timestamps</small></div><div><b>02 · Governed feature store</b><small>Point-in-time feature definitions, immutable data lineage, access controls</small></div><div><b>03 · Model registry & serving</b><small>Python / Databricks option, champion-challenger, backtesting, drift monitoring</small></div><div><b>04 · Liquidity calculation</b><small>LNNCP, Liquidity Surplus, IST, reserve and legal-entity aggregation</small></div><div><b>05 · Controlled decision API</b><small>Funding eligibility, collateral, approval workflow, dual controls, execution segregation</small></div><div><b>06 · Risk / audit reporting</b><small>RBAC, immutable decision ledger, incident management, model oversight and 2LoD challenge</small></div></div>
+  <div class="studio-gates"><span>Access: RBAC + service identity</span><span>Data: encryption + lineage</span><span>Model: validation & fallback</span><span>Execution: dual control</span><span>Audit: tamper-evident records</span></div>
+ </div>
+ <p class="studio-footer-note">Demonstration only. No verified client savings, model approval, regulatory compliance, bank IT integration or autonomous funding execution. Repo rates, eligibility, cost and collateral rules are hypothetical.</p>
+</section>
+
 <section class="section group-section" id="group-cockpit" aria-labelledby="group-title">
   <div class="section-heading"><div><div class="overline">01 / GROUP TREASURY COCKPIT</div><h2 id="group-title">One platform. Multiple entities.</h2><p>A consolidated USD view with legal-entity liquidity, actual versus forecast divergence, and an explainable, human-controlled ALM optimisation agent.</p></div><span class="section-chip">SYNTHETIC INTRADAY SIMULATION · NO LIVE FEEDS</span></div>
   <div class="cockpit-kpis" aria-label="Group liquidity metrics">
@@ -268,6 +303,7 @@
 <div class="methodology-bottom"><div><h3>From ML prototype to ALM decision support</h3><p>Keep the prediction engine separate from liquidity aggregation, risk thresholds and human-authorized actions. For a client implementation, connect approved data feeds and validate performance against actual value-dated settlements.</p></div><button class="btn outline" id="download" type="button">Download synthetic demo CSV <span>↓</span></button></div></section>
 <footer><span>© 2026 FLOWSTATE LAB · INDEPENDENT RESEARCH CONCEPT</span><span>SIMULATED DATA ONLY · NOT INVESTMENT OR RISK ADVICE</span></footer>
 </div></main></div>
+<script defer src="cashflow-engine.js"></script>
 <script defer src="decision-engine.js"></script>
 <script defer src="cockpit-engine.js"></script>
 <script defer src="cockpit-ui.js"></script>
@@ -286,4 +322,6 @@
 <script defer src="app.js"></script>
 <script defer src="executive-engine.js"></script>
 <script defer src="executive-ui.js"></script>
+<script defer src="client-studio-engine.js"></script>
+<script defer src="client-studio-ui.js"></script>
 </body></html>
