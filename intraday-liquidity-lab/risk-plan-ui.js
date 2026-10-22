@@ -6,7 +6,7 @@
  const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const money=x=>`${x<0?'−':''}$${Math.abs(x).toFixed(0)}m`,percent=x=>`${(100*x).toFixed(1)}%`,fee=x=>x<1000?`$${x.toFixed(0)}`:`$${(x/1000).toFixed(1)}k`;
  let scenario=null,cal=null,assessment=null,selection=null,approval=null,audit=[],epoch=0,timer=null;
- const params=()=>({runs:Number($('mc-runs').value),seed:20261022,shockProbability:Number($('mc-shock-prob').value)/100,shockDelay:Number($('mc-shock-delay').value),stressDelay:Number($('mc-delay').value),stressAccel:Number($('mc-accel').value),stressHaircut:Number($('mc-haircut').value)/100});
+ const params=()=>({runs:Number($('mc-runs').value),seed:20261022,shockProbability:Number($('mc-shock-prob').value)/100,shockDelay:Number($('mc-shock-delay').value),stressDelay:Number($('mc-delay').value),stressAccel:Number($('mc-accel').value),stressHaircut:Number($('mc-haircut').value)/100,repoTenor:$('ra-repo-tenor').value});
  const asOf=()=>Number($('op-asof').value),maxActions=()=>Number($('op-maxactions').value);
  function effectiveRank(items){const p=$('ra-priority').value;return items.slice().sort((a,b)=>{
   if(p==='group')return a.probGroup-b.probGroup||a.probLocal-b.probLocal||a.expectedGap-b.expectedGap||a.costUsd-b.costUsd;
@@ -74,7 +74,7 @@
  function bind(){if(!$('risk-aware-plans'))return;
   $('ra-priority').addEventListener('change',()=>{invalidate('Risk ranking priority changed.');riskRender()});
   for(const id of ['mc-runs','mc-shock-prob','mc-shock-delay','mc-delay','mc-accel','mc-haircut'])$(id).addEventListener('input',()=>schedule('Monte Carlo stress assumptions changed.'));
-  for(const id of ['op-asof','op-maxactions'])$(id).addEventListener('change',()=>schedule('Funding plan horizon changed.'));
+  for(const id of ['op-asof','op-maxactions','ra-repo-tenor'])$(id).addEventListener('change',()=>schedule('Funding tenor or plan horizon changed.'));
   $('ra-approve').addEventListener('click',()=>decision(true));$('ra-reject').addEventListener('click',()=>decision(false));$('ra-export').addEventListener('click',exportLog);
   window.addEventListener('flowstate:scenario',ev=>{if(!ev.detail?.book?.length)return;scenario=ev.detail;epoch++;schedule('Payment book or liquidity assumptions changed.')});
  }
