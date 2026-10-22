@@ -7,7 +7,7 @@
  const money=v=>{const a=Math.abs(v);return `${v<0?'−':''}$${a>=1000?(a/1000).toFixed(2)+'bn':a.toFixed(0)+'m'}`};
  const signed=v=>(v>0?'+':'')+money(v);
  const time=v=>{const n=Math.max(0,Math.round(v));return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`};
- let state=null,actionType='transfer',proposal=null,approval=null,audit=[],signature='';
+ let state=null,actionType='transfer',proposal=null,approval=null,audit=[],signature='',optimiserApproved=null;
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const currentView=()=>($('cp-view')?.value)||'all';
  function currentProposal(){return{type:actionType,source:$('cp-source').value,target:$('cp-target').value,amount_musd:Number($('cp-amount').value),when:Number($('cp-when').value)}}
@@ -17,6 +17,7 @@
   const id=currentView(),cur=selectedCurve(id),series=[{curve:cur.forecast,name:'Forecast',color:'#3bdac5'},{curve:cur.actual,name:'Realised',color:'#92a3b7'}];
   if(approval?.eligible){if(id==='all')series.push({curve:approval.group.curve,name:'After action',color:'#f0b86d'});
     else {const by=approval.events?.[id]||[];const ent=state.entityById(id);series.push({curve:e.timeline(e.bookFor(state.book,id),'forecast_minute',state.opts.delay,state.opts.accel,ent.opening,by),name:'After action',color:'#f0b86d'});}}
+  if(!approval && optimiserApproved?.eligible){const optimized=id==='all'?{points:optimiserApproved.after.group}: {points:optimiserApproved.after.byId[id]?.points||[]};if(optimized.points.length)series.push({curve:optimized,name:'Approved optimiser plan (demo)',color:'#d4a5f9'});}
   let ys=series.flatMap(s=>s.curve.points.map(p=>p.y));let mn=Math.min(0,...ys)-180,mx=Math.max(0,...ys)+180;
   const W=880,H=294,L=60,R=17,T=22,B=35,x=t=>L+(t-450)/690*(W-L-R),y=v=>T+(mx-v)/(mx-mn)*(H-T-B);
   const grid=Array.from({length:5},(_,i)=>{let yy=mn+i*(mx-mn)/4;return `<line x1="${L}" x2="${W-R}" y1="${y(yy)}" y2="${y(yy)}" stroke="#284356" stroke-dasharray="4 7"/><text x="${L-11}" y="${y(yy)+4}" fill="#8fa7b7" text-anchor="end" font-size="11">${(yy/1000).toFixed(1)}</text>`}).join('');
@@ -74,7 +75,7 @@
  function onScenario(event){const detail=event.detail;if(!detail?.book?.length)return;
   const newSignature=[detail.seed,detail.delay,detail.accel,detail.opening].join(':');
   if(signature&&signature!==newSignature)invalidate('Scenario, payment seed or SoD liquidity changed.');
-  signature=newSignature;state=e.simulate(detail.book,detail);renderAll();
+  signature=newSignature;optimiserApproved=null;state=e.simulate(detail.book,detail);renderAll();
  }
  function switchAction(type){if(type===actionType)return;invalidate('Funding proposal changed.');actionType=type;
   if(type==='repo'){$('cp-amount').value='100';$('cp-when').value='780'}else{$('cp-amount').value='80';$('cp-when').value='720'}
@@ -95,6 +96,8 @@
   $('cp-approve').addEventListener('click',()=>decision(true));$('cp-reject').addEventListener('click',()=>decision(false));$('cp-audit-export').addEventListener('click',auditCSV);
  }
  window.addEventListener('flowstate:scenario',onScenario);
+ window.addEventListener('flowstate:optimiser-approval',ev=>{optimiserApproved=ev.detail?.plan||null;if(optimiserApproved&&approval){audit.push({decision:'MANUAL ACTION INVALIDATED',action:approval.proposal.type,time:new Date().toISOString(),note:'Alternative optimiser scenario approved.'});approval=null;renderAudit();}renderChart();});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
  if(typeof module!=='undefined')module.exports={};
 })();
+/* Extended chart overlay: the optimiser signals human-approved hypothetical plans using a browser event. */
