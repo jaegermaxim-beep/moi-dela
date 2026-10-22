@@ -270,3 +270,28 @@ python tests/browser_qa_v9.py
 ```
 
 All model inputs, counterparty groups, product labels, financial prices, settlement times, probabilities and action amounts are fabricated, unless explicitly identified as generic risk-management concepts. The tool does **not** recreate a proprietary bank system, does not verify the real Random Forest model at any bank, and has not been validated for investment, regulatory or intraday liquidity management decisions.
+
+
+## FLOWSTATE v10 — Collateral & Funding Lifecycle (22 October 2026)
+
+**New, client-demo-only components:** `funding-lifecycle-engine.js`, `funding-lifecycle-ui.js`, and `funding-lifecycle.css`. These add a dedicated, editable funding scenario panel to the existing Group Treasury Cockpit and a settlement-time-aware cash and collateral ledger. `risk-plan-engine.js` also consumes this lifecycle engine for Monte Carlo plan comparison; its new **Repo repayment horizon** control toggles the effect of same-day principal-and-interest repayments versus next-business-day obligations. Earlier controls and dashboards remain available.
+
+**Synthetic operating rules, not assertions about any actual bank**
+
+- Market repo: illustrative 12:00–16:00 settlement window. Example repo financing rate 5.25% annualised, simple ACT/360 proxy. Repo is backed by an assumed pool of unencumbered eligible collateral with an entity-specific haircut.
+- Central-bank intraday facility: illustrative 09:30–15:30 settlement window, 30-minute pre-positioning lead time and 18:30 repayment cut-off. An invented subset of each entity's collateral pool is central-bank-eligible (70%) and subject to an additional 7 percentage-point haircut, synthetic credit limit and 6.10% annualised illustrative rate. An international entity is deliberately restricted to show a failed control check.
+- An action can settle only at 15-minute intervals and cannot occur before the selected decision time. For same-day financing the principal plus interest leaves the account on the indicated repayment date and releases the pledged collateral at that minute. For overnight repo repayment and collateral release are explicitly recorded as **T+1 obligations** outside the current-day cash curve.
+- The collateral ledger reserves the **market value** of assets needed after haircut (cash ÷ (1−haircut)). Simultaneous pledges cannot exceed the asset pool. A second draw can reuse collateral only once an earlier draw is fully repaid. Cross-venue encumbrance is constrained against the shared pool and central-bank-eligible subset.
+- Internal cash transfers remain zero-sum for Group liquidity and must preserve the source entity's remaining-day projected local reserve under the base case.
+- The timing-dependent Monte Carlo comparison uses the lifecycle engine's positive settlement entries and **negative same-day repayments**, not the old simplified permanent repo inflow. The `risk-plan` shortlist is still generated heuristically; it is not a stochastic optimisation solution or a validated management action policy.
+
+**Known limitations:** No security-level collateral identifiers, settlement fails, margin calls, margining frequency, counterparties' actual repo terms, interest accrual calendars, market repo availability, central-bank eligibility decisions, asset price movements, collateral substitution risk, next-day cash simulations, legal ring-fencing analysis, netting treatment or liquidity transfer restrictions based on real agreements. The central-bank facility and all quantitative haircut, rate, pool and time-window parameters are fabricated. Do **not** infer these rules from Rabobank documents. Approvals and CSV audit logs remain browser-session simulations and do not cause external transactions. Overnight repayment obligations are disclosed but not simulated as cash outflows on a full next-day timeline.
+
+**Verification:**
+
+```bash
+node tests/test_funding_lifecycle.js
+python tests/browser_qa_v10.py
+```
+
+The test set checks no cross-venue double pledge, release/re-pledge sequencing, next-day debt, same-day principal-and-interest cash flows, Group cash neutrality of internal transfers, funding cut-offs, central-bank lead time and permissions, Monte Carlo tenor sensitivity, and responsive desktop/mobile browser interactions. The original trained Random Forest remains unchanged (32 trees) and is fitted only to invented transactions.
