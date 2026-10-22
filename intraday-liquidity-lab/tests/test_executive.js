@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('node:assert/strict');
+const ex=require('../executive-engine');
+const core=require('../cockpit-engine');
+const entries=[{kind:'OUT',amount_musd:200,forecast_minute:600,actual_minute:600,baseline_minute:600},{kind:'IN',amount_musd:150,forecast_minute:750,actual_minute:800,baseline_minute:780}];
+const state=core.simulate(entries,{opening:500,delay:0,accel:0});
+const summary=ex.summarize(state);
+assert.equal(summary.group.opening,500);
+assert.equal(summary.group.lnncp,state.group.forecast.peak_need);
+assert.equal(summary.group.surplus,state.group.forecast.surplus);
+assert.equal(summary.entities.reduce((sum,e)=>sum+e.opening,0),500);
+assert.equal(summary.group.reserve,core.ENTITIES.reduce((sum,e)=>sum+e.reserve,0));
+assert.equal(summary.belowReserve,summary.entities.filter(e=>e.surplus<e.reserve).length);
+assert.ok(summary.alerts.length>=2);
+assert.equal(ex.viewSeries(summary).length,47);
+assert.equal(ex.money(-30),'−$30m');
+assert.equal(ex.money(1200),'$1.20bn');
+console.log('PASS executive model consistency and entity reserves');

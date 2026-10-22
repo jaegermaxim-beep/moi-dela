@@ -1,3 +1,19 @@
+# FLOWSTATE v11 — Executive Treasury Dashboard & Guided Client Demo
+
+FLOWSTATE v11 adds a compact executive landing dashboard before the technical laboratory. The dashboard consumes the **same synthetic cash-flow scenario** and the existing `CockpitEngine` results rather than maintaining a separate balance-sheet calculation.
+
+New standalone source modules:
+
+- `executive-engine.js`: pure, testable calculation of Group and entity metrics, reserve-floor exception flags and synthetic Actual-vs-Forecast divergence.
+- `executive-ui.js` and `executive.css`: executive KPIs, Group time-series chart, legal-entity drill-down, review signals, and a five-step guided client walkthrough.
+- `tests/test_executive.js` and `tests/browser_qa_v11.py`: model consistency and desktop/mobile interaction checks.
+
+**Five-step presentation sequence:** (1) Group and legal-entity intraday liquidity, (2) payment-level settlement forecasting, (3) BaU vs stressed Monte Carlo, (4) risk-aware funding plan comparison, (5) simulated human approval and collateral lifecycle. The guided mode scrolls to live modules but **never automatically approves a funding action**. A manual Reset to BaU convenience button restores the demonstration's input sliders.
+
+**Model-risk boundary:** All amounts, transactions, legal entities, forecast accuracy results, Monte Carlo probabilities, reserve floors and collateral assumptions are fictional. The Monte Carlo stress probability shown is computed by the existing synthetic distribution module under user-selected shock assumptions, not a validated bank probability. Source systems (Azure, Databricks) are reference architecture elements and are not used to serve this browser demo. No transaction execution or external connected systems.
+
+----
+
 # FLOWSTATE — Intraday Liquidity Intelligence Lab
 
 An interactive, client-demonstration **synthetic-data v7 prototype** demonstrating how payment-arrival prediction can inform an intraday liquidity position. The shipped application is a self-contained static frontend running a **real trained Random Forest** through a compact JavaScript decision-tree evaluator.
