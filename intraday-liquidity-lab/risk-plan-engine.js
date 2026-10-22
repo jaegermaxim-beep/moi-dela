@@ -4,6 +4,7 @@
    default, breach or regulatory probabilities. Pure module; executes no Treasury action. */
 (function(root,factory){const v=factory();if(typeof module==='object'&&module.exports)module.exports=v;if(root)root.RiskPlanEngine=v;})(typeof globalThis!=='undefined'?globalThis:null,function(){
  const SLOTS=47,START=450,END=1140,STEP=15;
+ const lifecycle=typeof module==='object'&&module.exports?require('./funding-lifecycle-engine.js'):(typeof globalThis!=='undefined'?globalThis.FundingLifecycleEngine:null);
  const idx=t=>Math.max(0,Math.min(SLOTS-1,Math.ceil((t-START)/STEP)));
  const rng=seed=>{let a=seed>>>0;return()=>{a+=0x6d2b79f5;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;}};
  const quantile=(array,q)=>{let a=array.slice().sort((x,y)=>x-y),p=(a.length-1)*q,i=Math.floor(p);return a[i]+(a[Math.ceil(p)]-a[i])*(p-i)};
@@ -14,14 +15,16 @@
   if(!state?.book?.length||state.entities?.length!==3||!cal?.residuals_by_product)throw Error('Missing Group scenario or residual calibration');
   if(!Array.isArray(plans)||plans.length<1||plans.length>12||plans.some(p=>!Array.isArray(p.actions)))throw Error('Invalid plan shortlist');
   if(!Number.isInteger(asOf)||asOf<START||asOf>END||asOf%STEP)throw Error('Invalid decision time');
-  const o={runs:Number(opt.runs),seed:Number(opt.seed),shockProbability:Number(opt.shockProbability),shockDelay:Number(opt.shockDelay),stressDelay:Number(opt.stressDelay),stressAccel:Number(opt.stressAccel),stressHaircut:Number(opt.stressHaircut)};
-  if(!Number.isInteger(o.runs)||o.runs<100||o.runs>1500||!Number.isInteger(o.seed)||!Object.values(o).every(finite)||o.shockProbability<0||o.shockProbability>1||o.shockDelay<0||o.shockDelay>180||o.stressDelay<0||o.stressDelay>180||o.stressAccel<0||o.stressAccel>120||o.stressHaircut<0||o.stressHaircut>.4)throw Error('Invalid assumed stress parameters');
+  const o={runs:Number(opt.runs),seed:Number(opt.seed),shockProbability:Number(opt.shockProbability),shockDelay:Number(opt.shockDelay),stressDelay:Number(opt.stressDelay),stressAccel:Number(opt.stressAccel),stressHaircut:Number(opt.stressHaircut),repoTenor:opt.repoTenor||'overnight'};
+  if(!['overnight','same_day'].includes(o.repoTenor))throw Error('Unsupported repo repayment tenor');
+  if(!Number.isInteger(o.runs)||o.runs<100||o.runs>1500||!Number.isInteger(o.seed)||!Object.entries(o).filter(([k])=>k!=='repoTenor').every(([,v])=>finite(v))||o.shockProbability<0||o.shockProbability>1||o.shockDelay<0||o.shockDelay>180||o.stressDelay<0||o.stressDelay>180||o.stressAccel<0||o.stressAccel>120||o.stressHaircut<0||o.stressHaircut>.4)throw Error('Invalid assumed stress parameters');
   const idSet=new Set(state.entities.map(e=>e.id));
   for(const p of state.book){if(!idSet.has(p.entity_id)||!finite(+p.amount_musd)||+p.amount_musd<0)throw Error('Invalid synthetic payment');if(p.kind==='IN'&&(!Array.isArray(cal.residuals_by_product[p.product])||cal.residuals_by_product[p.product].length<50))throw Error('Missing product calibration '+p.product)}
   for(const plan of plans)for(const a of plan.actions){if(!['repo','transfer'].includes(a.type)||!idSet.has(a.target)||!finite(a.amount_musd)||a.amount_musd<=0||!Number.isInteger(a.when)||a.when<asOf||a.when>END||a.when%STEP)throw Error('Plan contains invalid or retrospective action');if(a.type==='transfer'&&(!idSet.has(a.source)||a.source===a.target))throw Error('Invalid intercompany transfer');
     if(a.type==='transfer'){const source=state.entities.find(e=>e.id===a.source);if(!source.transferable||a.when<600||a.when>990)throw Error('Transferability or cut-off restriction failed')}
     if(a.type==='repo'&&(a.when<720||a.when>960))throw Error('Repo settlement cut-off restriction failed')}
-  for(const plan of plans)for(const ent of state.entities){const pledged=plan.actions.filter(a=>a.type==='repo'&&a.target===ent.id).reduce((s,a)=>s+a.amount_musd,0);if(pledged>ent.collateral*(1-ent.haircut)+1e-7)throw Error('Funding exceeds haircut-adjusted collateral capacity')}
+  if(!lifecycle)throw Error('Funding lifecycle control module not loaded');
+  for(const plan of plans){const schedule=lifecycle.process(state,plan.actions,{asOf,defaultTenor:o.repoTenor,defaultRepayAfter:120});if(!schedule.eligible)throw Error('Funding collateral or lifecycle restriction: '+schedule.reason)}
   return o;
  }
  /* Common random numbers make paired before/after comparisons meaningful. All actions
@@ -32,7 +35,9 @@
   const scenarioPlans=plans.map(p=>({key:key(p.actions),actions:p.actions,costUsd:Number(p.costUsd||0),label:p.label||'',results:[]}));
   const rows=state.book.map(p=>({entity:identity[p.entity_id],dir:p.kind==='IN'?1:-1,when:+p.forecast_minute,booked:+(p.booking_minute??START),amount:+p.amount_musd,residual:p.kind==='IN'?cal.residuals_by_product[p.product]:null}));
   const decisionIdx=idx(asOf),opening=+state.opts.opening*(1-o.stressHaircut),reserveSum=ents.reduce((s,e)=>s+e.reserve,0);
-  const funded=plans.map(p=>{const ev=Array.from({length:ents.length},()=>new Float64Array(SLOTS));for(const a of p.actions){const slot=idx(a.when),i=identity[a.target];ev[i][slot]+=a.amount_musd;if(a.type==='transfer')ev[identity[a.source]][slot]-=a.amount_musd;}return ev;});
+  const lifecyclePlans=plans.map(p=>lifecycle.process(state,p.actions,{asOf,defaultTenor:o.repoTenor,defaultRepayAfter:120}));
+  const funded=lifecyclePlans.map(p=>{const ev=Array.from({length:ents.length},()=>new Float64Array(SLOTS));for(const [entityId,flows] of Object.entries(p.events)){for(const flow of flows)ev[identity[entityId]][idx(flow.when)]+=flow.amount_musd;}return ev;});
+  scenarioPlans.forEach((p,i)=>{p.costUsd=lifecyclePlans[i].cost_usd+p.actions.filter(a=>a.type==='transfer').reduce((s,a)=>s+a.amount_musd*10+1000,0)});
   const scenarioDelay=Number(state.opts.delay)+o.stressDelay,scenarioAccel=Number(state.opts.accel)+o.stressAccel;
   for(let run=0;run<o.runs;run++){
    const shock=random()<o.shockProbability?o.shockDelay:0;
@@ -71,7 +76,7 @@
   const ranked=scored.slice().sort((a,b)=>a.probLocal-b.probLocal||a.expectedGap-b.expectedGap||a.probGroup-b.probGroup||a.expectedDeficitHours-b.expectedDeficitHours||a.costUsd-b.costUsd);
   for(let i=0;i<ranked.length;i++)ranked[i].rank=i+1;
   const paired=ranked.map(p=>{const baseObs=baseline.observations,after=p.observations;const improvements=after.map((v,i)=>baseObs[i].totalGap-v.totalGap);const improved=improvements.filter(x=>x>1e-6).length/after.length;const worsened=improvements.filter(x=>x< -1e-6).length/after.length;return {key:p.key,improvedFraction:improved,worsenedFraction:worsened,meanPairedBenefit:improvements.reduce((s,x)=>s+x,0)/after.length};});
-  return {runs:o.runs,asOf,assumptions:o,baseline,ranked,paired,shortlistCount:ranked.length,sourceCount:rows.length,note:'Conditional synthetic probabilities for the remaining trading day. Common random numbers used for paired comparison. Assumed residual dependence and payment-system shocks are not calibrated to observed bank data.',limitations:['Candidate shortlist is generated by the v5 deterministic optimiser, not a globally optimal multi-stage stochastic search.','Repo proceeds are treated as available through 19:00. Repayment, collateral double-counting, funding cost tenor and settlement failures are not fully represented.','A plan that passes deterministic control checks may breach a local reserve floor under stress; this risk is explicitly measured, not hidden.']};
+  return {runs:o.runs,asOf,assumptions:o,baseline,ranked,paired,shortlistCount:ranked.length,sourceCount:rows.length,note:'Conditional synthetic probabilities for the remaining trading day. Common random numbers used for paired comparison. Assumed residual dependence and payment-system shocks are not calibrated to observed bank data.',limitations:['Candidate shortlist is generated by the v5 deterministic optimiser, not a globally optimal multi-stage stochastic search.','Repo repayment before 19:00 is included when same-day tenor is chosen; overnight liabilities and locked collateral are disclosed but next-day cash stress is outside this session. Settlement failures and actual market eligibility remain unmodelled.','A plan that passes deterministic control checks may breach a local reserve floor under stress; this risk is explicitly measured, not hidden.']};
  }
  return {compare,key,rng,quantile};
 });
