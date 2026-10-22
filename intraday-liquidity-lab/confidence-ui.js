@@ -31,7 +31,7 @@
   $('confidence-sample').textContent=`${c.sample_size} synthetic calibration payments · ${esc(c.product)}`;
   $('confidence-payment-context').textContent=`${esc(p.synthetic_id)} · ${esc(p.counterparty)} · ${esc(p.rail)} · ${m(p.amount_musd)} · booked ${hm(p.booking_minute)}`;
   $('confidence-scenario-impact').innerHTML=`<div><span>Group Liquidity Surplus change</span><strong>${st.group_delta>=0?'+':''}${m(st.group_delta)}</strong></div><div><span>Entity Liquidity Surplus change</span><strong>${st.entity_delta>=0?'+':''}${m(st.entity_delta)}</strong></div><div><span>Projected Group LNNCP change</span><strong>${st.lnncp_increase>=0?'+':''}${m(st.lnncp_increase)}</strong></div>`;
-  $('confidence-scenario-note').textContent=st.truncated?'P90 exceeds 19:00. What-if preview is clipped at the demo session end; a real tool must model overnight carryover.':'What-if estimates a one-payment P90 delay without changing payment amount; no order is executed.';
+  $('confidence-scenario-note').textContent=st.truncated?'P90 exceeds 19:00. The preview excludes this inflow from the current session rather than crediting it at 19:00. Next-day carryover remains outside the prototype.':'What-if estimates a one-payment P90 delay without changing payment amount; no order is executed.';
   $('confidence-apply').disabled=c.outside_session; // prevents misleading horizon truncation in the global scenario.
   $('confidence-apply').textContent=scenarioActive?'Update P90 Treasury scenario':'Apply P90 timing to Treasury scenario';
   $('confidence-reset').disabled=!scenarioActive;
