@@ -364,3 +364,9 @@ for f in tests/test_*.js; do node "$f"; done
 (cd model && python challenger_validation.py)
 python tests/browser_qa_v11_1.py
 ```
+
+---
+
+## Version 12.0 — local Enterprise Readiness Sandbox
+
+FLOWSTATE now ships with an **optional FastAPI + SQLite local backend** for durable evidence snapshots, an illustrative Treasury → Risk Management → Treasury review chain, versioned decisions and an application-level hash-chained audit. Open the existing public GitHub Pages demo to see the module in **browser-only mode**, or run `python -m enterprise.server` locally for server persistence. See [`enterprise/README.md`](enterprise/README.md) for setup, assumptions, replay, API details and important security limitations. This does **not** enable authenticated users, secure multi-entity entitlements, immutable audit, model recalibration, real funding eligibility controls, or actual banking execution.
