@@ -217,3 +217,34 @@ python model/build_calibration.py
 node tests/test_confidence.js
 python tests/browser_qa_v7.py
 ```
+
+## Version 8 — Group liquidity-at-risk distribution (October 2026)
+
+The `Liquidity-at-Risk` panel provides a **synthetic Monte Carlo scenario analysis** of expected incoming USD payment timing. It extends the single-transaction v7 cut-off probability to a distribution of Group and legal-entity liquidity positions. It must **not** be presented as a statistically validated credit, operational or market risk model.
+
+### Calculation methodology
+
+- Starting data are the existing, fully invented USD payment book generated from the exported 32-tree `RandomForestRegressor` and assigned to three illustrative legal entities. The existing forecast point estimates are not retrained or overwritten.
+- Each Monte Carlo scenario draws **one historic residual per incoming payment** from the saved, separately calibrated product-specific synthetic residual distribution (`model-calibration.json`). These are marginal draws. Their real-world correlation structure is unknown.
+- An optional **common payment-system delay** affects all inflows in a scenario. Its probability and delay in minutes are user-defined, synthetic assumptions; they are not learned from transaction data. The same residual and shock draws are used to compare BaU and Stress, ensuring like-for-like scenario comparisons.
+- Stress additionally delays incoming cash, accelerates outgoing cash and reduces *Start-of-Day Liquidity Position* by an assumed haircut. Baseline `delay`, `accel` and `opening` controls in the existing Forecast Laboratory are inherited. All stress parameters are illustrative.
+- Cash flows are allocated into 15-minute buckets (07:30–19:00). **Inflow forecast after 19:00 is excluded from the same-day liquidity position**, avoiding a misleading end-of-session clamp. Overnight state, cross-day funding, and carryover balances are not modelled.
+- For each scenario and legal entity, the model calculates the running cumulative cash position, minimum cash position, Group LNNCP (largest negative *net cumulative* position) and Liquidity Surplus = SoD Liquidity Position − LNNCP. Local shortfalls use the existing artificial reserve floors; the assumed Group floor is the sum of those local floors and **not an official legal or regulatory limit**.
+- The simulated 10th, 50th and 90th percentiles and scenario frequencies are descriptive of *the specified generator and assumptions*, not external probability statements. `P10 Group Liquidity Surplus` and `P90 Group LNNCP` refer to quantiles over simulated **peak daily outcomes**, which are different from the pointwise fan chart P10–P90 at every time bucket.
+- `P(any entity reserve breach)` is not interchangeable with `P(Group liquidity shortfall)` because subsidiary liquidity is not automatically fungible. Simulated intercompany transfer permissions and repo funding remain part of the existing separate, manual-gate Optimisation Agent. Its plans are **not automatically executed** or assumed when calculating the distribution.
+
+### Controls, reproducibility, and limits
+
+- The model's random stream uses a deterministic fixed seed, enabling repeated identical results for the same input settings. The simulation runs entirely in-browser; no payment file, real-time liquidity feed, market-data API or financial infrastructure is contacted.
+- Both BaU and Stress use the same residual draws. The current joint scenario construction is **not empirically calibrated**: per-product residual samples are drawn independently and a single user-defined shared shock is the only dependence mechanism.
+- The probabilities omit correlated counterparty defaults, simultaneous funding constraints, cash-flow forecasting biases, time-zone mismatches, currency conversion, FX swap settlement risk, collateral liquidity and intraday credit-limit variability.
+- This is a **decision-support illustration**, not bank-specific risk appetite, Basel regulatory reporting, an official Liquidity Stress Test or production-grade forecast. The stress confidence bands have no demonstrated coverage on real bank data.
+
+### Regression checks
+
+```bash
+node tests/test_distribution.js
+python tests/browser_qa_v8.py
+```
+
+`test_distribution.js` verifies seed reproducibility, correct settled-bucket accounting, monotonic deterioration under stronger stress, reserve-breach probabilities, strict same-day treatment of after-19:00 inflows, calibration validation, and the resulting Group cash conservation checks. The browser QA runs 1440px desktop and 390px mobile tests, scenario slider sensitivity and reset, entity drill-down, preserved optimiser, and P90 payment what-if event compatibility. Prior v1–v7 calculation and browser tests remain available.
