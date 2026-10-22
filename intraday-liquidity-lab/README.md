@@ -1,3 +1,31 @@
+## Version 11.2 — Unified Scenario & Decision State (October 2026)
+
+This is an additive **quality/stabilisation** release. All data and decisions remain synthetic. The 
+`decision-state.js` module is now a shared, single-browser-session coordinator for the Forecast Laboratory,
+Group Cockpit, deterministic Treasury Optimiser, Risk-Aware Funding and Funding Lifecycle approvals.
+
+- One scenario revision keyed by the full current synthetic cash-flow book and its assumptions. Re-rendering
+  an unchanged scenario does not reset approval. Changing timing, payments, SoD liquidity, funding inputs,
+  Monte Carlo parameters, decision cut-offs or repo tenor invalidates previously reviewed plans.
+- Proposal staging is required before the central ledger accepts an approval. Stale scenario revisions and
+  ineligible actions cannot be approved by the coordinator.
+- Only one **active simulated approval** is retained across modules. A subsequent approved plan supersedes
+  the previous one, and the previous component removes its approved simulation overlay.
+- A consolidated decision audit CSV records approvals, rejections, supersessions and invalidations; the
+  shared status strip displays active source and scenario revision. Historic component-specific logs remain
+  available as local views for compatibility; the central ledger is authoritative **within this browser session**.
+- Regression coverage includes versioning, duplicate scenario events, eligibility rejection, stale decisions,
+  cross-module supersession and browser interactions on desktop/mobile.
+
+**Non-production controls disclosure:** This ledger is an in-memory browser simulation and can be modified
+by a developer or cleared by refreshing the page. It is not tamper-resistant or persistent, has no true user
+authentication, role-based access control, cryptographic signatures, multi-user concurrency or execution
+interfaces. It is *not* equivalent to a bank's regulated immutable audit system.
+
+**Product follow-up:** Further consistency work is still needed around module-specific decision log
+presentation, synthetic controls that are not causally tied to the ML model, backend persistence,
+security reviews and validation of any real funding constraints.
+
 # FLOWSTATE v11 — Executive Treasury Dashboard & Guided Client Demo
 
 FLOWSTATE v11 adds a compact executive landing dashboard before the technical laboratory. The dashboard consumes the **same synthetic cash-flow scenario** and the existing `CockpitEngine` results rather than maintaining a separate balance-sheet calculation.

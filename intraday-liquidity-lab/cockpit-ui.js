@@ -57,6 +57,7 @@
  }
  function renderProposal(){
   if(!state)return;proposal=e.assess(state,currentProposal());
+  const ds=window.DecisionState;ds?.stage('group',{eligible:proposal.eligible,proposal:proposal.proposal});
   $('cp-source-wrap').hidden=actionType!=='transfer';
   $('cp-approve').disabled=!proposal.eligible;
   $('cp-eligibility').className='cp-eligibility '+(proposal.eligible?'passed':'failed');
@@ -83,6 +84,7 @@
   document.querySelectorAll('.cp-type').forEach(b=>{const active=b.dataset.type===type;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')});renderProposal();renderChart();}
  function decision(approved){if(!state)return;const evaluated=e.assess(state,currentProposal());const stamped=new Date().toISOString();
   if(approved&&!evaluated.eligible){$('cp-action-status').textContent='Action blocked: eligibility conditions not met.';return;}
+  const ds=window.DecisionState;if(ds){const check=ds.decide('group',approved?'APPROVED':'REJECTED',JSON.stringify(currentProposal()),ds.snapshot().revision);if(!check.ok){$('cp-action-status').textContent=check.reason;return;}}
   audit.push({decision:approved?'APPROVED IN SIMULATION':'REJECTED IN SIMULATION',action:evaluated.proposal?.type||actionType,time:stamped,note:approved?`${money(evaluated.proposal.amount_musd)} ${evaluated.proposal.source||'external'} → ${evaluated.proposal.target} at ${time(evaluated.proposal.when)}; zero transaction execution.`:'Proposal rejected by the simulated approver.'});
   approval=approved?evaluated:null;
   $('cp-action-status').textContent=approved?'Approved in simulation only. No real funding, transfer, instruction or external call was executed.':'Proposal rejected. Baseline liquidity position unchanged.';
@@ -97,6 +99,7 @@
   $('cp-approve').addEventListener('click',()=>decision(true));$('cp-reject').addEventListener('click',()=>decision(false));$('cp-audit-export').addEventListener('click',auditCSV);
  }
  window.addEventListener('flowstate:scenario',onScenario);
+ let priorDecisionRevision=-1;window.addEventListener('flowstate:decision-updated',ev=>{if(ev.detail.revision!==priorDecisionRevision){priorDecisionRevision=ev.detail.revision;if(state)renderProposal();}if(approval&&ev.detail.active?.source!=='group'){approval=null;renderChart();$('cp-action-status').textContent='Previous approval no longer active in unified decision state.';}if(optimiserApproved&&ev.detail.active?.source!=='optimiser'){optimiserApproved=null;renderChart();}});
  window.addEventListener('flowstate:optimiser-approval',ev=>{optimiserApproved=ev.detail?.plan||null;if(optimiserApproved&&approval){audit.push({decision:'MANUAL ACTION INVALIDATED',action:approval.proposal.type,time:new Date().toISOString(),note:'Alternative optimiser scenario approved.'});approval=null;renderAudit();}renderChart();});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
  if(typeof module!=='undefined')module.exports={};

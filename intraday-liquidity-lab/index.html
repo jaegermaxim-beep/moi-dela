@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="funding-lifecycle.css">
 <link rel="stylesheet" href="executive.css">
 <link rel="stylesheet" href="client-studio.css">
+<link rel="stylesheet" href="decision-state.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -35,11 +36,12 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 11.1 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 11.2 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
 <div class="content">
+<section class="ds-strip" aria-label="Scenario and decision governance" id="decision-governance"><div><span class="ds-label">SINGLE SCENARIO / DECISION STATE</span><strong id="ds-status">Awaiting simulation</strong><small id="ds-meta">All approvals are local browser simulations · no external execution</small></div><div class="ds-actions"><button id="ds-audit" type="button" class="btn outline">Unified audit CSV ↓</button></div></section>
 <section class="hero ex-hero"><div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TREASURY INTELLIGENCE · EXECUTIVE VIEW</div><h1>One group.<br><em>Clear liquidity decisions.</em></h1><p>Forecast payment settlement. Quantify intraday risk. Evaluate funding responses — with every decision subject to human approval.</p><div class="hero-actions"><button id="ex-launch" type="button" class="btn primary">Start 7-minute executive demo <span>↗</span></button><a href="#group-cockpit" class="btn outline">Explore the full platform <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="hero-vertical">FORECAST / DETECT / ACT</div></div></section>
 <div class="disclosure"><strong>Illustrative proof of concept</strong><span>This entire application uses fabricated transactions, counterparties, model inputs and outcomes. Not affiliated with or endorsed by any bank. Results are not validated for production decisions.</span></div>
 
@@ -304,6 +306,8 @@
 <footer><span>© 2026 FLOWSTATE LAB · INDEPENDENT RESEARCH CONCEPT</span><span>SIMULATED DATA ONLY · NOT INVESTMENT OR RISK ADVICE</span></footer>
 </div></main></div>
 <script defer src="cashflow-engine.js"></script>
+<script defer src="decision-state.js"></script>
+<script defer src="decision-state-ui.js"></script>
 <script defer src="decision-engine.js"></script>
 <script defer src="cockpit-engine.js"></script>
 <script defer src="cockpit-ui.js"></script>

@@ -23,6 +23,7 @@
  function selected(){return plans?.ranked.find(p=>getKey(p)===selectedKey)||null;}
  function renderSelection(){
   const plan=selected();if(!plan)return;
+  window.DecisionState?.stage('optimiser',{eligible:plan.actions.length>0&&plan.reduction>.05,key:getKey(plan),actions:plan.actions,asOf:Number($('op-asof').value),searchDepth:Number($('op-maxactions').value)});
   $('op-plan-title').textContent=plan.actions.length?`${plan.actions.length}-step Treasury response`:'Maintain current liquidity position';
   $('op-rationale').textContent=engine.rationale(plan);
   $('op-gap-before').textContent=m(plan.before.unmet);
@@ -46,6 +47,7 @@
   const fresh=engine.evaluate(state,plan.actions,asOf);if(accept&&(!fresh.eligible||!plan.actions.length||fresh.reduction<.05)){
    $('op-decision').textContent='Approval blocked: candidate fails the current eligibility or usefulness checks.';return;
   }
+  const ds=window.DecisionState;if(ds){const result=ds.decide('optimiser',accept?'APPROVED':'REJECTED',getKey(plan),ds.snapshot().revision);if(!result.ok){$('op-decision').textContent=result.reason;return;}}
   const status=accept?'APPROVED IN SIMULATION':'REJECTED IN SIMULATION';const when=new Date().toISOString();
   audit.push({time:when,action:status,detail:`${plan.actions.length} proposed steps, simulated cost ${fee(plan.costUsd)}, remaining uncovered local gap ${m(plan.after.unmet)}.`});
   approved=accept?{epoch:scenarioEpoch,plan:fresh}:null;
@@ -69,6 +71,7 @@
   $('op-maxactions').addEventListener('change',()=>{if(approved){audit.push({time:new Date().toISOString(),action:'APPROVAL INVALIDATED',detail:'Plan search depth changed.'});approved=null;window.dispatchEvent(new CustomEvent('flowstate:optimiser-approval',{detail:{plan:null}}));}renderPlans();auditRender()});
   $('op-approve').addEventListener('click',()=>decision(true));$('op-reject').addEventListener('click',()=>decision(false));$('op-audit-download').addEventListener('click',exportAudit);
  }
+ let priorDecisionRevision=-1;window.addEventListener('flowstate:decision-updated',ev=>{if(ev.detail.revision!==priorDecisionRevision){priorDecisionRevision=ev.detail.revision;if(state)renderPlans();}if(approved&&ev.detail.active?.source!=='optimiser'){approved=null;window.dispatchEvent(new CustomEvent('flowstate:optimiser-approval',{detail:{plan:null,epoch:scenarioEpoch}}));$('op-decision').textContent='Simulated approval invalidated or replaced in unified ledger.';renderPlans();}});
  window.addEventListener('flowstate:scenario',onScenario);
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })();

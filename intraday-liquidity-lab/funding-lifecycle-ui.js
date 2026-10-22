@@ -31,9 +31,9 @@
  }
  function invalidate(reason){revision++;if(approval){audit.push({at:new Date().toISOString(),status:'INVALIDATED',note:reason});approval=null;$('fl-decision').textContent='Earlier demo approval invalidated by changed funding or payment assumptions.';renderAudit();}}
  function calculate(){if(!state){$('fl-status').textContent='Awaiting synthetic payment book';return}
-  evaluation=engine.process(state,actions(),options());renderLedger();}
+  evaluation=engine.process(state,actions(),options());window.DecisionState?.stage('funding-lifecycle',{eligible:evaluation?.eligible,actions:actions(),options:options()});renderLedger();}
  function renderAudit(){$('fl-audit').innerHTML=audit.length?audit.slice(-5).reverse().map(a=>`<p><strong>${esc(a.status)}</strong> · ${esc(a.at)} · ${esc(a.note)}</p>`).join(''):'No simulated lifecycle decisions.';}
- function decision(ok){if(!evaluation?.eligible&&ok)return;const stamp=new Date().toISOString();approval=ok?{revision}:null;
+ function decision(ok){if(!evaluation?.eligible&&ok)return;const ds=window.DecisionState;if(ds){const result=ds.decide('funding-lifecycle',ok?'APPROVED':'REJECTED',JSON.stringify(actions()),ds.snapshot().revision);if(!result.ok){$('fl-decision').textContent=result.reason;return;}}const stamp=new Date().toISOString();approval=ok?{revision}:null;
   const note=ok?`${evaluation.actions.length} funding action(s), ${cash(evaluation.nextDayDebt)} due T+1, ${cash(evaluation.cost_musd)} synthetic financing cost; no external execution.`:'Funding lifecycle proposal rejected; no operation executed.';
   audit.push({at:stamp,status:ok?'APPROVED IN SIMULATION':'REJECTED IN SIMULATION',note});$('fl-decision').textContent=note;renderAudit();}
  function optionTimes(id,min,max,initial){const select=$(id);select.innerHTML=Array.from({length:Math.floor((max-min)/15)+1},(_,i)=>min+i*15).map(t=>`<option value="${t}">${clock(t)}</option>`).join('');select.value=String(initial);}
@@ -43,6 +43,7 @@
    invalidate('Funding lifecycle input changed.');calculate();});}
   $('fl-approve').addEventListener('click',()=>decision(true));$('fl-reject').addEventListener('click',()=>decision(false));
   $('fl-export').addEventListener('click',()=>{const csv=[['timestamp','status','notes'],...audit.map(x=>[x.at,x.status,x.note])].map(row=>row.map(s=>'"'+String(s).replaceAll('"','""')+'"').join(',')).join('\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));let a=document.createElement('a');a.href=url;a.download='flowstate_v10_funding_lifecycle_audit.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),500)});
+  let priorDecisionRevision=-1;window.addEventListener('flowstate:decision-updated',ev=>{if(ev.detail.revision!==priorDecisionRevision){priorDecisionRevision=ev.detail.revision;if(state)calculate();}if(approval&&ev.detail.active?.source!=='funding-lifecycle'){approval=null;$('fl-decision').textContent='Approval invalidated or replaced in unified ledger.';renderAudit();}});
   window.addEventListener('flowstate:scenario',event=>{const d=event.detail;if(!d?.book?.length)return;const sig=[d.seed,d.delay,d.accel,d.opening,JSON.stringify(d.book.map(p=>[p.id,p.forecast_minute]))].join(':');if(state&&sig!==forecastSignature)invalidate('Cash-flow forecast or SoD Liquidity Position changed.');forecastSignature=sig;state=core.simulate(d.book,d);calculate()});
   $('op-asof').addEventListener('change',()=>{invalidate('Treasury decision time changed.');calculate()});
  }

@@ -18,6 +18,7 @@
  function invalidate(reason){if(approval){audit.push({when:new Date().toISOString(),status:'INVALIDATED',details:reason});approval=null;$('ra-decision').textContent='Earlier demonstration approval invalidated. Please review updated outcomes.'}auditDisplay();}
  function riskRender(){if(!assessment)return;const b=assessment.baseline,ranking=effectiveRank(assessment.ranked);
   const selected=ranking.find(p=>p.key===selection)||ranking[0];selection=selected.key;
+  window.DecisionState?.stage('risk-aware',{key:selected.key,assumptions:params(),asOf:assessment.asOf,eligible:selected.actions.length>0&&!selected.increasesIndividualEntityRisk&&!selected.increasesEntityRisk&&!selected.increasesGroupRisk&&selected.expectedGapReduction>.001});
   $('ra-plan-list').innerHTML=ranking.map((p,i)=>`<button type="button" data-plan="${esc(p.key)}" aria-pressed="${p.key===selection}" class="ra-plan ${p.key===selection?'selected':''}"><span class="ra-plan-top"><strong>${i+1}. ${esc(label(p))}</strong><em>${esc(tag(p,b))}</em></span><small>${p.actions.length} action(s) · cost ${fee(p.costUsd)} · P(local reserve breach) ${percent(p.probLocal)}</small><div class="ra-plan-metrics"><span>Expected local gaps<b>${money(p.expectedGap)}</b></span><span>P(Group reserve breach)<b>${percent(p.probGroup)}</b></span><span>Stress surplus P10<b>${money(p.surplusP10)}</b></span></div></button>`).join('');
   $('ra-plan-list').querySelectorAll('[data-plan]').forEach(button=>button.addEventListener('click',()=>{selection=button.dataset.plan;riskRender()}));
   $('ra-before-p').textContent=percent(b.probLocal);$('ra-after-p').textContent=percent(selected.probLocal);
@@ -64,6 +65,7 @@
  function auditDisplay(){$('ra-audit').innerHTML=audit.length?audit.slice(-5).reverse().map(x=>`<p><b>${esc(x.status)}</b> · ${esc(x.when)} · ${esc(x.details)}</p>`).join(''):'No risk-aware approvals recorded.'}
  function decision(approve){const p=assessment?.ranked.find(x=>x.key===selection);if(!p)return;
   if(approve&&$('ra-approve').disabled){$('ra-decision').textContent='Approval blocked by the current demo risk and eligibility criteria.';return}
+  const ds=window.DecisionState;if(ds){const result=ds.decide('risk-aware',approve?'APPROVED':'REJECTED',String(p.key),ds.snapshot().revision);if(!result.ok){$('ra-decision').textContent=result.reason;return;}}
   const status=approve?'APPROVED IN SIMULATION':'REJECTED IN SIMULATION';
   approval=approve?{epoch,key:p.key,assumptions:params(),asOf:assessment.asOf}:null;
   audit.push({when:new Date().toISOString(),status,details:`${p.actions.length} actions; model-implied local risk ${percent(p.probLocal)}; expected residual local gaps ${money(p.expectedGap)}; illustrative cost ${fee(p.costUsd)}. No actual transaction.`});
@@ -76,7 +78,8 @@
   for(const id of ['mc-runs','mc-shock-prob','mc-shock-delay','mc-delay','mc-accel','mc-haircut'])$(id).addEventListener('input',()=>schedule('Monte Carlo stress assumptions changed.'));
   for(const id of ['op-asof','op-maxactions','ra-repo-tenor'])$(id).addEventListener('change',()=>schedule('Funding tenor or plan horizon changed.'));
   $('ra-approve').addEventListener('click',()=>decision(true));$('ra-reject').addEventListener('click',()=>decision(false));$('ra-export').addEventListener('click',exportLog);
-  window.addEventListener('flowstate:scenario',ev=>{if(!ev.detail?.book?.length)return;scenario=ev.detail;epoch++;schedule('Payment book or liquidity assumptions changed.')});
+  let priorDecisionRevision=-1;window.addEventListener('flowstate:decision-updated',ev=>{if(ev.detail.revision!==priorDecisionRevision){priorDecisionRevision=ev.detail.revision;if(scenario&&cal)schedule('Scenario revision changed in unified decision state.');}if(approval&&ev.detail.active?.source!=='risk-aware'){approval=null;$('ra-decision').textContent='Approval invalidated or replaced in unified ledger.';auditDisplay();}});
+ window.addEventListener('flowstate:scenario',ev=>{if(!ev.detail?.book?.length)return;scenario=ev.detail;epoch++;schedule('Payment book or liquidity assumptions changed.')});
  }
  async function init(){bind();try{const r=await fetch('model-calibration.json',{cache:'no-store'});if(!r.ok)throw Error('Calibration HTTP '+r.status);cal=await r.json();assess();}catch(e){$('ra-status').textContent='Synthetic calibration unavailable: '+e.message;}}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
