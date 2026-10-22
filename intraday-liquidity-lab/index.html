@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="executive.css">
 <link rel="stylesheet" href="client-studio.css">
 <link rel="stylesheet" href="decision-state.css">
+<link rel="stylesheet" href="enterprise.css">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head><body>
 <div class="site-shell">
@@ -20,6 +21,7 @@
   <a href="#executive" class="brand"><span class="brand-mark">◈</span><span>FLOWSTATE<small>LIQUIDITY INTELLIGENCE</small></span></a>
   <div class="side-label">WORKSPACE</div>
   <nav class="side-nav" aria-label="Page sections">
+    <a class="side-link" href="#enterprise-readiness"><span>▦</span> Enterprise sandbox</a>
     <a class="side-link active" href="#client-studio"><span>◇</span> Client studio</a>
     <a class="side-link" href="#executive"><span>✦</span> Executive dashboard</a>
     <a class="side-link" href="#group-cockpit"><span>◩</span> Group cockpit</a>
@@ -36,7 +38,7 @@
     <a class="side-link" href="#methodology"><span>◫</span> Model methodology</a>
   </nav>
   <div class="side-card"><span class="side-card-icon">✦</span><div>Built for better decisions<strong>From payment timing to actionable liquidity foresight.</strong></div></div>
-  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 11.2 · Oct 2026</small></div>
+  <div class="side-bottom">RESEARCH PROTOTYPE <span class="blip"></span><br><small>Version 12.0 · Oct 2026</small></div>
 </aside>
 <main class="main" id="overview">
 <header class="topbar"><div class="breadcrumbs">Treasury solutions <span>/</span> Intraday intelligence</div><div class="top-actions"><span class="privacy-indicator">100% SYNTHETIC DATA</span><span class="avatar">FL</span></div></header>
@@ -44,6 +46,40 @@
 <section class="ds-strip" aria-label="Scenario and decision governance" id="decision-governance"><div><span class="ds-label">SINGLE SCENARIO / DECISION STATE</span><strong id="ds-status">Awaiting simulation</strong><small id="ds-meta">All approvals are local browser simulations · no external execution</small></div><div class="ds-actions"><button id="ds-audit" type="button" class="btn outline">Unified audit CSV ↓</button></div></section>
 <section class="hero ex-hero"><div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TREASURY INTELLIGENCE · EXECUTIVE VIEW</div><h1>One group.<br><em>Clear liquidity decisions.</em></h1><p>Forecast payment settlement. Quantify intraday risk. Evaluate funding responses — with every decision subject to human approval.</p><div class="hero-actions"><button id="ex-launch" type="button" class="btn primary">Start 7-minute executive demo <span>↗</span></button><a href="#group-cockpit" class="btn outline">Explore the full platform <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="hero-vertical">FORECAST / DETECT / ACT</div></div></section>
 <div class="disclosure"><strong>Illustrative proof of concept</strong><span>This entire application uses fabricated transactions, counterparties, model inputs and outcomes. Not affiliated with or endorsed by any bank. Results are not validated for production decisions.</span></div>
+
+
+<section class="section ent-shell" id="enterprise-readiness" aria-labelledby="ent-title">
+ <div class="ent-head"><div><span class="ent-label">ENTERPRISE READINESS · SYNTHETIC LOCAL SANDBOX · V12</span><h2 id="ent-title">Governed decisions. Reproducible evidence.</h2><p>Take a frozen synthetic model snapshot through Treasury preparation, independent Risk challenge and final Treasury sign-off. Server-side decision history is kept in local SQLite when running the optional Python service.</p></div><span id="ent-service" class="ent-status">BROWSER DEMO ONLY</span></div>
+ <div class="ent-stats"><span id="ent-status-details">Connecting to local sandbox…</span><span id="ent-counts">No saved scenarios</span></div>
+ <div class="ent-grid">
+  <div class="ent-panel"><h3>01 — Capture model evidence</h3><p>Store the exact synthetic payment book, input assumptions and computed Group/Entity metrics. Each revision has a SHA-256 fingerprint and an immutable snapshot record.</p>
+   <label>Acting demo identity<select id="ent-actor"><option value="treasury_alex">Alex · Treasury preparer</option><option value="risk_morgan">Morgan · Risk Management</option><option value="treasury_chris">Chris · Treasury approver</option><option value="risk_sam">Sam · Risk Management</option></select></label>
+   <div class="ent-buttons"><button id="ent-capture" class="ent-button primary" type="button" disabled>Save / revise scenario snapshot</button><button id="ent-refresh" class="ent-button" type="button" disabled>Refresh</button></div>
+   <span class="ent-footprint">SHA-256 fingerprint · selected model version · fixed simulation seed · copied calculated outputs</span><div id="ent-replay-hint" class="ent-workflow">After saving, the exact scenario can be replayed locally with Node.js.</div>
+  </div>
+  <div class="ent-panel"><h3>02 — Treasury funding proposal</h3><p>Prepare an indicative action. Backend stores the recommendation and model evidence but does <strong>not</strong> verify bank-specific collateral eligibility or execute an order.</p>
+   <label>Action<select id="ent-action"><option value="repo">Collateralised repo funding</option><option value="transfer">Intercompany liquidity transfer</option></select></label>
+   <label>Recipient<select id="ent-entity"><option value="group-treasury">Group Treasury</option><option value="investment-bank">Investment Services</option><option value="international-branch">International Branch</option></select></label>
+   <label>Notional, USD million<input id="ent-amount" type="number" min="1" max="150" step="5" value="50"/></label>
+   <label>Funding tenor<select id="ent-tenor"><option value="overnight">Overnight T+1</option><option value="same_day">Same-day repayment</option></select></label>
+   <label>Proposer rationale<textarea id="ent-note" rows="2">Assess local reserve shortfall and settlement-window eligibility before any real decision.</textarea></label>
+   <div class="ent-buttons"><button id="ent-draft" class="ent-button" type="button" disabled>Create draft</button><button id="ent-submit" class="ent-button primary" type="button" disabled>Submit to Risk</button></div>
+  </div>
+  <div class="ent-panel"><h3>03 — Independent challenge & sign-off</h3><p>Change demo identity above. Risk Management must review first. A different Treasury user provides the final sign-off. All actions use optimistic version checks.</p>
+   <div class="ent-workflow" id="ent-workflow">No server-side funding proposal.</div>
+   <label>Risk opinion / decision rationale<textarea id="ent-review-note" rows="2">Reviewed assumptions and synthetic funding controls for the current scenario snapshot.</textarea></label>
+   <div class="ent-buttons"><button id="ent-risk-approve" class="ent-button primary" type="button" disabled>Risk · approve</button><button id="ent-risk-reject" class="ent-button negative" type="button" disabled>Risk · reject</button></div>
+   <div class="ent-buttons"><button id="ent-treasury-approve" class="ent-button primary" type="button" disabled>Treasury · final approve</button><button id="ent-treasury-reject" class="ent-button negative" type="button" disabled>Treasury · reject</button></div>
+  </div>
+  <div class="ent-panel"><h3>04 — Replay evidence & ledger</h3><p>Scenario revisions preserve the original payment book and output snapshot. A local append-only-in-application hash chain records transitions and detects simple database tampering.</p>
+   <div class="ent-buttons"><button id="ent-verify" class="ent-button" type="button" disabled>Verify event hash chain</button><button id="ent-evidence" class="ent-button" type="button" disabled>Verify model evidence</button></div>
+   <div id="ent-ledger-status" class="ent-workflow">No server ledger connected.</div>
+   <div class="ent-workflow" id="ent-evidence-status">Stored evidence has not been checked.</div><div class="ent-ledger" id="ent-ledger-rows" aria-live="polite"></div>
+  </div>
+ </div>
+ <div class="ent-message" id="ent-message" role="status">Connect the optional localhost API to activate enterprise workflow.</div>
+ <p class="ent-limits"><b>Safety and audit boundary.</b> Local demonstration identities are self-selected and provide NO real authentication or production-grade RBAC. Hash chaining is tamper-evident, NOT immutable or signed. Model outputs are captured from the browser and NOT recalculated or independently validated by the server. This separate sandbox workflow does not authorize or execute funding, payment, collateral, or central-bank operations. Published GitHub Pages is browser-only.</p>
+</section>
 
 <section class="section ex-section" id="executive" aria-labelledby="ex-title">
  <div class="ex-heading"><div><div class="overline">EXECUTIVE TREASURY OVERVIEW · FLOWSTATE v11</div><h2 id="ex-title">The intraday position, in one view.</h2><p>Groupwide liquidity intelligence across three fictional entities. Every number is derived from synthetic payment data or illustrative scenario assumptions.</p></div><div class="ex-controls"><span class="ex-live"><i></i> SYNTHETIC SIMULATION</span><button id="ex-guide" class="btn outline" type="button">▶ Guided demo</button></div></div>
@@ -323,6 +359,7 @@
 <script defer src="funding-lifecycle-ui.js"></script>
 <script defer src="risk-plan-engine.js"></script>
 <script defer src="risk-plan-ui.js"></script>
+<script defer src="enterprise-ui.js"></script>
 <script defer src="app.js"></script>
 <script defer src="executive-engine.js"></script>
 <script defer src="executive-ui.js"></script>
