@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 base=Path(__file__).resolve().parents[1]
 html=(base/'index.html').read_text()
 styles=['styles.css','cockpit.css','optimiser.css','diagnostics.css','confidence.css','distribution.css']
-scripts=['decision-engine.js','cockpit-engine.js','cockpit-ui.js','optimiser-engine.js','optimiser-ui.js','diagnostics-engine.js','diagnostics-ui.js','confidence-engine.js','confidence-ui.js','distribution-engine.js','distribution-ui.js','app.js']
+scripts=['cashflow-engine.js','decision-engine.js','cockpit-engine.js','cockpit-ui.js','optimiser-engine.js','optimiser-ui.js','diagnostics-engine.js','diagnostics-ui.js','confidence-engine.js','confidence-ui.js','distribution-engine.js','distribution-ui.js','app.js']
 for filename in styles: html=html.replace(f'<link rel="stylesheet" href="{filename}">',f'<style>{(base/filename).read_text()}</style>')
 for filename in scripts: html=html.replace(f'<script defer src="{filename}"></script>','')
 model=(base/'model.json').read_text();cal=(base/'model-calibration.json').read_text()

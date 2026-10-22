@@ -16,7 +16,8 @@ for(const p of inflows){
  assert(c.profile(p,app.predictOne,cal,p.booking_minute-15).p_by_cutoff===0,'cannot receive before booked');
  const effect=c.timingShiftState(core,state,p.synthetic_id,a.high);
  assert(effect.timing_notional_unchanged);
- assert(effect.conservative_time<=1140);
+ assert(effect.conservative_time>=p.booking_minute);
+ if(a.high>1140)assert(effect.truncated && effect.conservative_time>1140);
  if(!effect.truncated)assert(effect.conservative_time>=p.booking_minute);
 }
 assert.throws(()=>c.profile({...book[160],kind:'OUT'},app.predictOne,cal,850));

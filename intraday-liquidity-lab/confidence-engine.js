@@ -24,14 +24,14 @@
   const source=state.book.find(x=>x.synthetic_id===id);
   if(!source||source.kind!=='IN')throw Error('Only selected incoming payment can be stressed');
   const original=state.group.forecast.surplus;
-  const hypothetical=state.book.map(x=>x.synthetic_id===id?{...x,forecast_minute:Math.min(1140,Math.max(x.booking_minute,newTime))}:x);
+  const hypothetical=state.book.map(x=>x.synthetic_id===id?{...x,forecast_minute:Math.max(x.booking_minute,newTime)}:x);
   const stress=core.simulate(hypothetical,state.opts);
   const b=state.entityById(source.entity_id),s=stress.entityById(source.entity_id);
   return {group_before:original,group_after:stress.group.forecast.surplus,
     group_delta:stress.group.forecast.surplus-original,
     lnncp_increase:stress.group.forecast.peak_need-state.group.forecast.peak_need,
     entity_before:b.forecast.surplus,entity_after:s.forecast.surplus,entity_delta:s.forecast.surplus-b.forecast.surplus,
-    conservative_time:Math.min(1140,Math.max(source.booking_minute,newTime)),
+    conservative_time:Math.max(source.booking_minute,newTime),
     truncated:newTime>1140,
     timing_notional_unchanged:Math.abs(stress.book.reduce((a,p)=>a+(p.kind==='IN'?1:-1)*p.amount_musd,0)-state.book.reduce((a,p)=>a+(p.kind==='IN'?1:-1)*p.amount_musd,0))<1e-8};
  }
