@@ -1,0 +1,43 @@
+{
+  "data": "Synthetic time-split, no bank evidence",
+  "training_days": "0\u2013139",
+  "evaluation_days": "140\u2013175",
+  "holdout_count": 3389,
+  "models": {
+    "Random Forest (export equivalent)": {
+      "mae_min": 31.645047137982182,
+      "notional_weighted_mae_min": 31.284451049915155,
+      "optimistic_rate": 0.4724107406314547,
+      "optimistic_tail_mean_minutes": 15.688464262374477,
+      "delayed_60_min_mae_min": 61.48766266844722
+    },
+    "Gradient boosting challenger": {
+      "mae_min": 31.253284771802274,
+      "notional_weighted_mae_min": 31.11357728724647,
+      "optimistic_rate": 0.47477131897314845,
+      "optimistic_tail_mean_minutes": 15.95744195386277,
+      "delayed_60_min_mae_min": 62.20083471355323
+    },
+    "RF without historical-delay feature": {
+      "mae_min": 34.49172098068942,
+      "notional_weighted_mae_min": 33.69167928850884,
+      "optimistic_rate": 0.44791974033638243,
+      "optimistic_tail_mean_minutes": 15.559846713388044,
+      "delayed_60_min_mae_min": 59.73039177139446
+    },
+    "Rules median baseline": {
+      "mae_min": 44.20118701681912,
+      "notional_weighted_mae_min": 43.82004827016779,
+      "optimistic_rate": 0.4579521982885807,
+      "optimistic_tail_mean_minutes": 19.677320153437595,
+      "delayed_60_min_mae_min": 63.589628887577454
+    }
+  },
+  "interpretation": "The challenger and ablation challenge the synthetic generator, not a bank production system. The delayed regime shift is hypothetical and has no refitted model.",
+  "validation_gaps": [
+    "Point-in-time provenance of historical median delays unverified",
+    "No real distribution shift, network dependency or counterparty clustering calibrated",
+    "No independent bank dataset or model governance sign-off",
+    "No measured realised savings, regulatory capital or buffer release"
+  ]
+}
