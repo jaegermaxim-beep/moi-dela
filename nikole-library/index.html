@@ -508,7 +508,7 @@ try{
 say("Открываю ZIP-книжку…");
 var pages=await unzipPictures(file),blobs=[];
 for(var i=0;i<pages.length;i++){say("Сжимаю страницу "+(i+1)+" из 10");blobs.push(await compress(pages[i]))}
-await saveBook(importId,blobs);if(importId==="rabbit"&&/^Zaichik_As_10_illustrations_/i.test(file.name)){embeddedText.rabbit=false;try{localStorage.setItem("nikole-embedded-text",JSON.stringify(embeddedText))}catch(e){}}await refreshBonus();await drawParents();say("Все 10 страниц сохранены для чтения!");
+await saveBook(importId,blobs);if(importId==="rabbit"&&/^Zaichik_As_10_illustrations_/i.test(file.name)){embeddedText.rabbit=false;try{localStorage.setItem("nikole-embedded-text",JSON.stringify(embeddedText))}catch(e){}}if(importId==="cleo"&&/^Mir_Nicole_Kleo_10_Detailed_Pages/i.test(file.name)){embeddedText.cleo=true;try{localStorage.setItem("nikole-embedded-text",JSON.stringify(embeddedText))}catch(e){}}await refreshBonus();await drawParents();say("Все 10 страниц сохранены для чтения!");
 }catch(error){console.error(error);say(error.message||"Не удалось импортировать ZIP.")}
 });
 
