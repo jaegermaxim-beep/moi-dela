@@ -239,7 +239,7 @@ if(id==="cleo"&&(page===3||page===4)){
  art+=prop("couch",539,666,1.45);
 }
 // Story props that should move with the plot rather than materialize randomly.
-if(id==="rabbit"&&page===3){art+=prop("apples",528,760,.58)+prop("apples",621,792,.42)}
+if(id==="rabbit"&&page===3){art+=prop("hedgehog",570,540,.72)+prop("apples",528,760,.58)+prop("apples",621,792,.42)}
 if(id==="rabbit"&&page===4){art+=prop("hedgehog",555,644,.88)}
 if(id==="rabbit"&&page===5){art+=prop("leaf-cover",355,470,1.45)+prop("rain",600,367,.8)}
 if(id==="rabbit"&&page===6){art+=prop("rainbow",399,253,1.4)}
