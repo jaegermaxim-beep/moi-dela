@@ -1,5 +1,5 @@
-/* Nicole stories offline shell v5.5 — plot-matched illustrated fallback and Cleo story text */
-const CACHE="nikole-books-v24";
+/* Nicole stories offline shell v5.5 — complete animal-story editorial revision and matched offline fallback scenes */
+const CACHE="nikole-books-v25";
 const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./tablet.css","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
