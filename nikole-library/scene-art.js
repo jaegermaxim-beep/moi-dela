@@ -1,4 +1,4 @@
-/* Mira Nicole · illustrated fallback scenes v4.0.
+/* Mira Nicole · narrative-matched fallback scenes v5.5.
  * 70 scene compositions, all rendered locally as original vector artwork.
  * Never requests private photos or external resources.
  */
@@ -6,19 +6,82 @@
 "use strict";
 var pages={
  rabbit:[
- ["forest","flower","house","morning"],["bedroom","sun","pillow","morning"],["forest","sun","cloud","morning"],["meadow","dew","flower","morning"],["meadow","butterfly","flower","day"],["meadow","butterfly","sparkles","day"],["forest","leaves","tree","day"],["cottage","house","mama-rabbit","sunset"],["cottage","mama-rabbit","heart","sunset"],["bedroom","pillow","moon","night"]],
+ ["bedroom","pillow","sun","morning"],
+ ["meadow","dew","carrot","morning"],
+ ["meadow","butterfly","flowers","day"],
+ ["forest","basket","apples","day"],
+ ["meadow","hedgehog","picnic","day"],
+ ["forest","rain","leaf-cover","day"],
+ ["meadow","rainbow","flowers","day"],
+ ["cottage","flowers","house","sunset"],
+ ["room","drawing","heart","sunset"],
+ ["bedroom","pillow","stars","night"]],
  dog:[
- ["bedroom","bone","rug","morning"],["bedroom","stretch","sun","morning"],["room","window","sun","day"],["garden","ball","flower","day"],["path","ball","leaves","day"],["path","footprints","ball","day"],["forest","kitten","tree","day"],["garden","kitten","ball","day"],["room","bowl","house","sunset"],["bedroom","pillow","moon","night"]],
+ ["bedroom","bone","pillow","morning"],
+ ["bedroom","stretch","rug","morning"],
+ ["room","window","sun","morning"],
+ ["garden","red-ball","flower","day"],
+ ["path","red-ball","footprints","day"],
+ ["path","footprints","red-ball","day"],
+ ["forest","kitten","tree","day"],
+ ["garden","kitten","red-ball","day"],
+ ["room","bowl","window","sunset"],
+ ["bedroom","pillow","moon","night"]],
  cleo:[
- ["room","couch","flower","morning"],["bedroom","sun","window","morning"],["room","stretch","rug","day"],["room","girl","heart","day"],["room","ball","sparkles","day"],["room","ball","paw","day"],["room","couch","hidden-ball","day"],["room","ball","heart","day"],["cottage","girl","flower","sunset"],["bedroom","pillow","moon","night"]],
+ ["bedroom","stretch","pillow","morning"],
+ ["room","window","heart","morning"],
+ ["room","red-ball","paw","day"],
+ ["room","couch","hidden-ball","day"],
+ ["room","couch","hidden-ball","day"],
+ ["room","red-ball","couch","day"],
+ ["room","girl","heart","day"],
+ ["garden","girl","red-ball","day"],
+ ["room","girl","red-ball","day"],
+ ["bedroom","pillow","girl","night"]],
  cow:[
- ["meadow","flower","tree","morning"],["meadow","grass","flowers","day"],["meadow","music","sun","morning"],["meadow","cloud","flower","day"],["hills","cloud","cloud","day"],["meadow","butterfly","flowers","day"],["pond","water","reeds","day"],["pond","cloud","water","day"],["hills","sunset","tree","sunset"],["meadow","moon","star","night"]],
+ ["meadow","flowers","tree","morning"],
+ ["meadow","grass","flowers","day"],
+ ["meadow","music","sun","morning"],
+ ["meadow","cloud","flower","day"],
+ ["hills","cloud","cloud","day"],
+ ["meadow","butterfly","flowers","day"],
+ ["pond","water","reeds","day"],
+ ["pond","cloud","water","day"],
+ ["hills","sunset","tree","sunset"],
+ ["meadow","moon","star","night"]],
  chick:[
- ["nest","egg","sun","morning"],["garden","music","sun","morning"],["garden","mother-hen","heart","day"],["garden","gate","tree","day"],["meadow","flower","grass","day"],["meadow","ladybug","flower","day"],["meadow","ladybug","sparkles","day"],["garden","grain","flower","day"],["garden","mother-hen","house","sunset"],["nest","mother-hen","moon","night"]],
+ ["nest","egg","sun","morning"],
+ ["garden","music","sun","morning"],
+ ["garden","mother-hen","heart","day"],
+ ["garden","gate","tree","day"],
+ ["meadow","flower","grass","day"],
+ ["meadow","ladybug","flower","day"],
+ ["meadow","ladybug","heart","day"],
+ ["garden","grain","flower","day"],
+ ["garden","mother-hen","house","sunset"],
+ ["nest","mother-hen","moon","night"]],
  mouse:[
- ["forest","hole","mushroom","morning"],["forest","hole","sun","morning"],["forest","cloud","leaves","day"],["meadow","grain","flower","day"],["path","grain","tree","day"],["path","snail","flowers","day"],["meadow","snail","heart","day"],["hills","stars","snail","night"],["forest","hole","moon","night"],["bedroom","pillow","stars","night"]],
+ ["forest","hole","mushroom","morning"],
+ ["forest","hole","sun","morning"],
+ ["forest","cloud","leaves","day"],
+ ["meadow","grain","flower","day"],
+ ["path","grain","hole","day"],
+ ["path","snail","flowers","day"],
+ ["meadow","snail","heart","day"],
+ ["hills","stars","snail","night"],
+ ["forest","hole","moon","night"],
+ ["bedroom","pillow","stars","night"]],
  dino:[
- ["valley","palm","sun","morning"],["valley","friend-dino","hills","day"],["valley","baby-dino","flowers","day"],["valley","girl","heart","day"],["path","palm","tree","day"],["meadow","flowers","butterfly","day"],["valley","baby-dino","friend-dino","day"],["meadow","ball","baby-dino","day"],["valley","girl","heart","sunset"],["valley","stars","moon","night"]]
+ ["valley","palm","sun","morning"],
+ ["valley","friend-dino","hills","day"],
+ ["valley","baby-dino","flowers","day"],
+ ["valley","girl","heart","day"],
+ ["path","palm","tree","day"],
+ ["meadow","flowers","butterfly","day"],
+ ["valley","baby-dino","friend-dino","day"],
+ ["meadow","red-ball","baby-dino","day"],
+ ["valley","girl","heart","sunset"],
+ ["valley","stars","moon","night"]]
 };
 var envColors={
  forest:["#e3f2e8","#c3e5ce","#9ecfb0"],
@@ -37,6 +100,16 @@ function prop(kind,x,y,scale){
  if(!kind)return "";
  var c="";
  switch(kind){
+ case "carrot":c='<path d="M0-52q-40-28-45-47Q-5-112 1-67q12-49 42-35 8 27-34 50" fill="#7fb583"/><path d="M-39-39Q-45 18 0 92 43 18 36-39Z" fill="#f6aa5e" stroke="#da8f57" stroke-width="5"/><path d="M-19-4h19M8 17h21M-12 41h17" stroke="#ffdfb0" stroke-width="6" stroke-linecap="round"/>';break;
+ case "basket":c='<path d="M-67-11q67 12 134 0l-13 80q-55 29-108 0Z" fill="#c99d68" stroke="#a9794e" stroke-width="7"/><path d="M-50-11q0-92 50-92t50 92" fill="none" stroke="#a77d58" stroke-width="11"/><path d="M-55 8h111M-51 34h102M-48 58h96" stroke="#e1bc88" stroke-width="8"/>';break;
+ case "apples":c='<g><circle cx="-48" cy="24" r="28" fill="#e87d79"/><circle cx="15" cy="-8" r="31" fill="#e96760"/><circle cx="51" cy="44" r="30" fill="#e58a71"/><path d="M-45-7l5-18M17-38l5-21M54 14l5-19" stroke="#907957" stroke-width="7" stroke-linecap="round"/><ellipse cx="30" cy="-45" rx="19" ry="9" fill="#8eaf75"/></g>';break;
+ case "picnic":c='<path d="M-100 41 41-67 105 26-38 130Z" fill="#eee1d8" stroke="#e3b8a8" stroke-width="6"/><path d="M-72 57 57-43M-40 80 82-10M-10-21 56 62" stroke="#ebc0bb" stroke-width="9"/>'+prop("basket",-30,-15,.5)+prop("apples",50,12,.43);break;
+ case "hedgehog":c='<path d="M-76 24Q-88-57-49-72q-18-46 16-16Q-6-117 5-83q38-42 35-2 50-17 30 20 30 48-8 95Z" fill="#957d67" stroke="#745e52" stroke-width="6"/><ellipse cy="25" rx="70" ry="49" fill="#e8c7a8"/><circle cx="19" cy="12" r="6" fill="#4d4a51"/><ellipse cx="56" cy="37" rx="12" ry="9" fill="#a76b74"/><path d="M32 51q12 10 22 0" stroke="#98717a" fill="none" stroke-width="5"/>';break;
+ case "rain":c='<g fill="none" stroke="#91c6d7" stroke-width="7" stroke-linecap="round"><path d="M-72-66l-26 56m97-70-25 57m91-54-21 54M-69 20l-23 54m91-63-25 64m94-68-23 59"/></g>';break;
+ case "leaf-cover":c='<path d="M-100 28Q-90-96 85-92q44 125-151 165Z" fill="#96c497" stroke="#73aa7c" stroke-width="7"/><path d="M-72 59Q-9-22 64-69" stroke="#d2e7b9" stroke-width="8" fill="none"/>';break;
+ case "rainbow":c='<path d="M-105 81a105 105 0 0 1 210 0" stroke="#efa5a8" stroke-width="19" fill="none"/><path d="M-89 81a89 89 0 0 1 178 0" stroke="#f7d493" stroke-width="17" fill="none"/><path d="M-72 81a72 72 0 0 1 144 0" stroke="#b1dca5" stroke-width="17" fill="none"/><path d="M-54 81a54 54 0 0 1 108 0" stroke="#b1ceea" stroke-width="17" fill="none"/>';break;
+ case "drawing":c='<path d="M-60 108V-65H64V108Z" fill="#fff9ea" stroke="#bc947e" stroke-width="11"/><path d="M0-65v-36M-49 109l-13 35M51 109l14 35" stroke="#b99272" stroke-width="10" fill="none"/><path d="M-44 38 0-8 43 39" stroke="#8ec48b" stroke-width="8" fill="none"/><circle cx="30" cy="-28" r="17" fill="#ffe19b"/><path d="M-34 41h68" stroke="#deafa6" stroke-width="6"/>';break;
+ case "red-ball":c='<circle r="54" fill="#dd6265" stroke="#b95661" stroke-width="6"/><g fill="#ffe1d1"><circle cx="-22" cy="-13" r="7"/><circle cx="25" cy="-20" r="7"/><circle cx="0" cy="27" r="8"/></g>';break;
  case "sun":c='<circle cy="-10" r="37" fill="#ffe59a"/><g stroke="#f4c86e" stroke-width="6" stroke-linecap="round"><path d="M0-66v-10M0 45v12M-53-11h-15M52-11h15M-38-49l-10-10M38 27l10 10M38-49l10-10M-38 27l-10 10"/></g>';break;
  case "sunset":c='<circle cy="-8" r="42" fill="#f9a77f"/><path d="M-63 19H62" stroke="#f6d0a9" stroke-width="8" stroke-linecap="round"/>';break;
  case "moon":c='<path d="M12-54A49 49 0 1 0 49 18 54 54 0 0 1 12-54Z" fill="#ffe6b7"/>';break;
@@ -47,7 +120,8 @@ function prop(kind,x,y,scale){
  case "tree":case "palm":c='<path d="M-12 85q10-95-2-151h38q-13 90 1 151Z" fill="#ba8f74"/><circle cx="-30" cy="-52" r="51" fill="#a1d19b"/><circle cx="20" cy="-75" r="56" fill="#9dcf9e"/><circle cx="60" cy="-32" r="40" fill="#b2d7a4"/><circle cx="-55" cy="-22" r="40" fill="#add9a6"/>';break;
  case "house":c='<path d="M-72 9 0-64 73 9v91H-72Z" fill="#fff1d9" stroke="#e7baa7" stroke-width="5"/><path d="M-88 12 0-85 88 12Z" fill="#c897a9"/><rect x="-18" y="42" width="37" height="58" rx="17" fill="#b58b80"/><rect x="-57" y="25" width="28" height="26" rx="5" fill="#b9dce4"/><rect x="29" y="25" width="28" height="26" rx="5" fill="#b9dce4"/>';break;
  case "dew":c='<path d="M0-65q-59 68-36 106 14 22 36 22 42 0 42-42Q42-7 0-65Z" fill="#aee7ec" stroke="#74c0ce" stroke-width="5"/><ellipse cx="-15" cy="-2" rx="11" ry="22" transform="rotate(25 -15 -2)" fill="#fff" opacity=".8"/>';break;
- case "ball":case "hidden-ball":c='<circle r="59" fill="#ef95a8" stroke="#d676a1" stroke-width="5"/><path d="M-41-41Q4-26 7 55M-56 6Q-11-18 51-20" fill="none" stroke="#ffe1ba" stroke-width="15"/><circle cx="-21" cy="-27" r="10" fill="#fff" opacity=".45"/>';break;
+ case "hidden-ball":c='<circle r="52" fill="#d76b65" stroke="#ac5355" stroke-width="7"/><path d="M-31 0h62" stroke="#f1b4ad" stroke-width="10"/>';break;
+ case "ball":c='<circle r="59" fill="#ef95a8" stroke="#d676a1" stroke-width="5"/><path d="M-41-41Q4-26 7 55M-56 6Q-11-18 51-20" fill="none" stroke="#ffe1ba" stroke-width="15"/><circle cx="-21" cy="-27" r="10" fill="#fff" opacity=".45"/>';break;
  case "bowl":c='<path d="M-70-18h140l-18 76q-44 27-104 0Z" fill="#a7d8e4" stroke="#699db0" stroke-width="5"/><ellipse cy="-18" rx="70" ry="17" fill="#d1f2f8"/><path d="M-45-14q20-12 44 0t45 0" fill="none" stroke="#80b9d0" stroke-width="4"/>';break;
  case "window":c='<rect x="-69" y="-82" width="138" height="164" rx="15" fill="#e4f3f5" stroke="#dcc9bf" stroke-width="13"/><path d="M0-80v160M-68 0H68" stroke="#dcc9bf" stroke-width="11"/><circle cx="33" cy="-47" r="16" fill="#ffe7a9"/>';break;
  case "couch":c='<rect x="-91" y="-38" width="182" height="105" rx="30" fill="#e1bac4" stroke="#c699ab" stroke-width="4"/><rect x="-103" y="-3" width="206" height="67" rx="23" fill="#efced8"/><path d="M-67 59v21M68 59v21" stroke="#a8869a" stroke-width="15" stroke-linecap="round"/>';break;
@@ -143,9 +217,9 @@ var small=environment==="room"?1:environment==="bedroom"?.92:1;
 var body=animal(id).replace(/^<svg[^>]*>/,"").replace(/<\/svg>\s*$/,"");
 var art='<svg xmlns="http://www.w3.org/2000/svg" class="story-scene" viewBox="0 0 720 900" role="img" aria-label="Сюжетная иллюстрация страницы '+(page+1)+' сказки '+id+'">';
 art+=background(environment,time)+pictureDetails(environment,page,time);
-var left=["flower","flowers","ball","butterfly","cloud","sun","sunset","dew","grain","snail","ladybug","mushroom","girl","bowl","egg","hole","bone","footprints","water","pillow","couch","mama-rabbit","mother-hen","kitten","friend-dino","baby-dino","sparkles","paw","heart","music"].includes(main);
+var left=["flower","flowers","ball","red-ball","hidden-ball","butterfly","cloud","sun","sunset","dew","grain","snail","ladybug","mushroom","girl","bowl","egg","hole","bone","basket","apples","picnic","hedgehog","rain","leaf-cover","rainbow","carrot","drawing","footprints","water","pillow","couch","mama-rabbit","mother-hen","kitten","friend-dino","baby-dino","sparkles","paw","heart","music"].includes(main);
 var pX=left?140:553,pY=["butterfly","sun","cloud","moon","stars","star","music","sparkles"].includes(main)?265:625;
-art+=prop(main,pX,pY,["couch","pillow","ball","hole","house","girl"].includes(main)?1.4:1.08);
+art+=prop(main,pX,pY,["couch","pillow","ball","red-ball","hole","house","girl","rainbow","picnic"].includes(main)?1.4:1.08);
 art+=prop(secondary,left?575:134,["moon","sun","cloud","stars","star","butterfly"].includes(secondary)?225:705,["house","tree","cloud"].includes(secondary)?1.1:.78);
 // Secondary characters make the interaction explicitly visible in the correct page.
 var friends={"mama-rabbit":"rabbit","kitten":"cleo","mother-hen":"chick","friend-dino":"dino","baby-dino":"dino"};
@@ -159,6 +233,19 @@ art+='<g transform="translate('+centerX+' '+y+') scale('+small+') rotate('+((pag
 if(night)art+=prop("stars",355,172,.45);
 if(main==="leaves")art+=prop("leaves",505,290,.65);
 if(main==="hidden-ball")art+=prop("ball",594,741,.44);
+// Place Cleo's same red ball physically beneath the sofa, not beside her paw.
+if(id==="cleo"&&(page===3||page===4)){
+ art+=prop("red-ball",577,776,.48);
+ art+=prop("couch",539,666,1.45);
+}
+// Story props that should move with the plot rather than materialize randomly.
+if(id==="rabbit"&&page===3){art+=prop("apples",528,760,.58)+prop("apples",621,792,.42)}
+if(id==="rabbit"&&page===4){art+=prop("hedgehog",555,644,.88)}
+if(id==="rabbit"&&page===5){art+=prop("leaf-cover",355,470,1.45)+prop("rain",600,367,.8)}
+if(id==="rabbit"&&page===6){art+=prop("rainbow",399,253,1.4)}
+if(id==="cleo"&&page===0){art+=prop("pillow",345,760,1.2)}
+if(id==="cleo"&&page===5){art+=prop("red-ball",548,756,.55)}
+if(id==="cleo"&&page===9){art+=prop("pillow",352,762,1.1)}
 if(page===9&&["rabbit","dog","cleo","chick","mouse"].includes(id))art+='<g fill="#ae98ba" font-family="sans-serif" font-weight="700"><text x="529" y="339" font-size="39">z</text><text x="563" y="300" font-size="52">z</text><text x="605" y="255" font-size="67">Z</text></g>';
 art+='</svg>';
 return art;
