@@ -258,7 +258,14 @@ s+=backdrop(setting,time,index+id.length*5);
 // Foreground props are staged in the order the action requires.
 for(let i=0;i<items.length;i++){let it=items[i];s+=extra(it[0],it[1],it[2],it[3],base)}
 let kind=id==="cow"?"cow":id==="dino"?"dino":id==="mouse"?"mouse":id;
-s+=actor(kind,mainX,mainY,id==="elephant"?.99:id==="cow"?.98:id==="dino"?.92:.88,pose,base);
+let heroScale=id==="elephant"?.99:id==="cow"?.98:id==="dino"?.92:.88;
+if(id==="dog"&&index===9)s+='<g transform="translate(40 200) scale(1 .76)">'+actor(kind,mainX,mainY,heroScale,"sleep",base)+'</g>';
+else if(id==="dog"&&(index===4||index===5))s+='<g transform="translate(0 55) scale(1 .86)">'+actor(kind,mainX,mainY,heroScale,pose,base)+'</g>';
+else if(id==="chick"&&index===0)s+='<g transform="translate(5 35) scale(1 .88)">'+actor(kind,mainX,mainY,heroScale,pose,base)+'</g>';
+else s+=actor(kind,mainX,mainY,heroScale,pose,base);
+if(id==="dog"&&index===1)s+='<g><path d="M442 418q38-28 62-2m-51 46q41-12 63 10" fill="none" stroke="#cfa06e" stroke-width="9" stroke-linecap="round"/><text x="494" y="370" font-size="45" font-family="sans-serif" font-weight="800" fill="#91686b">ГАВ!</text></g>';
+if(id==="dog"&&index===2)s+='<text x="610" y="425" font-size="50" font-family="sans-serif" font-weight="800" fill="#a5797e">!</text>';
+if(id==="chick"&&index===8)s+='<path d="M520 603q-37 91-113 14" fill="none" stroke="#e9d4b7" stroke-width="25" stroke-linecap="round"/>';
 if(id==="cow"&&index===7)s+=extra("duck",456,610,.44,base);
 if(id==="dino"&&index===7)s+=extra("seeds",385,746,.6,base);
 if(id==="mouse"&&index===9)s+=extra("pillow",394,791,.64,base);
