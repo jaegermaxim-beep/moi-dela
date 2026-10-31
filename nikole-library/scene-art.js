@@ -6,8 +6,8 @@
 "use strict";
 var pages={
  rabbit:[
- ["bedroom","pillow","sun","morning"],
- ["meadow","dew","carrot","morning"],
+ ["forest","hole","tree","morning"],
+ ["meadow","dew","backpack","morning"],
  ["meadow","butterfly","flowers","day"],
  ["forest","basket","apples","day"],
  ["meadow","hedgehog","picnic","day"],
@@ -29,7 +29,7 @@ var pages={
  ["bedroom","pillow","moon","night"]],
  cleo:[
  ["bedroom","stretch","pillow","morning"],
- ["room","window","heart","morning"],
+ ["room","girl","window","morning"],
  ["room","red-ball","paw","day"],
  ["room","couch","hidden-ball","day"],
  ["room","couch","hidden-ball","day"],
@@ -100,6 +100,7 @@ function prop(kind,x,y,scale){
  if(!kind)return "";
  var c="";
  switch(kind){
+ case "backpack":c='<path d="M-65-56q0-62 63-62T61-56" stroke="#ad8f83" stroke-width="14" fill="none"/><rect x="-76" y="-57" width="150" height="168" rx="31" fill="#c5ab8f" stroke="#9d806f" stroke-width="8"/><rect x="-55" y="20" width="112" height="80" rx="18" fill="#e6c9a4" stroke="#b69279" stroke-width="7"/><path d="M0-55v50M-15-5h30" stroke="#f7dfac" stroke-width="8"/>'+prop("carrot",8,-68,.45);break;
  case "carrot":c='<path d="M0-52q-40-28-45-47Q-5-112 1-67q12-49 42-35 8 27-34 50" fill="#7fb583"/><path d="M-39-39Q-45 18 0 92 43 18 36-39Z" fill="#f6aa5e" stroke="#da8f57" stroke-width="5"/><path d="M-19-4h19M8 17h21M-12 41h17" stroke="#ffdfb0" stroke-width="6" stroke-linecap="round"/>';break;
  case "basket":c='<path d="M-67-11q67 12 134 0l-13 80q-55 29-108 0Z" fill="#c99d68" stroke="#a9794e" stroke-width="7"/><path d="M-50-11q0-92 50-92t50 92" fill="none" stroke="#a77d58" stroke-width="11"/><path d="M-55 8h111M-51 34h102M-48 58h96" stroke="#e1bc88" stroke-width="8"/>';break;
  case "apples":c='<g><circle cx="-48" cy="24" r="28" fill="#e87d79"/><circle cx="15" cy="-8" r="31" fill="#e96760"/><circle cx="51" cy="44" r="30" fill="#e58a71"/><path d="M-45-7l5-18M17-38l5-21M54 14l5-19" stroke="#907957" stroke-width="7" stroke-linecap="round"/><ellipse cx="30" cy="-45" rx="19" ry="9" fill="#8eaf75"/></g>';break;
@@ -219,8 +220,8 @@ var art='<svg xmlns="http://www.w3.org/2000/svg" class="story-scene" viewBox="0 
 art+=background(environment,time)+pictureDetails(environment,page,time);
 var left=["flower","flowers","ball","red-ball","hidden-ball","butterfly","cloud","sun","sunset","dew","grain","snail","ladybug","mushroom","girl","bowl","egg","hole","bone","basket","apples","picnic","hedgehog","rain","leaf-cover","rainbow","carrot","drawing","footprints","water","pillow","couch","mama-rabbit","mother-hen","kitten","friend-dino","baby-dino","sparkles","paw","heart","music"].includes(main);
 var pX=left?140:553,pY=["butterfly","sun","cloud","moon","stars","star","music","sparkles"].includes(main)?265:625;
-if(!(night&&main==="moon"))art+=prop(main,pX,pY,["couch","pillow","ball","red-ball","hole","house","girl","rainbow","picnic"].includes(main)?1.4:1.08);
-if(!(night&&secondary==="moon"))art+=prop(secondary,left?575:134,["moon","sun","cloud","stars","star","butterfly"].includes(secondary)?225:705,["house","tree","cloud"].includes(secondary)?1.1:.78);
+if(!(night&&main==="moon")&&!(id==="cleo"&&(page===3||page===4)))art+=prop(main,pX,pY,["couch","pillow","ball","red-ball","hole","house","girl","rainbow","picnic"].includes(main)?1.4:1.08);
+if(!(night&&secondary==="moon")&&!(id==="cleo"&&(page===3||page===4)))art+=prop(secondary,left?575:134,["moon","sun","cloud","stars","star","butterfly"].includes(secondary)?225:705,["house","tree","cloud"].includes(secondary)?1.1:.78);
 // Secondary characters make the interaction explicitly visible in the correct page.
 var friends={"mama-rabbit":"rabbit","kitten":"cleo","mother-hen":"chick","friend-dino":"dino","baby-dino":"dino"};
 for(var j=0;j<2;j++){var kind=j===0?main:secondary;if(!friends[kind])continue;
@@ -229,7 +230,17 @@ for(var j=0;j<2;j++){var kind=j===0?main:secondary;if(!friends[kind])continue;
  art+='<g transform="translate('+fx+' '+fy+') scale('+k+')" opacity=".96">'+friendSvg+'</g>';
 }
 art+='<ellipse cx="'+(centerX+140)+'" cy="779" rx="151" ry="20" fill="#635c71" opacity=".08"/>';
-art+='<g transform="translate('+centerX+' '+y+') scale('+small+') rotate('+((page%5-2)*2)+')">'+body+'</g>';
+var actionPose='';
+if(id==="rabbit"&&page===2)actionPose='translate(0 -36) rotate(-11)';
+if(id==="dog"&&page===1)actionPose='translate(0 21) scale(1.12 .78)';
+if(id==="dog"&&(page===5||page===7))actionPose='translate(27 -22) rotate(-10)';
+if(id==="cleo"&&page===0)actionPose='translate(0 19) scale(1.16 .82)';
+if(id==="cleo"&&page===4)actionPose='translate(20 31) rotate(15) scale(1 .78)';
+if(id==="cleo"&&page===7)actionPose='translate(32 -28) rotate(-9)';
+if(id==="cleo"&&page===9)actionPose='translate(1 29) rotate(19) scale(1.03 .7)';
+if(id==="chick"&&page===8)actionPose='translate(28 -21) rotate(-9)';
+if(id==="chick"&&page===9)actionPose='translate(0 35) scale(1.06 .78)';
+art+='<g transform="translate('+centerX+' '+y+') scale('+small+')"><g transform="'+actionPose+'">'+body+'</g></g>';
 if(night)art+=prop("stars",355,172,.45);
 if(main==="leaves")art+=prop("leaves",505,290,.65);
 if(main==="hidden-ball")art+=prop("ball",594,741,.44);
@@ -243,7 +254,11 @@ if(id==="rabbit"&&page===3){art+=prop("hedgehog",570,540,.72)+prop("apples",528,
 if(id==="rabbit"&&page===4){art+=prop("hedgehog",555,644,.88)}
 if(id==="rabbit"&&page===5){art+=prop("leaf-cover",355,470,1.45)+prop("rain",600,367,.8)}
 if(id==="rabbit"&&page===6){art+=prop("rainbow",399,253,1.4)}
-if(id==="cleo"&&page===0){art+=prop("pillow",345,760,1.2)}
+if(id==="cleo"&&page===0){art+=prop("pillow",345,760,1.2)+prop("stretch",519,581,.85)}
+if(id==="rabbit"&&page===1){art+=prop("carrot",583,760,.66)}
+if(id==="rabbit"&&page===2){art+=prop("butterfly",518,312,.9)}
+if(id==="dog"&&page===1){art+=prop("stretch",538,594,.85)}
+if(id==="cleo"&&page===7){art+=prop("footprints",517,756,.7)}
 if(id==="cleo"&&page===5){art+=prop("red-ball",548,756,.55)}
 if(id==="cleo"&&page===9){art+=prop("pillow",352,762,1.1)}
 if(page===9&&["rabbit","dog","cleo","chick","mouse"].includes(id))art+='<g fill="#ae98ba" font-family="sans-serif" font-weight="700"><text x="529" y="339" font-size="39">z</text><text x="563" y="300" font-size="52">z</text><text x="605" y="255" font-size="67">Z</text></g>';
