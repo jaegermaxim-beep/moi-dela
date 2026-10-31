@@ -1,8 +1,11 @@
-/* Nicole Storybook 6.0 — editorially paired original illustrated scenes.
+/* Nicole Storybook 6.2 — editorially paired original illustrated scenes.
    Vector drawings are an offline alternative to personally imported artwork.
    One moon maximum per scene; no remote images, no tracking. */
 (function(global){"use strict";
 const BOOKS={
+dog:{"name":"Собачка Аф и маленький котёнок","short":"Собачка Аф","emoji":"🐶","card":"#f6dfcf","badge":"Дружба начинается с внимания","text":["Утром щенок Аф проснулся. Рядом с подушкой лежал его красный мячик.","Аф выбежал в сад и громко залаял: «Гав-гав! Поиграем!»","Под кустом сидел маленький котёнок. От громкого лая он испугался.","Аф заметил котёнка и остановился. «Кажется, я его напугал», — подумал он.","Щенок присел поодаль и тихо сказал: «Привет! Я Аф».","Котёнок осторожно вышел из-под куста. Аф подождал, не торопя его.","Вдруг красный мячик закатился под деревянную скамейку.","Котёнок пролез под скамейку и вытолкнул мячик лапкой. Аф терпеливо ждал.","Теперь Аф мягко покатил мячик котёнку. Друзья играли по очереди.","Вечером Аф и котёнок отдыхали рядом. Аф понял: дружба начинается с доброты и внимания."]},
+chick:{"name":"Цыплёнок Пипи и цветок для мамы","short":"Цыплёнок Пипи","emoji":"🐥","card":"#fff0bb","badge":"Береги красоту вокруг","text":["Цыплёнок Пипи проснулся в гнёздышке рядом с мамой-курочкой.","Во дворе мама принесла ему зёрнышки. Пипи захотел сделать ей подарок.","У дорожки Пипи увидел красивый розовый цветок.","Он уже потянулся к стебельку клювом, чтобы сорвать цветок.","Но на цветок прилетела пчела. Она собирала сладкий нектар.","Пипи остановился: «Если сорвать цветок, пчеле будет нечего собирать».","Цыплёнок оставил цветок расти и нашёл на земле опавшие лепестки.","Пипи аккуратно сложил лепестки сердечком перед мамой-курочкой.","Мама раскрыла крылышко и ласково обняла Пипи: «Какой заботливый подарок!»","Вечером цветок всё ещё цвёл, а пчела прилетела снова. Пипи понял: красоту можно беречь."]},
+
 cow:{name:"Корова Му и мост дружбы",short:"Му",emoji:"🐮",card:"#dfeecb",badge:"Вместе получается лучше",text:[
 "У речки корова Му услышала тихое «кря-кря». На другом берегу стоял утёнок.",
 "Утёнок хотел к маме-утке, но боялся заходить в глубокую воду один.",
@@ -82,6 +85,9 @@ elephant:{name:"Слонёнок Топ и тихая сила",short:"Слон�
 "Теперь Топ знал: настоящая сила нужна, чтобы помогать и беречь."]}
 };
 const L={
+dog:[["bedroom","day","wake",[["pillow",495,759,1.1],["red-ball",554,732,0.59]]],["garden","day","bark",[["red-ball",533,730,0.65],["flowers",120,688,0.7]]],["garden","day","listen",[["kitten",550,611,0.48],["bush",553,602,1.2]]],["garden","day","stop",[["kitten",554,615,0.5],["bush",563,585,1.06],["thought",472,282,0.66]]],["garden","day","sit",[["kitten",560,631,0.5],["bush",575,566,1.12],["hello",460,278,0.7]]],["garden","day","wait",[["kitten",550,580,0.63],["bush",577,562,0.82],["hearts",422,264,0.45]]],["garden","day","notice",[["red-ball",553,773,0.66],["bench",530,698,1.05],["kitten",142,575,0.49]]],["garden","day","wait",[["red-ball",548,775,0.54],["kitten",544,584,0.55],["bench",534,702,1.12]]],["meadow","day","gentle",[["kitten",548,566,0.7],["red-ball",355,754,0.72],["ball-trail",424,728,0.73]]],["room","sunset","sleep",[["kitten",540,574,0.66],["red-ball",542,743,0.45],["pillow",382,786,1.06]]]],
+chick:[["nest","day","wake",[["hen",532,515,0.66],["straw",375,769,0.85]]],["garden","day","happy",[["hen",532,527,0.63],["grain",520,735,0.86]]],["garden","day","see",[["pink-flower",557,612,1.05],["flowers",122,698,0.6]]],["garden","day","reach",[["pink-flower",528,631,1.05],["reach-lines",459,574,0.63]]],["garden","day","surprise",[["pink-flower",541,654,1.1],["bee",548,517,0.66]]],["garden","day","think",[["bee",553,503,0.55],["pink-flower",550,666,1.03],["thought",392,241,0.5]]],["garden","day","discover",[["pink-flower",567,604,0.97],["fallen-petals",485,768,1.03]]],["garden","day","arrange",[["hen",550,531,0.65],["petal-heart",387,777,0.98]]],["garden","day","hug",[["hen",507,519,0.86],["petal-heart",600,749,0.53],["hearts",351,240,0.57]]],["garden","sunset","smile",[["bee",563,485,0.64],["pink-flower",564,658,1.1],["hen",132,578,0.47]]]],
+
 cow:[
 ["river","day","listen",[["duck",573,430,.56],["water",380,680,1.7]]],
 ["river","day","concern",[["duck",570,480,.6],["mother-duck",115,425,.58],["water",370,670,1.8]]],
@@ -178,6 +184,7 @@ if(water)s+='<path d="M0 608Q175 576 360 619q180 31 360-14v211Q475 793 360 811q-
 if(forest)for(let i=0;i<4;i++){let x=35+i*196-32,h=200+(i%2)*70;s+='<path d="M'+x+' 580v-'+h+'" stroke="#a28d78" stroke-width="37" stroke-linecap="round"/><g fill="'+(night?"#74998d":"#8eba8d")+'"><circle cx="'+x+'" cy="'+(410-h/2)+'" r="86"/><circle cx="'+(x+53)+'" cy="'+(423-h/2)+'" r="72"/><circle cx="'+(x-48)+'" cy="'+(435-h/2)+'" r="65"/></g><g stroke="#c7dfb9" stroke-width="4" opacity=".7"><path d="M'+x+' '+(540-h/2)+'q-35-50-65-46"/></g>';}
 if(setting==="valley")for(let i=0;i<4;i++)s+='<path d="M'+(20+i*192)+' 535q-34-180 36-244t80 244" fill="'+(i%2?"#9ac4af":"#b0cdb5")+'" opacity=".8"/>';
 if(setting==="garden")s+='<path d="M0 601h720" stroke="#d5c4a4" stroke-width="20"/><g fill="none" stroke="#d6b99b" stroke-width="11">'+Array.from({length:9},(_,i)=>'<path d="M'+(20+i*89)+' 539v150"/>').join("")+'</g>';
+if(setting==="bedroom"||setting==="room"){s+='<rect x="0" y="0" width="720" height="900" fill="'+(sunset?"#efd9ce":"#f5e8d5")+'"/><rect y="641" width="720" height="259" fill="#d8bda7"/><rect x="50" y="48" width="244" height="300" rx="19" fill="#c5a894"/><rect x="66" y="65" width="212" height="263" rx="10" fill="'+(sunset?"#edb8ab":"#bfdfe6")+'"/><path d="M172 65v263M68 197h208" stroke="#fff8e7" stroke-width="15"/><path d="M535 412v253" stroke="#b69d88" stroke-width="13"/><rect x="460" y="348" width="155" height="65" rx="28" fill="#ddc9bb"/>';}
 if(setting==="nest")s+='<ellipse cx="380" cy="799" rx="275" ry="86" fill="#c4a886"/><ellipse cx="380" cy="755" rx="226" ry="70" fill="#e6d0aa"/>';
 s+=shrubs(seed,night);
 if(night||dusk){for(let i=0;i<16;i++){let x=(i*127+seed*31)%680+24,y=74+(i*71)%252;s+='<circle cx="'+x+'" cy="'+y+'" r="'+(i%4+2)+'" fill="#fff1bd"/>';}s+='<path d="M601 72a43 43 0 1 0 35 75A48 48 0 0 1 601 72Z" fill="#ffe5af"/>';} else if(sunset)s+='<circle cx="604" cy="123" r="43" fill="#f9c092" opacity=".8"/>';else s+='<g fill="#fffaf3" opacity=".8"><ellipse cx="560" cy="138" rx="95" ry="29"/><circle cx="533" cy="116" r="38"/><circle cx="600" cy="118" r="34"/></g>';
@@ -186,9 +193,10 @@ return s;
 }
 function animalArt(kind,base){
 if(["cow","dino","mouse","rabbit","chick","cleo","dog"].includes(kind)&&base){let b=base(kind);return b.replace(/^<svg[^>]*>/,"").replace(/<\/svg>\s*$/,"")}
-let c={hedgehog:"#a97e5c",duck:"#f0d77a",squirrel:"#d99b61",elephant:"#aebecf",bird:"#8caab8","mother-duck":"#e6d9b4","dino-small":"#80beb1","dino-large":"#7db1a5"}[kind]||"#e4d1ad";
+let c={hen:"#efe1c8",hedgehog:"#a97e5c",duck:"#f0d77a",squirrel:"#d99b61",elephant:"#aebecf",bird:"#8caab8","mother-duck":"#e6d9b4","dino-small":"#80beb1","dino-large":"#7db1a5"}[kind]||"#e4d1ad";
 let ears="",extra="",tail="",features="";
 if(kind==="hedgehog"){ears='<path d="M65 182 35 140 95 147 99 97 140 123 182 74 201 123 265 108 251 170" fill="#806b64"/>';extra='<path d="M93 202q58 30 127 0" stroke="#efe2be" stroke-width="15" fill="none"/>';}
+if(kind==="hen"){ears='<path d="M108 102q-22-62 5-45 19-33 38 6 20-29 34 5 12 22-15 49" fill="#ce7772"/><path d="M226 166l50 15-50 24" fill="#e9ae60"/>';extra='<path d="M90 233q-48-31-36 22 21 27 57-1" fill="#e8cfb2"/><path d="M185 223q59-24 48 32-31 22-63 0" fill="#ead4b2"/>';}
 if(kind==="duck"||kind==="mother-duck"){extra='<path d="M182 168h89q-8 28-88 19Z" fill="#ecaf63"/><path d="M113 226q-45-20-31 17 32 22 66 2" fill="#f7e3a0"/>';}
 if(kind==="squirrel"){ears='<path d="M83 145 74 88l55 28M206 119l55-39-18 86" fill="#b98154"/>';tail='<path d="M212 263q92 35 75-64-7-51-54-37" stroke="#bf834e" stroke-width="54" fill="none" stroke-linecap="round"/>';}
 if(kind==="elephant"){ears='<ellipse cx="78" cy="173" rx="61" ry="74" fill="#9baabf"/><ellipse cx="230" cy="173" rx="61" ry="74" fill="#9baabf"/><ellipse cx="78" cy="173" rx="39" ry="53" fill="#d4b7c2"/><ellipse cx="230" cy="173" rx="39" ry="53" fill="#d4b7c2"/>';extra='<path d="M171 188q46 35 30 79-18 38-50 2" stroke="#aebecf" stroke-width="43" fill="none" stroke-linecap="round"/>';}
@@ -197,12 +205,24 @@ if(kind==="dino-small"||kind==="dino-large"){ears='<path d="M73 180 53 158l29-16
 return tail+'<ellipse cx="151" cy="277" rx="83" ry="67" fill="'+c+'" stroke="#a78c7b" stroke-width="4"/>'+ears+'<ellipse cx="155" cy="175" rx="94" ry="88" fill="'+c+'" stroke="#ac9586" stroke-width="4"/><ellipse cx="155" cy="298" rx="48" ry="36" fill="#fff0df" opacity=".7"/>'+extra+'<circle cx="126" cy="169" r="7" fill="#4e4449"/><circle cx="191" cy="169" r="7" fill="#4e4449"/><circle cx="128" cy="166" r="2.4" fill="#fff"/><circle cx="193" cy="166" r="2.4" fill="#fff"/><ellipse cx="158" cy="192" rx="10" ry="7" fill="#c88b8e"/><path d="M145 211q13 12 26 0" stroke="#987f82" fill="none" stroke-width="5"/><g fill="'+c+'"><ellipse cx="95" cy="326" rx="38" ry="19"/><ellipse cx="213" cy="326" rx="38" ry="19"/></g>'+features;
 }
 function actor(kind,x,y,s,pose,base){
-let b=animalArt(kind,base),angle=pose==="oops"?-8:pose==="tiptoe"?-5:pose==="push"?11:pose==="effort"?-11:pose==="sad"?8:pose==="look"?-5:0;
+let b=animalArt(kind,base),angle=pose==="oops"?-8:pose==="tiptoe"?-5:pose==="push"?11:pose==="effort"?-11:pose==="sad"?8:pose==="look"?-5:pose==="bark"?-10:pose==="reach"?11:pose==="hug"?-8:pose==="sleep"?17:pose==="stop"?-2:0;
 return '<g transform="translate('+x+' '+y+') rotate('+angle+') scale('+s+')"><ellipse cx="165" cy="338" rx="99" ry="12" fill="#594c54" opacity=".13"/>'+b+'</g>'}
 function extra(kind,x,y,k,base){
 let v="";
 switch(kind){
-case "mother-duck":case "duck":case "hedgehog":case "rabbit":case "squirrel":case "dino-small":case "dino-large":case "bird":return actor(kind,x-120,y-200,k,"",base);
+case "red-ball":v='<circle cy="-4" r="49" fill="#db6866" stroke="#ad5556" stroke-width="6"/><path d="M-31-13q33-17 58 7" fill="none" stroke="#f4b6a3" stroke-width="11"/><circle cx="-23" cy="-25" r="9" fill="#ffd8bf" opacity=".8"/>';break;
+case "bench":v='<g fill="#c99e7c" stroke="#997153" stroke-width="6"><path d="M-137-95h274v29h-274Z"/><path d="M-141-50h282v37h-282Z"/><path d="M-112-12h26v140h-26ZM88-12h26v140H88Z"/></g><path d="M-136-17H133" stroke="#efd1a6" stroke-width="9"/>';break;
+case "bush":v='<g fill="#92bc8d"><ellipse cx="-71" cy="17" rx="75" ry="60"/><ellipse cx="-11" cy="-30" rx="75" ry="65"/><ellipse cx="74" cy="1" rx="77" ry="66"/></g><g fill="#b7d7a6"><ellipse cx="-46" cy="-25" rx="35" ry="27"/><ellipse cx="76" cy="-32" rx="31" ry="25"/></g>';break;
+case "thought":v='<g fill="#f6f1df" opacity=".91"><circle cx="0" cy="-30" r="35"/><circle cx="29" cy="-52" r="12"/><circle cx="48" cy="-64" r="7"/></g><path d="M-15-34q15-18 30 0" stroke="#c09c96" stroke-width="6" fill="none"/>';break;
+case "hello":v='<path d="M-88-68q0-56 88-56t88 56v73q-48 26-88 5l-52 26 9-45q-45-18-45-59Z" fill="#fffbeb" stroke="#ddc4a7" stroke-width="7"/><path d="M-45-61h90M-20-32h40" stroke="#cfa4a9" stroke-width="7" stroke-linecap="round"/>';break;
+case "ball-trail":v='<path d="M-105 0q40-47 73 0t67 0 70 0" stroke="#f5deb5" stroke-width="11" stroke-dasharray="15 18" fill="none"/>';break;
+case "pink-flower":v=flower(0,0,1.55,"#e9a8b8");break;
+case "straw":v='<g fill="none" stroke="#d6b77d" stroke-width="10">'+Array.from({length:7},(_,i)=>'<path d="M'+(-125+i*37)+' 63q-13-72 10-112"/>').join("")+'</g>';break;
+case "bee":v='<g fill="#f7d486" stroke="#9c8063" stroke-width="5"><ellipse cx="0" cy="10" rx="44" ry="29"/></g><path d="M-15-15v51M14-16v50" stroke="#594a4c" stroke-width="13"/><g fill="#fff9eb" opacity=".82"><ellipse cx="-19" cy="-28" rx="20" ry="31" transform="rotate(-25 -19 -28)"/><ellipse cx="17" cy="-28" rx="20" ry="31" transform="rotate(25 17 -28)"/></g><circle cx="35" cy="7" r="5" fill="#4b4042"/>';break;
+case "reach-lines":v='<g stroke="#e5ba90" stroke-width="7" stroke-linecap="round"><path d="M-36 40-77 22M-7 18-13-34M32 36 64 6"/></g>';break;
+case "fallen-petals":v='<g fill="#dfa1bc">'+[[-72,30,-23],[-12,2,16],[43,39,54],[81,-12,-38]].map(v=>'<ellipse cx="'+v[0]+'" cy="'+v[1]+'" rx="17" ry="28" transform="rotate('+v[2]+' '+v[0]+' '+v[1]+')"/>').join("")+'</g>';break;
+case "petal-heart":v='<path d="M0 59Q-134-27-64-82q39-21 64 25 38-54 80-18 55 54-80 134" fill="#e7abc0" stroke="#db8cae" stroke-width="7"/><g fill="#f6ddcf"><circle cx="-39" cy="-30" r="9"/><circle cx="32" cy="-26" r="9"/><circle cx="0" cy="12" r="9"/></g>';break;
+case "kitten":case "hen":case "mother-duck":case "duck":case "hedgehog":case "rabbit":case "squirrel":case "dino-small":case "dino-large":case "bird":return actor(kind==="kitten"?"cleo":kind,x-120,y-200,k,"",base);
 case "girl":v='<circle cy="-46" r="48" fill="#f4c6a7"/><path d="M-50-55q-18-82 52-84 65-2 54 85Q23-113-4-105q-29 11-46 50" fill="#e8bd82"/><path d="M-35 12q35-32 75 0l44 100H-83Z" fill="#f2cf73"/><circle cx="-15" cy="-47" r="4" fill="#55454d"/><circle cx="20" cy="-47" r="4" fill="#55454d"/><path d="M-11-28q12 13 25-1" stroke="#b9857e" stroke-width="4" fill="none"/>';break;
 case "water":case "puddle":case "ripples":case "waves":v='<ellipse rx="122" ry="29" fill="#b1d6d2" stroke="#e6f0eb" stroke-width="7"/><path d="M-77 1q32-17 65 0t75 0" stroke="#f3f9eb" stroke-width="5" fill="none"/>';break;
 case "planks":case "plank":case "bridge":v='<path d="M-122 53 89-52 127-23-91 88Z" fill="#c4996d" stroke="#98744f" stroke-width="9"/><path d="M-99 46 106-36M-56 65 121-15" stroke="#e2bf8e" stroke-width="6"/>';if(kind==="bridge")v+='<path d="M-110 62v97M108-28v99" stroke="#927456" stroke-width="20"/>';break;
