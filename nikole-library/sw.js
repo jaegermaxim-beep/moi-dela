@@ -1,6 +1,6 @@
-/* Nicole stories offline shell v5.5 — complete animal-story editorial revision and matched offline fallback scenes */
-const CACHE="nikole-books-v27";
-const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./dress-scenes.js","./tablet.css","./manifest.webmanifest","./icon.svg"];
+/* Nicole stories offline shell v6.0 — complete animal-story editorial revision and matched offline fallback scenes */
+const CACHE="nikole-books-v28";
+const ASSETS=["./index.html","./scene-art.js","./animal-games.js","./calm-scenes.js","./dress-scenes.js","./story-upgrade.js","./tablet.css","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS.map(asset=>new Request(asset,{cache:"reload"})))).then(()=>self.skipWaiting()));
 });
