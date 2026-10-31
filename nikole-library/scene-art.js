@@ -219,8 +219,8 @@ var art='<svg xmlns="http://www.w3.org/2000/svg" class="story-scene" viewBox="0 
 art+=background(environment,time)+pictureDetails(environment,page,time);
 var left=["flower","flowers","ball","red-ball","hidden-ball","butterfly","cloud","sun","sunset","dew","grain","snail","ladybug","mushroom","girl","bowl","egg","hole","bone","basket","apples","picnic","hedgehog","rain","leaf-cover","rainbow","carrot","drawing","footprints","water","pillow","couch","mama-rabbit","mother-hen","kitten","friend-dino","baby-dino","sparkles","paw","heart","music"].includes(main);
 var pX=left?140:553,pY=["butterfly","sun","cloud","moon","stars","star","music","sparkles"].includes(main)?265:625;
-art+=prop(main,pX,pY,["couch","pillow","ball","red-ball","hole","house","girl","rainbow","picnic"].includes(main)?1.4:1.08);
-art+=prop(secondary,left?575:134,["moon","sun","cloud","stars","star","butterfly"].includes(secondary)?225:705,["house","tree","cloud"].includes(secondary)?1.1:.78);
+if(!(night&&main==="moon"))art+=prop(main,pX,pY,["couch","pillow","ball","red-ball","hole","house","girl","rainbow","picnic"].includes(main)?1.4:1.08);
+if(!(night&&secondary==="moon"))art+=prop(secondary,left?575:134,["moon","sun","cloud","stars","star","butterfly"].includes(secondary)?225:705,["house","tree","cloud"].includes(secondary)?1.1:.78);
 // Secondary characters make the interaction explicitly visible in the correct page.
 var friends={"mama-rabbit":"rabbit","kitten":"cleo","mother-hen":"chick","friend-dino":"dino","baby-dino":"dino"};
 for(var j=0;j<2;j++){var kind=j===0?main:secondary;if(!friends[kind])continue;
