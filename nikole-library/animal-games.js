@@ -22,6 +22,46 @@ animation:rabbit-giant-hops 4.5s ease-in-out both}
 .surprise-layer[data-animal="mouse"] .hop-rabbit{animation:mouse-hide-seek 4.45s ease-in-out both}
 .surprise-layer[data-animal="dino"] .hop-rabbit{animation:dino-heavy-steps 4.45s ease-in-out both}
 .surprise-layer[data-animal="dress"] .hop-rabbit{animation:dress-twirl 4.4s ease-in-out both;width:155px}
+/* Unique actions for four new friends, each paced gently for a toddler. */
+.surprise-layer[data-animal="hedgehog"] .hop-rabbit{animation:hedgehog-snuffle 4.4s ease-in-out both}
+.surprise-layer[data-animal="duck"] .hop-rabbit{animation:duck-waddle 4.4s ease-in-out both}
+.surprise-layer[data-animal="squirrel"] .hop-rabbit{animation:squirrel-hops 4.4s ease-in-out both}
+.surprise-layer[data-animal="elephant"] .hop-rabbit{animation:elephant-trunk 4.4s ease-in-out both}
+@keyframes hedgehog-snuffle{
+0%{opacity:0;transform:translate(-50%,120px) scale(.6)}
+20%{opacity:1;transform:translate(-50%,0) scale(1)}
+38%{transform:translate(-50%,22px) scale(.84,.73)}
+56%{transform:translate(-50%,8px) scale(.96)}
+76%{transform:translate(-50%,-10px) scale(1.06)}
+100%{opacity:0;transform:translate(-50%,140px) scale(.78)}
+}
+@keyframes duck-waddle{
+0%{opacity:0;transform:translate(-50%,130px) rotate(-12deg)}
+20%{opacity:1;transform:translate(-50%,0) rotate(-9deg)}
+34%{transform:translate(-45%,-12px) rotate(8deg)}
+48%{transform:translate(-55%,0) rotate(-8deg)}
+64%{transform:translate(-45%,-15px) rotate(11deg)}
+80%{transform:translate(-50%,0) rotate(0)}
+100%{opacity:0;transform:translate(-50%,120px) rotate(8deg)}
+}
+@keyframes squirrel-hops{
+0%{opacity:0;transform:translate(-70%,160px) scale(.7)}
+18%{opacity:1;transform:translate(-65%,0)}
+37%{transform:translate(-38%,-115px) rotate(-7deg)}
+51%{transform:translate(-35%,0)}
+68%{transform:translate(-60%,-98px) rotate(8deg)}
+84%{transform:translate(-50%,0)}
+100%{opacity:0;transform:translate(-40%,180px)}
+}
+@keyframes elephant-trunk{
+0%{opacity:0;transform:translate(-50%,160px) rotate(-3deg)}
+20%{opacity:1;transform:translate(-50%,0) rotate(0)}
+38%{transform:translate(-50%,-12px) rotate(7deg)}
+57%{transform:translate(-50%,0) rotate(-7deg)}
+75%{transform:translate(-50%,-16px) rotate(5deg)}
+100%{opacity:0;transform:translate(-50%,155px)}
+}
+
 .surprise-layer .dress-sprite{display:block;font-size:126px;line-height:1.45;text-align:center;filter:drop-shadow(0 7px 11px #674f6f40)}
 /* All body-part transform origins are local to the SVG box, not the screen. */
 .surprise-layer .animal-ear-left,.surprise-layer .animal-ear-right,.surprise-layer .animal-cat-ears,.surprise-layer .animal-cow-ears,
@@ -207,16 +247,20 @@ seva:["rabbit","Прыг-скок! Зайчик Сева! 🐇",["🌼","✨","�
 balloons:["rabbit","Раз, два, три шарика! 🎈",["🎈","✨","🎈","🎈","⭐","💛","🎈","✨"]],
 seed:["rabbit","Волшебное семечко! 🌱",["🌱","✨","🌼","🌿","⭐","🌸","🍀","✨"]],
 thumbelina:["chick","Дюймовочка и цветочки! 🌺",["🌺","✨","🦋","🌸","⭐","💛","🌷","✨"]],
-father:["cow","Папа меня любит! 💛",["💛","🌸","✨","💗","⭐","💛","🌼","✨"]]
+father:["cow","Папа меня любит! 💛",["💛","🌸","✨","💗","⭐","💛","🌼","✨"]],
+hedgehog:["hedgehog","Шур-шур! Ёжик Шуршик! 🦔",["🍎","🍂","🌰","✨","🍁","💛","🌿","✨"]],
+duck:["duck","Кря-кря! Утёнок! 🦆",["💧","🌿","🫧","🌼","💧","✨","🌸","🫧"]],
+squirrel:["squirrel","Прыг-прыг! Рыжуля! 🐿️",["🌰","🍂","🌿","🌰","✨","🍁","⭐","🌿"]],
+elephant:["elephant","Топ-топ! Слонёнок Топ! 🐘",["🌸","🦋","💛","🍃","🌼","✨","🦋","🌸"]]
 };
 var currentTimeout=null;
 function play(kind,drawAnimal){
 var layer=document.getElementById("surpriseLayer");if(!layer)return false;
 if(currentTimeout){clearTimeout(currentTimeout);currentTimeout=null}
 var spec=modes[kind]||modes.rabbit;
-var sprite=kind==="dress"?'<span class="dress-sprite">👗</span>':drawAnimal(spec[0]);
-var voices={rabbit:"Прыг!",dog:"ГАВ! ГАВ!",cleo:"Мяу!",cow:"Мууу!",chick:"Пи-пи!",mouse:"Пи-пи!",dino:"ТОП! ТОП!",seva:"Прыг!",balloons:"Ура!",seed:"Расти!",thumbelina:"Привет!",father:"Люблю!"};
-var props={rabbit:"🥕",dog:"🦴",cleo:"🧶",cow:"🌼",chick:"🌾",mouse:"🧀",dino:"🌿"};
+var sprite=kind==="dress"?'<span class="dress-sprite">👗</span>':(global.NicoleStoryUpgrade&&global.NicoleStoryUpgrade.books[kind]&&["hedgehog","duck","squirrel","elephant"].includes(kind)?global.NicoleStoryUpgrade.icon(kind):drawAnimal(spec[0]));
+var voices={rabbit:"Прыг!",dog:"ГАВ! ГАВ!",cleo:"Мяу!",cow:"Мууу!",chick:"Пи-пи!",mouse:"Пи-пи!",dino:"ТОП! ТОП!",hedgehog:"Шур-шур!",duck:"КРЯ-КРЯ!",squirrel:"Прыг!",elephant:"Фу-у-у!",seva:"Прыг!",balloons:"Ура!",seed:"Расти!",thumbelina:"Привет!",father:"Люблю!"};
+var props={rabbit:"🥕",dog:"🦴",cleo:"🧶",cow:"🌼",chick:"🌾",mouse:"🧀",dino:"🌿",hedgehog:"🍎",duck:"💧",squirrel:"🌰",elephant:"🌼"};
 var positions=[["13%","70%","0s"],["36%","23%",".35s"],["71%","48%",".8s"],["85%","75%","1.1s"],["55%","15%",".55s"],["19%","30%",".95s"],["91%","29%","1.4s"],["56%","68%","1.65s"]];
 layer.dataset.animal=kind;
 layer.innerHTML='<div class="hop-rabbit">'+sprite+'</div>'+positions.map(function(p,i){
